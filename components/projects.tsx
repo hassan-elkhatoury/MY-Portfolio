@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react"
 import { motion, useInView, AnimatePresence } from "framer-motion"
-import { Github, ExternalLink, FileText, Star, ImageIcon } from "lucide-react"
+import { Github, FileText, Star, ImageIcon, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { GlowingEffect } from "@/components/ui/glowing-effect"
 import Image from "next/image"
@@ -39,7 +39,6 @@ const projects: Project[] = [
     image: "/images/projects/qt-messenger.png",
     tech: ["C++17", "Qt", "TCP", "SQLite", "JSON"],
     githubUrl: "https://github.com/hassan-elkhatoury/qt-messenger",
-    reportUrl: "#",
     featured: true,
   },
   {
@@ -50,6 +49,7 @@ const projects: Project[] = [
     image: "/images/projects/MongoShardLab.png",
     tech: ["MongoDB", "Docker", "Docker Compose", "Next.js", "LAN"],
     githubUrl: "https://github.com/hassan-elkhatoury/MongoShardLab",
+    demoUrl: "https://mongodb-gi2.vercel.app/",
     featured: true,
   },
   {
@@ -70,7 +70,6 @@ const projects: Project[] = [
     image: "/images/projects/ecommerce.png",
     tech: ["PHP", "Laravel", "MySQL", "Blade"],
     githubUrl: "https://github.com/hassan-elkhatoury/E-Commerce_Website",
-    demoUrl: "#",
   },
   {
     title: "Gestion des Affectations des Enseignements",
@@ -111,7 +110,7 @@ export function Projects() {
       : projects.filter((p) => p.category === activeCategory)
 
   return (
-    <section id="projects" className="relative px-6 py-28 md:py-36">
+    <section id="projects" className="relative px-6 py-10 md:py-16">
       {/* Subtle section glow */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.03] blur-[140px]" />
@@ -163,16 +162,14 @@ export function Projects() {
             {filtered.map((project) => (
               <motion.div key={project.title} variants={cardVariants} layout>
                 <div className="relative h-full rounded-[1.25rem] border-[0.75px] border-border/50 p-2 md:rounded-[1.5rem] md:p-2.5">
-                  {project.featured && (
-                    <GlowingEffect
-                      spread={40}
-                      glow={true}
-                      disabled={false}
-                      proximity={64}
-                      inactiveZone={0.01}
-                      borderWidth={3}
-                    />
-                  )}
+                  <GlowingEffect
+                    spread={40}
+                    glow={true}
+                    disabled={false}
+                    proximity={64}
+                    inactiveZone={0.01}
+                    borderWidth={3}
+                  />
                   <div className="group relative flex h-full flex-col overflow-hidden rounded-xl border-[0.75px] border-border/30 bg-card shadow-sm dark:shadow-[0px_0px_27px_0px_rgba(45,45,45,0.3)] transition-all duration-300 hover:-translate-y-0.5">
                   {/* Thumbnail */}
                   <div className="relative flex aspect-video items-center justify-center overflow-hidden border-b border-border/30 bg-secondary/30">
@@ -245,7 +242,7 @@ export function Projects() {
                           asChild
                           variant="outline"
                           size="sm"
-                          className="h-7 border-border/60 px-3 text-[12px] font-medium text-foreground hover:border-border hover:bg-secondary/50"
+                          className="h-7 px-3 text-[12px] font-medium"
                         >
                           <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
                             <ExternalLink className="mr-1.5 h-3 w-3" />

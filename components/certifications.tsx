@@ -2,13 +2,15 @@
 
 import { motion, useInView } from "framer-motion"
 import { useRef, useState } from "react"
-import { Award, ExternalLink, FileDown, ChevronDown, ChevronUp, Building2 } from "lucide-react"
+import { Award, ExternalLink, FileDown, ChevronDown, ChevronUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { GlowingEffect } from "@/components/ui/glowing-effect"
+import Image from "next/image"
 
 type Certification = {
   title: string
   issuer: string
+  logo: string
   issued?: string
   expires?: string
   credentialId?: string
@@ -22,79 +24,110 @@ const certifications: Certification[] = [
   {
     title: "Oracle Certified Professional: Java SE 17 Developer",
     issuer: "Oracle",
+    logo: "/images/logos/oracle.png",
     issued: "Feb 2026",
     credentialId: "103380522OCPJSE17",
     skills: ["Modules", "Generics"],
-    pdfFile: "JAVA17_certif.pdf",
+    verifyUrl: "https://catalog-education.oracle.com/pls/certview/sharebadge?id=9D8818D30FB5F85D194238131DABA947BB49BCE0EC089189A0773287556E2D99",
+    pdfFile: "/certifications/JAVA17_certif.pdf",
     featured: true,
   },
   {
     title: "Oracle Certified Professional: Java SE 11 Developer",
     issuer: "Oracle",
+    logo: "/images/logos/oracle.png",
     issued: "Feb 2026",
     credentialId: "103380522OCPJSE11",
     skills: ["Java", "OOP", "Exception Handling", "JDBC"],
-    pdfFile: "JAVA11_certif.pdf",
+    verifyUrl: "https://catalog-education.oracle.com/pls/certview/sharebadge?id=9D8818D30FB5F85D194238131DABA947C9B84CA45D5C800CAEA1DC3FF5A817BA",
+    pdfFile: "/certifications/JAVA11_certif.pdf",
     featured: true,
   },
   {
     title: "Oracle Cloud Infrastructure 2025 Certified Foundations Associate",
     issuer: "Oracle",
+    logo: "/images/logos/oracle.png",
     issued: "Dec 2025",
     expires: "Dec 2027",
     credentialId: "103380522OCI25FND",
     skills: ["OCI"],
-    pdfFile: "OCI_certif.pdf",
+    verifyUrl: "https://catalog-education.oracle.com/pls/certview/sharebadge?id=6B0D0A107A85EFB7141DD92D98D4B843A66480EF8C1BB2F328028C0951B190C7",
+    pdfFile: "/certifications/OCI_certif.pdf",
     featured: true,
   },
   {
     title: "Java Programming Fundamentals",
     issuer: "IBM",
+    logo: "/images/logos/ibm.png",
     credentialId: "J5AJUMQQ2VWR",
+    verifyUrl: "https://coursera.org/verify/specialization/J5AJUMQQ2VWR",
+    pdfFile: "/certifications/java_fundamentals_certif.pdf",
   },
   {
     title: "English for Career Development",
     issuer: "University of Pennsylvania",
+    logo: "/images/logos/upenn.png",
     issued: "Nov 2025",
     credentialId: "VZJ8WT1LARVN",
+    verifyUrl: "https://coursera.org/verify/VZJ8WT1LARVN",
+    pdfFile: "/certifications/english_career_certif.pdf",
   },
   {
     title: "OCI Foundations",
     issuer: "Oracle via Coursera",
+    logo: "/images/logos/coursera.png",
     issued: "Nov 2025",
     credentialId: "YCQ9UV5ESM1D",
+    verifyUrl: "https://coursera.org/verify/YCQ9UV5ESM1D",
+    pdfFile: "/certifications/oci_foundations_certif.pdf",
   },
   {
     title: "Git, GitLab, GitHub Fundamentals",
     issuer: "Udemy",
+    logo: "/images/logos/udemy.png",
     issued: "Feb 2025",
+    verifyUrl: "https://www.udemy.com/certificate/UC-96829962-1560-4ce3-9b18-7cee71d51e95/",
+    pdfFile: "/certifications/git_fundamentals_certif.pdf",
   },
   {
     title: "Complete C Programming Course",
     issuer: "Udemy",
+    logo: "/images/logos/udemy.png",
     issued: "Dec 2024",
+    verifyUrl: "https://www.udemy.com/certificate/UC-f9f55087-328f-42e2-b7d0-59999fc535c8/",
+    pdfFile: "/certifications/c_programming_certif.pdf",
   },
   {
     title: "CSS, Bootstrap, JavaScript, and PHP Stack",
     issuer: "Udemy",
+    logo: "/images/logos/udemy.png",
     issued: "Mar 2025",
+    verifyUrl: "https://www.udemy.com/certificate/UC-74fb0079-0375-4f30-b5a4-576b8d91ac8c/",
+    pdfFile: "/certifications/css_bootstrap_js_php_certif.pdf",
   },
   {
     title: "Java App Development Project",
     issuer: "SkillUp Online",
+    logo: "/images/logos/skillup.png",
     issued: "Nov 2025",
+    verifyUrl: "https://coursera.org/verify/WY56TELFWL8H",
+    pdfFile: "/certifications/java_app_dev_certif.pdf",
   },
   {
     title: "Introduction to Containers w/ Docker, Kubernetes & OpenShift",
     issuer: "IBM",
+    logo: "/images/logos/ibm.png",
     issued: "Nov 2025",
     verifyUrl: "https://coursera.org/verify/I8OGFV1ECM2J",
+    pdfFile: "/certifications/containers_docker_k8s_certif.pdf",
   },
   {
     title: "Exploratory Data Analysis for Machine Learning",
     issuer: "IBM",
+    logo: "/images/logos/ibm.png",
     issued: "Nov 2025",
     verifyUrl: "https://coursera.org/verify/VOYNZ8ZAOPX3",
+    pdfFile: "/certifications/eda_ml_certif.pdf",
   },
 ]
 
@@ -124,8 +157,14 @@ function CertCard({ cert }: { cert: Certification }) {
       <div className="flex flex-1 flex-col p-5">
         {/* Top row */}
         <div className="mb-3 flex items-start justify-between">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-primary/10">
-            <Building2 className="h-4 w-4 text-primary" />
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border/40 bg-secondary/40">
+            <Image
+              src={cert.logo}
+              alt={cert.issuer}
+              width={28}
+              height={28}
+              className="h-7 w-7 rounded-sm object-contain"
+            />
           </div>
           {cert.featured && (
             <span className="flex items-center gap-1 rounded-md bg-primary/8 px-2 py-0.5 text-[10px] font-semibold text-primary">
@@ -204,23 +243,19 @@ function CertCard({ cert }: { cert: Certification }) {
     </motion.div>
   )
 
-  if (cert.featured) {
-    return (
-      <div className="relative rounded-[1.25rem] border-[0.75px] border-border/50 p-2">
-        <GlowingEffect
-          spread={40}
-          glow={true}
-          disabled={false}
-          proximity={64}
-          inactiveZone={0.01}
-          borderWidth={3}
-        />
-        {card}
-      </div>
-    )
-  }
-
-  return card
+  return (
+    <div className="relative rounded-[1.25rem] border-[0.75px] border-border/50 p-2">
+      <GlowingEffect
+        spread={40}
+        glow={true}
+        disabled={false}
+        proximity={64}
+        inactiveZone={0.01}
+        borderWidth={3}
+      />
+      {card}
+    </div>
+  )
 }
 
 export function Certifications() {
@@ -231,7 +266,7 @@ export function Certifications() {
   const visibleCerts = showAll ? certifications : certifications.slice(0, 6)
 
   return (
-    <section id="certifications" className="relative px-6 py-28 md:py-36">
+    <section id="certifications" className="relative px-6 py-10 md:py-16">
       {/* Background */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/3 top-1/2 h-[350px] w-[350px] -translate-y-1/2 rounded-full bg-accent/[0.03] blur-[120px]" />

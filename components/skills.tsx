@@ -2,45 +2,45 @@
 
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
-import { Code2, Server, Database, Cloud, BrainCircuit } from "lucide-react"
+import { Code2, Server, Database, Cloud, GraduationCap } from "lucide-react"
 import { GlowingEffect } from "@/components/ui/glowing-effect"
 
 const skillGroups = [
   {
-    title: "Languages",
+    title: "Programming Languages",
     icon: Code2,
-    skills: ["Java", "SQL", "Python", "C++", "JavaScript"],
+    skills: ["Java", "Python", "C", "C++", "SQL", "JavaScript"],
     status: "Core",
-    colSpan: 2,
+    colSpan: 3,
     hasPersistentHover: true,
   },
   {
-    title: "Backend & Architecture",
+    title: "Backend & Software Engineering",
     icon: Server,
-    skills: ["Spring", "REST APIs", "Microservices", "MVC", "JDBC"],
+    skills: ["REST APIs", "MVC Architecture", "Layered Architecture", "OOP", "Design Patterns", "Authentication & Security", "Microservices"],
     status: "Specialty",
-    colSpan: 1,
+    colSpan: 3,
   },
   {
     title: "Databases",
     icon: Database,
-    skills: ["Oracle", "MySQL", "MongoDB"],
+    skills: ["MySQL", "Oracle Database", "MongoDB", "JDBC", "Database Design"],
     status: "Data",
-    colSpan: 1,
+    colSpan: 2,
   },
   {
-    title: "Cloud & Tools",
+    title: "Tools & Platforms",
     icon: Cloud,
-    skills: ["OCI", "Git", "Linux", "Docker (learning)"],
+    skills: ["Git", "GitHub", "Linux", "Docker", "Oracle Cloud Infrastructure (OCI)", "Maven", "CMake"],
     status: "DevOps",
     colSpan: 2,
   },
   {
-    title: "AI / Data",
-    icon: BrainCircuit,
-    skills: ["Machine Learning", "Data Processing"],
-    status: "Exploring",
-    colSpan: 1,
+    title: "CS Fundamentals",
+    icon: GraduationCap,
+    skills: ["Data Structures", "Algorithms", "Problem Solving", "Complexity Analysis", "Systems Programming", "Networking Fundamentals"],
+    status: "Foundation",
+    colSpan: 2,
   },
 ]
 
@@ -62,7 +62,7 @@ export function Skills() {
   const isInView = useInView(ref, { once: true, margin: "-80px" })
 
   return (
-    <section id="skills" className="relative px-6 py-28 md:py-36">
+    <section id="skills" className="relative px-6 py-10 md:py-16">
       {/* Subtle glow */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute right-1/3 top-1/2 h-[350px] w-[350px] -translate-y-1/2 rounded-full bg-primary/[0.03] blur-[120px]" />
@@ -87,7 +87,7 @@ export function Skills() {
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4"
+          className="grid grid-cols-1 md:grid-cols-6 gap-4"
         >
           {skillGroups.map((group) => {
             const Icon = group.icon
@@ -95,7 +95,7 @@ export function Skills() {
               <motion.div
                 key={group.title}
                 variants={cardVariants}
-                className={`${group.colSpan === 2 ? "md:col-span-2" : "col-span-1"}`}
+                className={`${group.colSpan === 3 ? "md:col-span-3" : "md:col-span-2"}`}
               >
                 <div className="relative h-full rounded-[1.25rem] border-[0.75px] border-border/50 p-2 md:rounded-[1.5rem] md:p-3">
                   <GlowingEffect

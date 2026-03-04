@@ -22,7 +22,7 @@ export function Contact() {
     "w-full rounded-lg border border-border/40 bg-card px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 transition-colors focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/20"
 
   return (
-    <section id="contact" className="relative px-6 py-28 md:py-36">
+    <section id="contact" className="relative px-6 py-10 md:py-16">
       {/* Spotlight */}
       <Spotlight className="dark:from-primary/10 dark:via-primary/5 dark:to-transparent" size={300} />
 
@@ -145,6 +145,14 @@ export function Contact() {
                     </div>
                   </a>
                   <div className="relative rounded-[1rem] border-[0.75px] border-border/50 p-1.5">
+                    <GlowingEffect
+                      spread={30}
+                      glow={true}
+                      disabled={false}
+                      proximity={48}
+                      inactiveZone={0.01}
+                      borderWidth={2}
+                    />
                     <div className="flex items-center gap-3 rounded-[0.7rem] border-[0.75px] border-border/30 bg-card p-3 text-muted-foreground shadow-sm">
                       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-secondary">
                         <MapPin className="h-3.5 w-3.5 text-muted-foreground" />

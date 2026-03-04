@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { SplineScene } from "@/components/ui/splite"
 import { Spotlight } from "@/components/ui/spotlight"
 import DisplayCards from "@/components/ui/display-cards"
+import { GlowingEffect } from "@/components/ui/glowing-effect"
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -173,7 +174,16 @@ export function Hero() {
         >
           <div className="relative w-full max-w-md">
             {/* Spline 3D Robot */}
-            <div className="relative h-[420px] w-full rounded-2xl overflow-hidden">
+            <div className="relative h-[420px] w-full rounded-[1.25rem] border-[0.75px] border-border/50 p-2 md:rounded-[1.5rem] md:p-2.5">
+              <GlowingEffect
+                spread={40}
+                glow={true}
+                disabled={false}
+                proximity={64}
+                inactiveZone={0.01}
+                borderWidth={3}
+              />
+              <div className="relative h-full w-full rounded-2xl overflow-hidden border-[0.75px] border-border/30 dark:shadow-[0px_0px_27px_0px_rgba(45,45,45,0.3)]">
               <SplineScene
                 scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
                 className="w-full h-full"
@@ -181,6 +191,7 @@ export function Hero() {
               {/* Gradient fade at edges */}
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/40 via-transparent to-background/40" />
+              </div>
             </div>
           </div>
         </motion.div>
