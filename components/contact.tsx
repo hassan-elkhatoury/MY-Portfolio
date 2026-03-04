@@ -1,28 +1,37 @@
 "use client"
 
 import { motion, useInView } from "framer-motion"
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect } from "react"
 import { Mail, MapPin, Send, Github, Linkedin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { GlowingEffect } from "@/components/ui/glowing-effect"
 import { Spotlight } from "@/components/ui/spotlight"
+import { useForm } from "@formspree/react"
+import { toast } from "sonner"
+import { Loader2 } from "lucide-react"
 
 export function Contact() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-80px" })
   const [formState, setFormState] = useState({ name: "", email: "", message: "" })
+  const [state, handleSubmit] = useForm("xojngwrb")
+  const [hasSent, setHasSent] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    const mailtoLink = `mailto:hassanelkhatoury@gmail.com?subject=Portfolio Contact from ${formState.name}&body=${encodeURIComponent(formState.message)}%0A%0AFrom: ${formState.email}`
-    window.open(mailtoLink)
-  }
+  useEffect(() => {
+    if (state.succeeded && !hasSent) {
+      setHasSent(true)
+      toast.success("Message sent successfully!", {
+        description: "Thanks for reaching out. I'll get back to you soon.",
+      })
+      setFormState({ name: "", email: "", message: "" })
+    }
+  }, [state.succeeded, hasSent])
 
   const inputClasses =
-    "w-full rounded-lg border border-border/40 bg-card px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 transition-colors focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/20"
+    "w-full rounded-lg border border-border/40 bg-card px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 transition-colors focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
 
   return (
-    <section id="contact" className="relative px-6 py-10 md:py-16">
+    <section id="contact" className="relative px-6 py-8 md:py-12">
       {/* Spotlight */}
       <Spotlight className="dark:from-primary/10 dark:via-primary/5 dark:to-transparent" size={300} />
 
@@ -68,8 +77,10 @@ export function Contact() {
                         </label>
                         <input
                           id="name"
+                          name="name"
                           type="text"
                           required
+                          disabled={state.submitting}
                           value={formState.name}
                           onChange={(e) => setFormState({ ...formState, name: e.target.value })}
                           className={inputClasses}
@@ -82,8 +93,10 @@ export function Contact() {
                         </label>
                         <input
                           id="email"
+                          name="email"
                           type="email"
                           required
+                          disabled={state.submitting}
                           value={formState.email}
                           onChange={(e) => setFormState({ ...formState, email: e.target.value })}
                           className={inputClasses}
@@ -97,7 +110,9 @@ export function Contact() {
                       </label>
                       <textarea
                         id="message"
+                        name="message"
                         required
+                        disabled={state.submitting}
                         rows={5}
                         value={formState.message}
                         onChange={(e) => setFormState({ ...formState, message: e.target.value })}
@@ -108,10 +123,15 @@ export function Contact() {
                     <Button
                       type="submit"
                       size="lg"
-                      className="w-fit bg-foreground text-background text-sm font-medium transition-colors hover:bg-foreground/90"
+                      disabled={state.submitting}
+                      className="w-fit bg-foreground text-background text-sm font-medium transition-colors hover:bg-foreground/90 disabled:opacity-50"
                     >
-                      <Send className="mr-2 h-3.5 w-3.5" />
-                      Send Message
+                      {state.submitting ? (
+                        <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <Send className="mr-2 h-3.5 w-3.5" />
+                      )}
+                      {state.submitting ? "Sending..." : "Send Message"}
                     </Button>
                   </form>
                 </div>
@@ -170,7 +190,7 @@ export function Contact() {
                 <div className="flex items-center gap-2">
                   {[
                     { href: "https://github.com/hassan-elkhatoury", icon: Github, label: "GitHub" },
-                    { href: "https://linkedin.com/in/hassan-elkhatoury", icon: Linkedin, label: "LinkedIn" },
+                    { href: "https://www.linkedin.com/in/hasan-el-khatoury-5b9648292/", icon: Linkedin, label: "LinkedIn" },
                     { href: "mailto:hassanelkhatoury@gmail.com", icon: Mail, label: "Email" },
                   ].map((social) => {
                     const Icon = social.icon

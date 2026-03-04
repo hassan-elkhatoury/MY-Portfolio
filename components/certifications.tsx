@@ -232,7 +232,7 @@ function CertCard({ cert }: { cert: Certification }) {
               size="sm"
               className="h-7 px-2.5 text-[11px] text-muted-foreground hover:text-foreground"
             >
-              <a href={`/${cert.pdfFile}`} target="_blank" rel="noopener noreferrer">
+              <a href={cert.pdfFile} target="_blank" rel="noopener noreferrer">
                 <FileDown className="mr-1 h-3 w-3" />
                 PDF
               </a>
@@ -266,7 +266,7 @@ export function Certifications() {
   const visibleCerts = showAll ? certifications : certifications.slice(0, 6)
 
   return (
-    <section id="certifications" className="relative px-6 py-10 md:py-16">
+    <section id="certifications" className="relative px-6 py-8 md:py-12">
       {/* Background */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/3 top-1/2 h-[350px] w-[350px] -translate-y-1/2 rounded-full bg-accent/[0.03] blur-[120px]" />

@@ -13,7 +13,7 @@ export function Footer() {
         <div className="flex items-center gap-3">
           {[
             { href: "https://github.com/hassan-elkhatoury", icon: Github, label: "GitHub" },
-            { href: "https://linkedin.com/in/hassan-elkhatoury", icon: Linkedin, label: "LinkedIn" },
+            { href: "https://www.linkedin.com/in/hasan-el-khatoury-5b9648292/", icon: Linkedin, label: "LinkedIn" },
             { href: "mailto:hassanelkhatoury@gmail.com", icon: Mail, label: "Email" },
           ].map((social) => {
             const Icon = social.icon

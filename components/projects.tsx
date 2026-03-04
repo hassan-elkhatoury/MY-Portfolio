@@ -60,7 +60,7 @@ const projects: Project[] = [
     image: "/images/projects/can-2025.png",
     tech: ["Python", "scikit-learn", "pandas", "FastAPI"],
     githubUrl: "https://github.com/hassan-elkhatoury/CAN-2025-Predictions",
-    reportUrl: "#",
+    reportUrl: "reports/RAPPORT_ML_PROJECT.pdf",
   },
   {
     title: "E-Commerce Website",
@@ -110,7 +110,7 @@ export function Projects() {
       : projects.filter((p) => p.category === activeCategory)
 
   return (
-    <section id="projects" className="relative px-6 py-10 md:py-16">
+    <section id="projects" className="relative px-6 py-8 md:py-12">
       {/* Subtle section glow */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.03] blur-[140px]" />

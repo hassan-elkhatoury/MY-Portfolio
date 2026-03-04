@@ -1,6 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
+import { useState, useEffect } from "react"
 import { Github, Linkedin, Mail, ArrowDown, FileText, Terminal, Database, Server } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SplineScene } from "@/components/ui/splite"
@@ -54,7 +55,38 @@ const heroDisplayCards = [
   },
 ]
 
+const typingWords = ["Distributed Systems", "Microservices", "Cloud-Native", "Clean Architecture"]
+
 export function Hero() {
+  const [wordIndex, setWordIndex] = useState(0)
+  const [charIndex, setCharIndex] = useState(0)
+  const [deleting, setDeleting] = useState(false)
+  const [text, setText] = useState("")
+
+  useEffect(() => {
+    const current = typingWords[wordIndex]
+    const speed = deleting ? 40 : 80
+
+    if (!deleting && charIndex === current.length) {
+      // Pause before deleting
+      const timeout = setTimeout(() => setDeleting(true), 1800)
+      return () => clearTimeout(timeout)
+    }
+
+    if (deleting && charIndex === 0) {
+      setDeleting(false)
+      setWordIndex((prev) => (prev + 1) % typingWords.length)
+      return
+    }
+
+    const timeout = setTimeout(() => {
+      setText(current.substring(0, deleting ? charIndex - 1 : charIndex + 1))
+      setCharIndex((prev) => prev + (deleting ? -1 : 1))
+    }, speed)
+
+    return () => clearTimeout(timeout)
+  }, [charIndex, deleting, wordIndex])
+
   return (
     <section className="relative flex min-h-[100svh] items-center justify-center overflow-hidden px-6">
       {/* Spotlight effect */}
@@ -105,7 +137,8 @@ export function Hero() {
             variants={itemVariants}
             className="mt-1 text-sm text-muted-foreground"
           >
-            Distributed Systems · Microservices · Cloud-Native
+            <span>{text}</span>
+            <span className="ml-0.5 inline-block w-[2px] h-[1em] bg-primary animate-pulse align-middle" />
           </motion.p>
 
           {/* Tagline */}
@@ -134,7 +167,7 @@ export function Hero() {
               size="lg"
               className="h-11 border-border/80 px-6 text-sm font-medium text-foreground transition-all duration-200 hover:border-primary/40 hover:bg-card/80"
             >
-              <a href="/cv.pdf" target="_blank" rel="noopener noreferrer">
+              <a href="/resume/my_resume.pdf" target="_blank" rel="noopener noreferrer">
                 <FileText className="mr-2 h-4 w-4" />
                 Resume
               </a>
@@ -145,7 +178,7 @@ export function Hero() {
           <motion.div variants={itemVariants} className="mt-10 flex items-center gap-1">
             {[
               { href: "https://github.com/hassan-elkhatoury", icon: Github, label: "GitHub" },
-              { href: "https://linkedin.com/in/hassan-elkhatoury", icon: Linkedin, label: "LinkedIn" },
+              { href: "https://www.linkedin.com/in/hasan-el-khatoury-5b9648292/", icon: Linkedin, label: "LinkedIn" },
               { href: "mailto:hassanelkhatoury@gmail.com", icon: Mail, label: "Email" },
             ].map((social) => {
               const Icon = social.icon

@@ -19,6 +19,7 @@ const navLinks = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [activeSection, setActiveSection] = useState("")
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
@@ -30,6 +31,26 @@ export function Navbar() {
     const handleScroll = () => setScrolled(window.scrollY > 20)
     window.addEventListener("scroll", handleScroll, { passive: true })
     return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  // Scroll spy — highlight active section
+  useEffect(() => {
+    const sectionIds = navLinks.map((l) => l.href.replace("#", ""))
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id)
+          }
+        }
+      },
+      { rootMargin: "-40% 0px -55% 0px" }
+    )
+    for (const id of sectionIds) {
+      const el = document.getElementById(id)
+      if (el) observer.observe(el)
+    }
+    return () => observer.disconnect()
   }, [])
 
   // Lock body scroll when mobile menu is open
@@ -69,15 +90,29 @@ export function Navbar() {
 
         {/* Desktop Nav */}
         <div className="hidden items-center gap-1 md:flex">
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="rounded-md px-3 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors duration-200 hover:text-foreground"
-            >
-              {link.label}
-            </a>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = activeSection === link.href.replace("#", "")
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                className={`relative rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors duration-200 ${
+                  isActive
+                    ? "text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {link.label}
+                {isActive && (
+                  <motion.span
+                    layoutId="activeNav"
+                    className="absolute inset-x-1 -bottom-[1px] h-[2px] rounded-full bg-primary"
+                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                  />
+                )}
+              </a>
+            )
+          })}
           <div className="ml-2 h-4 w-px bg-border/60" />
           {mounted && (
             <Button
@@ -128,16 +163,23 @@ export function Navbar() {
             className="overflow-hidden border-b border-border/50 bg-background/95 backdrop-blur-xl md:hidden"
           >
             <div className="flex flex-col gap-1 px-6 py-4">
-              {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileOpen(false)}
-                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-card/60 hover:text-foreground"
-                >
-                  {link.label}
-                </a>
-              ))}
+              {navLinks.map((link) => {
+                const isActive = activeSection === link.href.replace("#", "")
+                return (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className={`rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                      isActive
+                        ? "bg-primary/10 text-foreground"
+                        : "text-muted-foreground hover:bg-card/60 hover:text-foreground"
+                    }`}
+                  >
+                    {link.label}
+                  </a>
+                )
+              })}
             </div>
           </motion.div>
         )}

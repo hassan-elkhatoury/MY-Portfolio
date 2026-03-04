@@ -59,7 +59,7 @@ export function Education() {
   const isInView = useInView(ref, { once: true, margin: "-80px" })
 
   return (
-    <section id="education" className="relative px-6 py-10 md:py-16">
+    <section id="education" className="relative px-6 py-8 md:py-12">
       {/* Background */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute right-1/3 top-1/2 h-[350px] w-[350px] -translate-y-1/2 rounded-full bg-accent/[0.03] blur-[120px]" />

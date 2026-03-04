@@ -31,7 +31,7 @@ export function About() {
   const isInView = useInView(ref, { once: true, margin: "-80px" })
 
   return (
-    <section id="about" className="relative px-6 py-10 md:py-16">
+    <section id="about" className="relative px-6 py-8 md:py-12">
       {/* Subtle background */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute right-1/4 top-1/2 h-[400px] w-[400px] -translate-y-1/2 rounded-full bg-accent/[0.03] blur-[140px]" />

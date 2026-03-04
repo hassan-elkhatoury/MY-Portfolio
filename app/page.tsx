@@ -10,10 +10,13 @@ import { Certifications } from "@/components/certifications"
 import { Skills } from "@/components/skills"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
+import { BackToTop } from "@/components/back-to-top"
+import { Preloader } from "@/components/preloader"
 
 export default function Home() {
   return (
     <main className="relative min-h-screen overflow-x-hidden">
+      <Preloader />
       <Navbar />
       <Hero />
       <About />
@@ -24,6 +27,7 @@ export default function Home() {
       <Skills />
       <Contact />
       <Footer />
+      <BackToTop />
     </main>
   )
 }
