@@ -28,7 +28,7 @@ const projects: Project[] = [
     tech: ["Java", "JavaFX", "MySQL", "Maven", "BCrypt"],
     image: "/images/projects/interview-ai.png",
     githubUrl: "https://github.com/hassan-elkhatoury/InterviewAI",
-    reportUrl: "som",
+    reportUrl: "#project",
     featured: true,
   },
   {
