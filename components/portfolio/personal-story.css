@@ -1,0 +1,72 @@
+.personal-story { padding-top: 100px; padding-bottom: 80px; }
+.personal-story > .section-inner > .section-label { justify-content: center; }
+.personal-story-intro { text-align: center; max-width: 1000px; margin: 30px auto 0; }
+.personal-story-intro h2 { font-size: clamp(40px, 5.3vw, 76px); line-height: 1.03; letter-spacing: -.055em; font-weight: 750; color: var(--ink); margin: 0 0 30px; }
+.personal-story-intro > p { font-size: clamp(21px, 2.45vw, 32px); line-height: 1.4; letter-spacing: -.03em; max-width: 860px; margin: 0 auto; color: var(--ink); }
+.personal-story-intro > p strong { font-weight: 750; }
+.personal-story-intro > .personal-story-small { font-size: 17px; letter-spacing: -.01em; color: var(--muted-ink); margin-top: 24px; }
+.personal-story-small a { display: inline-flex; align-items: center; gap: 4px; color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
+.personal-story-profile-details { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px 35px; margin: 28px auto 0; max-width: 900px; }
+.personal-story-profile-details dt { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted-ink); margin-bottom: 6px; }
+.personal-story-profile-details dd { margin: 0; font-size: 12px; color: var(--ink); }
+.personal-story-intern-initials { display: grid; place-items: center; flex-shrink: 0; width: 48px; height: 48px; border: 1px solid #344c4840; border-radius: 50%; font-size: 12px; letter-spacing: .03em; }
+.personal-story-desk { position: relative; height: 600px; max-width: 1070px; margin: 54px auto 0; }
+.personal-story-note, .personal-story-polaroid, .personal-story-intern-note { position: absolute; cursor: grab; touch-action: pan-y; }
+.personal-story-note:active, .personal-story-polaroid:active, .personal-story-intern-note:active { cursor: grabbing; }
+.personal-story-note { width: 294px; padding: 32px 28px 28px; min-height: 315px; box-shadow: 2px 10px 19px #20274414, 0 2px 3px #20274412; color: #142337; }
+.personal-story-school { background: #f7e38c; left: 2%; top: 64px; rotate: -7deg; }
+.personal-story-java { background: #f1b8c2; right: 1%; top: 85px; rotate: 7deg; }
+.personal-story-tape { position: absolute; width: 100px; height: 29px; top: -13px; left: calc(50% - 50px); background: #e6d5b08c; backdrop-filter: blur(2px); clip-path: polygon(2% 0,99% 2%,96% 97%,0 95%); rotate: -4deg; }
+.personal-story-logo { display: block; width: 110px; height: 32px; object-fit: contain; object-position: left center; mix-blend-mode: multiply; margin-bottom: 23px; }
+.personal-story-school-logo { width: 70px; height: 55px; margin-bottom: 15px; }
+.personal-story-note-kicker { display: block; font-size: 12px; color: #34404c; margin-bottom: 8px; }
+.personal-story-note h3 { font-size: 31px; line-height: 1.07; letter-spacing: -.035em; font-weight: 750; margin: 0 0 19px; }
+.personal-story-note p { font-size: 14px; line-height: 1.5; margin: 0; }
+.personal-story-note p span { color: #34404c; }
+.personal-story-note-footer { display: block; margin-top: 20px; font-size: 11px; border-top: 1px solid #20274428; padding-top: 13px; }
+.personal-story-note-link { display: inline-flex; align-items: center; gap: 5px; margin-top: 22px; font-size: 12px; border-bottom: 1px solid currentColor; padding-bottom: 3px; }
+.personal-story-note-link:hover { opacity: .65; }
+.personal-story-note-link:focus-visible { outline: 3px solid #142337; outline-offset: 5px; }
+.personal-story-polaroid { z-index: 2; left: calc(50% - 155px); top: 15px; width: 310px; padding: 14px 14px 0; background: #fffef9; color: #142337; rotate: 3deg; box-shadow: 3px 18px 30px #2027441c, 0 1px 4px #20274412; margin: 0; }
+.personal-story-portrait { width: 100%; height: 320px; display: block; object-fit: cover; object-position: center 30%; background: #ddd8ca; filter: saturate(.8); }
+.personal-story-polaroid figcaption { display: flex; justify-content: space-between; align-items: center; padding: 19px 8px 24px; font-size: 18px; font-weight: 600; letter-spacing: -.03em; }
+.personal-story-polaroid figcaption span { font-size: 26px; }
+.personal-story-intern-note { display: flex; gap: 20px; align-items: center; left: 19%; bottom: 61px; width: 500px; padding: 22px 27px; background: #e7e8d9; color: #142337; rotate: -3deg; box-shadow: 0 7px 12px #20274412; }
+.personal-story-intern-note img { object-fit: contain; mix-blend-mode: multiply; }
+.personal-story-intern-note strong { display: block; font-size: 20px; letter-spacing: -.03em; margin-bottom: 4px; }
+.personal-story-intern-note span { display: block; font-size: 11px; }
+.personal-story-drag-hint { display: flex; align-items: center; justify-content: center; gap: 7px; position: absolute; bottom: 0; left: 0; right: 0; font-size: 12px; color: var(--muted-ink); }
+@media (max-width: 900px) {
+  .personal-story-note { width: 238px; padding: 26px 22px; }
+  .personal-story-note h3 { font-size: 28px; }
+  .personal-story-school { left: 0; top: 88px; }
+  .personal-story-java { right: 0; top: 105px; }
+  .personal-story-polaroid { width: 250px; left: calc(50% - 125px); }
+  .personal-story-portrait { height: 275px; }
+  .personal-story-intern-note { left: calc(50% - 220px); bottom: 61px; }
+}
+@media (max-width: 640px) {
+  .personal-story { padding-top: 64px; padding-bottom: 55px; }
+  .personal-story-intro h2 { font-size: 42px; }
+  .personal-story-intro > p { font-size: 23px; }
+  .personal-story-desk { height: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 25px 12px; margin-top: 40px; padding: 0 3px; }
+  .personal-story-polaroid { position: relative; left: auto; top: auto; width: 230px; grid-column: 1/-1; justify-self: center; margin-bottom: 5px; }
+  .personal-story-note { position: relative; left: auto; right: auto; top: auto; width: 100%; min-height: 282px; padding: 21px 15px; }
+  .personal-story-school { rotate: -4deg; order: 2; }
+  .personal-story-java { rotate: 4deg; order: 3; }
+  .personal-story-note h3 { font-size: 25px; }
+  .personal-story-note p { font-size: 12px; }
+  .personal-story-note-kicker { font-size: 10px; }
+  .personal-story-note-footer { font-size: 10px; }
+  .personal-story-note-link { font-size: 11px; }
+  .personal-story-logo { width: 88px; height: 25px; }
+  .personal-story-school-logo { width: 60px; height: 40px; }
+  .personal-story-intern-note { position: relative; grid-column: 1/-1; left: auto; bottom: auto; width: 100%; order: 4; padding: 20px 18px; gap: 15px; }
+  .personal-story-intern-note strong { font-size: 18px; }
+  .personal-story-intern-note span { font-size: 10px; }
+  .personal-story-drag-hint { position: relative; grid-column: 1/-1; order: 5; font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .personal-story-note, .personal-story-polaroid, .personal-story-intern-note { cursor: default; }
+  .personal-story-drag-hint { display: none; }
+}

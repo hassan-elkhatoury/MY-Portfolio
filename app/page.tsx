@@ -1,33 +1,23 @@
-"use client"
-
-import { Navbar } from "@/components/navbar"
-import { Hero } from "@/components/hero"
-import { About } from "@/components/about"
-import { Experience } from "@/components/experience"
-import { Projects } from "@/components/projects"
-import { Education } from "@/components/education"
-import { Certifications } from "@/components/certifications"
-import { Skills } from "@/components/skills"
-import { Contact } from "@/components/contact"
-import { Footer } from "@/components/footer"
-import { BackToTop } from "@/components/back-to-top"
-import { Preloader } from "@/components/preloader"
+import { FloatingNav } from "@/components/portfolio/floating-nav"
+import { HeroLandscape } from "@/components/portfolio/hero-landscape"
+import { PersonalStory } from "@/components/portfolio/personal-story"
+import { Journey } from "@/components/portfolio/journey"
+import { ProjectBox } from "@/components/portfolio/project-box"
+import { Credentials } from "@/components/portfolio/credentials"
+import { Toolkit } from "@/components/portfolio/toolkit"
+import { ContactDesk } from "@/components/portfolio/contact-desk"
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen overflow-x-hidden">
-      <Preloader />
-      <Navbar />
-      <Hero />
-      <About />
-      <Experience />
-      <Projects />
-      <Education />
-      <Certifications />
-      <Skills />
-      <Contact />
-      <Footer />
-      <BackToTop />
+    <main className="portfolio-main">
+      <FloatingNav />
+      <HeroLandscape />
+      <PersonalStory />
+      <Journey />
+      <ProjectBox />
+      <Credentials />
+      <Toolkit />
+      <ContactDesk />
     </main>
   )
 }

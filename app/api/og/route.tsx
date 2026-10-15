@@ -4,245 +4,27 @@ export const runtime = "edge"
 
 export async function GET(request: Request) {
   const { origin } = new URL(request.url)
-
   return new ImageResponse(
-    (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-          background: "linear-gradient(145deg, #0B0F19 0%, #111827 50%, #0B0F19 100%)",
-          fontFamily: "system-ui, sans-serif",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        {/* Subtle grid pattern */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage:
-              "radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px)",
-            backgroundSize: "32px 32px",
-          }}
-        />
-
-        {/* Top-left glow */}
-        <div
-          style={{
-            position: "absolute",
-            top: "-120px",
-            left: "-120px",
-            width: "400px",
-            height: "400px",
-            borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(99,102,241,0.15), transparent 70%)",
-          }}
-        />
-
-        {/* Bottom-right glow */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: "-100px",
-            right: "-100px",
-            width: "350px",
-            height: "350px",
-            borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(99,102,241,0.1), transparent 70%)",
-          }}
-        />
-
-        {/* Content container */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            gap: "48px",
-            position: "relative",
-            zIndex: 10,
-          }}
-        >
-          {/* Profile photo */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "180px",
-              height: "180px",
-              borderRadius: "50%",
-              border: "3px solid rgba(99,102,241,0.3)",
-              boxShadow: "0 0 40px rgba(99,102,241,0.15)",
-              overflow: "hidden",
-              flexShrink: 0,
-            }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`${origin}/images/profile.png`}
-              alt=""
-              width={180}
-              height={180}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-              }}
-            />
-          </div>
-
-          {/* Text content */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "12px",
-            }}
-          >
-            {/* Accent line */}
-            <div
-              style={{
-                width: "48px",
-                height: "3px",
-                borderRadius: "2px",
-                background: "linear-gradient(90deg, #6366f1, #818cf8)",
-                marginBottom: "4px",
-              }}
-            />
-
-          {/* Name */}
-          <div
-            style={{
-              fontSize: "56px",
-              fontWeight: 800,
-              color: "#f1f5f9",
-              letterSpacing: "-1.5px",
-              lineHeight: 1.1,
-            }}
-          >
-            Hasan El Khatoury
-          </div>
-
-          {/* Title */}
-          <div
-            style={{
-              fontSize: "24px",
-              fontWeight: 600,
-              color: "#818cf8",
-              letterSpacing: "0.5px",
-              marginTop: "4px",
-            }}
-          >
-            Java Backend Engineer
-          </div>
-
-          {/* Separator dots */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              marginTop: "16px",
-              marginBottom: "4px",
-            }}
-          >
-            <div
-              style={{
-                width: "4px",
-                height: "4px",
-                borderRadius: "50%",
-                background: "#475569",
-              }}
-            />
-            <div
-              style={{
-                width: "4px",
-                height: "4px",
-                borderRadius: "50%",
-                background: "#475569",
-              }}
-            />
-            <div
-              style={{
-                width: "4px",
-                height: "4px",
-                borderRadius: "50%",
-                background: "#475569",
-              }}
-            />
-          </div>
-
-          {/* Tagline pills */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              marginTop: "8px",
-            }}
-          >
-            {["Distributed Systems", "Microservices", "Cloud-Native"].map(
-              (tag) => (
-                <div
-                  key={tag}
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: 500,
-                    color: "#94a3b8",
-                    padding: "6px 16px",
-                    borderRadius: "8px",
-                    border: "1px solid rgba(148,163,184,0.15)",
-                    background: "rgba(255,255,255,0.03)",
-                  }}
-                >
-                  {tag}
-                </div>
-              )
-            )}
-          </div>
-
-          {/* Certs line */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              marginTop: "20px",
-              fontSize: "13px",
-              fontWeight: 500,
-              color: "#64748b",
-            }}
-          >
-            <span>Oracle Certified Professional</span>
-            <span style={{ color: "#475569" }}>·</span>
-            <span>OCI Foundations Associate</span>
-          </div>
-          </div>
+    <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", background: "#fffdf8", color: "#142337", padding: "65px 70px", position: "relative" }}>
+      <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 18, marginBottom: 30, color: "#687279" }}>
+          <span style={{ color: "#ef856b", fontSize: 30 }}>✳</span>
+          <span>HASSAN EL KHATOURY · MARRAKECH</span>
         </div>
-
-        {/* Bottom border accent */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: "3px",
-            background: "linear-gradient(90deg, transparent, #6366f1, #818cf8, #6366f1, transparent)",
-          }}
-        />
+        <div style={{ fontSize: 70, fontWeight: 800, letterSpacing: "-3px", lineHeight: 1.04, display: "flex", flexDirection: "column" }}>
+          <span>Building systems</span>
+          <span style={{ display: "flex", gap: 12 }}>that <span style={{ background: "#ffe18b", padding: "0 10px 6px" }}>just work.</span></span>
+        </div>
+        <div style={{ fontSize: 24, marginTop: 32 }}>Java Backend Engineer</div>
+        <div style={{ fontSize: 17, color: "#637079", marginTop: 16 }}>Spring Boot · REST APIs · PFE 2027</div>
+        <div style={{ fontSize: 15, color: "#637079", marginTop: 48 }}>Oracle Certified Professional · Java SE 11 &amp; 17</div>
       </div>
-    ),
-    {
-      width: 1200,
-      height: 630,
-    }
+      <div style={{ width: 265, marginLeft: 40, padding: "14px 14px 25px", background: "#fff", display: "flex", flexDirection: "column", border: "1px solid #e4e0d4", transform: "rotate(4deg)", boxShadow: "0 8px 20px #14233715" }}>
+        <img src={origin + "/images/hasan-portrait.png"} alt="" width={235} height={280} style={{ objectFit: "cover" }} />
+        <span style={{ fontSize: 16, textAlign: "center", marginTop: 15 }}>hey, I'm Hassan</span>
+      </div>
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 10, background: "#ffe18b" }} />
+    </div>,
+    { width: 1200, height: 630 }
   )
 }

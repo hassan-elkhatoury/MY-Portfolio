@@ -1,0 +1,92 @@
+.portfolio-toolkit { text-align: center; padding-top: 95px; padding-bottom: 100px; }
+.portfolio-toolkit .section-label { justify-content: center; }
+.portfolio-toolkit .section-heading { margin-top: 25px; }
+.portfolio-toolkit .section-copy { max-width: 540px; margin-inline: auto; }
+.portfolio-toolkit-stage { --tool-size: 82px; --compact-size: 65px; position: relative; height: 460px; width: min(100%, 780px); margin: 25px auto 20px; }
+.portfolio-toolkit-orbit { position: absolute; inset: 0; z-index: 2; }
+.portfolio-tool-token { position: absolute; width: var(--tool-size); height: var(--tool-size); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; border: 1px solid #ffffffad; border-radius: 19px; box-shadow: 0 5px 0 #171b2b15, 0 12px 22px #1a254914, inset 0 2px 3px #ffffffa1; background: #fffdf7; cursor: pointer; transition: box-shadow .2s; animation: portfolio-tool-float 6.2s ease-in-out infinite; animation-play-state: paused; }
+.portfolio-toolkit-stage.is-visible .portfolio-tool-token { animation-play-state: running; }
+.portfolio-tool-token:nth-child(2n) { animation-delay: -2.4s; animation-duration: 7.2s; }
+.portfolio-tool-token:nth-child(3n) { animation-delay: -4.1s; animation-duration: 6.8s; }
+.portfolio-toolkit-stage.is-visible .portfolio-tool-token:hover, .portfolio-toolkit-stage.is-visible .portfolio-tool-token:focus-visible { animation-play-state: paused; box-shadow: 0 6px 0 #171b2b15, 0 18px 30px #1a25491d, inset 0 2px 3px #ffffffa1; }
+.portfolio-tool-token:focus-visible { outline: 3px solid var(--ink); outline-offset: 6px; }
+.portfolio-tool-token span { font-size: 11px; font-weight: 600; color: #142337; }
+.portfolio-tool-cpp span, .portfolio-tool-linux span { color: #fff; }
+.portfolio-tool-token b { font-size: 29px; letter-spacing: -.07em; }
+.portfolio-tool-java { left: 32%; top: 3%; rotate: -8deg; color: #de5941; }
+.portfolio-tool-python { left: 2%; top: 30%; rotate: -12deg; background: #ffdb68; color: #355d8b; }
+.portfolio-tool-cpp { left: 6%; top: 58%; rotate: 7deg; background: #416daa; color: white; }
+.portfolio-tool-git { right: 2%; top: 31%; rotate: 10deg; color: #ee593d; }
+.portfolio-tool-docker { right: 28%; top: 2%; rotate: 10deg; background: #5c96cc; color: white; }
+.portfolio-tool-mongo { left: 23%; top: 70%; rotate: -8deg; background: #e9edcd; color: #32613c; }
+.portfolio-tool-sql { right: 6%; top: 59%; rotate: -7deg; background: #efd5a1; color: #755133; }
+.portfolio-tool-oci { right: 23%; top: 70%; rotate: 7deg; color: #c54538; }
+.portfolio-tool-rest { left: 15%; top: 13%; rotate: -12deg; width: var(--compact-size); height: var(--compact-size); border-radius: 15px; background: #d7d4e9; color: #57536e; }
+.portfolio-tool-rest svg { width: 24px; height: 24px; }
+.portfolio-tool-linux { right: 13%; top: 12%; rotate: 8deg; width: var(--compact-size); height: var(--compact-size); border-radius: 15px; background: #333a50; color: #f8e6ac; }
+.portfolio-tool-linux svg { width: 24px; height: 24px; }
+.portfolio-toolbox { position: absolute; width: 400px; height: 320px; left: 50%; top: 104px; transform: translateX(-50%) rotate(-4deg); filter: drop-shadow(5px 14px 10px #2e273214); pointer-events: none; }
+.portfolio-toolbox svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.portfolio-toolkit-annotation { position: absolute; bottom: 0; left: 0; right: 0; font-size: 13px; color: var(--muted-ink); }
+.portfolio-toolkit-annotation span { display: inline-block; margin-left: 8px; color: var(--ink); font-size: 22px; }
+.portfolio-toolkit-details { max-width: 1000px; margin: 42px auto 0; }
+.portfolio-toolkit-tabs { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 16px; }
+.portfolio-toolkit-tabs button { color: var(--muted-ink); background: transparent; padding: 10px 14px; border-radius: 6px; border: 1px solid transparent; cursor: pointer; font-size: 12px; transition: background .18s, color .18s; }
+.portfolio-toolkit-tabs button:hover { color: var(--ink); background: #22283b08; }
+.portfolio-toolkit-tabs button.is-selected { color: #142337; background: var(--yellow); border-color: #22283b12; }
+.portfolio-toolkit-tabs button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.portfolio-toolkit-panel { padding: 24px 0 0; min-height: 123px; }
+.portfolio-toolkit-panel[hidden] { display: none; }
+.portfolio-toolkit-group-label { color: var(--muted-ink); font-size: 11px; }
+.portfolio-toolkit-panel ul { display: flex; justify-content: center; gap: 12px 22px; flex-wrap: wrap; margin: 16px 0 0; padding: 0; list-style: none; }
+.portfolio-toolkit-panel li { font-size: 22px; font-weight: 600; letter-spacing: -.035em; }
+.portfolio-toolkit-panel li:not(:last-child)::after { content: "/"; color: #a09f93; font-weight: 400; margin-left: 22px; }
+.portfolio-toolkit-footnote { font-size: 12px; color: var(--muted-ink); margin-top: 12px; }
+@keyframes portfolio-tool-float { 0%, 100% { translate: 0 0; } 50% { translate: 0 calc(-1 * var(--float-distance, 5px)); } }
+@media (min-width: 641px) and (max-height: 820px) {
+  .portfolio-toolkit { padding-top: 55px; padding-bottom: 70px; }
+  .portfolio-toolkit .section-label { margin-bottom: 12px; }
+  .portfolio-toolkit .section-heading { margin-top: 12px; font-size: 52px; }
+  .portfolio-toolkit .section-copy { font-size: 16px; margin-top: 16px; }
+  .portfolio-toolkit-stage { --tool-size: 64px; --compact-size: 54px; --float-distance: 4px; width: min(100%, 660px); height: 360px; margin-top: 14px; }
+  .portfolio-tool-token { border-radius: 15px; }
+  .portfolio-tool-token svg { width: 26px; height: 26px; }
+  .portfolio-tool-token span { font-size: 10px; }
+  .portfolio-tool-token b { font-size: 24px; }
+  .portfolio-tool-rest svg, .portfolio-tool-linux svg { width: 21px; height: 21px; }
+  .portfolio-toolbox { width: 330px; height: 264px; top: 74px; }
+  .portfolio-toolkit-annotation { font-size: 11px; }
+  .portfolio-toolkit-details { margin-top: 25px; }
+}
+@media (max-width: 640px) {
+  .portfolio-toolkit { padding-top: 60px; padding-bottom: 64px; }
+  .portfolio-toolkit-stage { --tool-size: 54px; --compact-size: 44px; --float-distance: 3px; width: min(100%, 390px); height: 370px; margin-top: 25px; }
+  .portfolio-tool-token { border-radius: 14px; gap: 3px; }
+  .portfolio-tool-token svg { width: 25px; height: 25px; }
+  .portfolio-tool-token span { font-size: 9px; }
+  .portfolio-tool-token b { font-size: 23px; }
+  .portfolio-tool-java { left: 27%; top: 3%; }
+  .portfolio-tool-python { left: 0; top: 32%; }
+  .portfolio-tool-cpp { left: 4%; top: 59%; }
+  .portfolio-tool-mongo { left: 22%; top: 78%; }
+  .portfolio-tool-git { right: 0; top: 33%; }
+  .portfolio-tool-docker { right: 22%; top: 2%; }
+  .portfolio-tool-sql { right: 3%; top: 59%; }
+  .portfolio-tool-oci { right: 20%; top: 78%; }
+  .portfolio-tool-rest { left: 7%; top: 9%; border-radius: 12px; }
+  .portfolio-tool-linux { right: 3%; top: 10%; border-radius: 12px; }
+  .portfolio-tool-rest svg, .portfolio-tool-linux svg { width: 19px; height: 19px; }
+  .portfolio-toolbox { width: 230px; height: 184px; top: 103px; }
+  .portfolio-toolkit-annotation { font-size: 10px; }
+  .portfolio-toolkit-details { margin-top: 27px; }
+  .portfolio-toolkit-tabs { gap: 4px; }
+  .portfolio-toolkit-tabs button { padding: 8px 10px; font-size: 10px; }
+  .portfolio-toolkit-panel { min-height: 143px; }
+  .portfolio-toolkit-panel ul { gap: 9px 14px; }
+  .portfolio-toolkit-panel li { font-size: 18px; }
+  .portfolio-toolkit-panel li:not(:last-child)::after { margin-left: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-tool-token, .portfolio-toolkit-tabs button { transition: none; }
+  .portfolio-tool-token { animation: none; }
+}

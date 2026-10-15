@@ -1,65 +1,46 @@
-# Hassan El Khatoury - Personal Portfolio
+# Hassan El Khatoury — Personal Portfolio
 
-A modern, highly interactive, and fully responsive personal portfolio built to showcase software engineering projects, experience, education, and skills. Designed with a sleek dark-themed UI, subtle animations, and 3D elements.
+An interactive engineering portfolio inspired by [James Chugh's portfolio](https://www.jameschugh.com/), personalized with Hasan's actual work, education, experience, and credentials.
 
-## 🚀 Features
+## Experience
 
-- **Interactive 3D Elements:** Integrated Spline scene in the Hero section.
-- **Advanced Animations:** Smooth scroll reveals, hover effects, and transitions powered by Framer Motion.
-- **Premium UI Components:** Custom glowing effects, spotlights, and bento grid layouts.
-- **Fully Responsive:** Optimized for both desktop and mobile devices.
-- **Modern Tech Stack:** Built with Next.js App Router, React 19, and Tailwind CSS v4.
-- **Organized Sections:** Experience timeline, Project showcase featuring GitHub & Demo links, Education & Certifications, and an interactive Contact form.
+- Layered painted landscape with pointer and scroll parallax, animated clouds, and a day/night switch.
+- A miniature record player with quiet, original ambient music that starts only when clicked.
+- Clickable ENSAH, MEF, Java, and Oracle Cloud landmarks.
+- Portrait illustration generated from the original portfolio photo.
+- Draggable personal notes and a portrait polaroid.
+- Career route with eight real milestones and keyboard accessible controls.
+- Seven projects presented in a physical card box, with accessible screenshot dialogs.
+- Twelve credentials with original verification links and PDFs.
+- Interactive engineering toolbox with all five skill groups.
+- Contact keyboard, email copying, resume, social links, and a Formspree message form.
+- Responsive layouts, visible keyboard focus, and reduced motion support.
 
-## 🛠️ Tech Stack
+## Run locally
 
-- **Framework:** [Next.js](https://nextjs.org/) (App Router)
-- **Library:** [React](https://reactjs.org/)
-- **Styling:** [Tailwind CSS 4](https://tailwindcss.com/)
-- **UI Components:** [shadcn/ui](https://ui.shadcn.com/)
-- **Animations:** [Framer Motion](https://www.framer.com/motion/) & Motion React
-- **3D Graphics:** [Spline](https://spline.design/)
-- **Icons:** [Lucide React](https://lucide.dev/)
+Use Node.js 22 or newer and pnpm.
 
-## 📦 Getting Started
-
-### Prerequisites
-
-You will need [Node.js](https://nodejs.org/) installed on your machine. This project uses `pnpm` as the package manager.
-
-```bash
-# Install pnpm if you don't have it
-npm install -g pnpm
-```
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/hassan-elkhatoury/portfolio.git
-cd portfolio
-```
-
-2. Install dependencies:
-```bash
+```sh
 pnpm install
+pnpm dev
 ```
 
-3. Run the development server:
-```bash
-pnpm run dev
+Open http://localhost:3000. Production checks:
+
+```sh
+pnpm exec tsc --noEmit --incremental false
+pnpm build
+pnpm start
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The development and production scripts use Next.js's Webpack bundler to avoid a Tailwind/Turbopack resolution failure in this Windows checkout. The framework remains Next.js 16, React 19, and Tailwind 4.
 
-## 📂 Project Structure
+## Edit content
 
-- `app/`: Next.js App Router pages and global layouts.
-- `components/`: Core sections like Hero, About, Projects, Experience, and Contact.
-- `components/ui/`: Reusable UI elements (buttons, glowing effects, splash effects).
-- `public/`: Static assets including images, logos, resumes, and certification PDFs.
-- `styles/`: Global stylesheets and CSS variables.
+The source of truth is `lib/portfolio-data.ts`. Edit profile, projects, experience, education, certifications, or skill groups there. Active sections are in `components/portfolio/`, and shared design tokens are in `app/globals.css`.
 
-## 📝 License
+The contact form uses the existing Formspree form ID. Submission happens only when a visitor sends the form. Client validation, loading, success, and failure states are included.
+
+Design and asset notes, including the illustration prompt, are in `DESIGN.md`. Public project images, credentials, and resume remain in `public/`.
 
 Designed and developed by [Hassan El Khatoury](https://github.com/hassan-elkhatoury).
