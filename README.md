@@ -5,14 +5,16 @@ An interactive engineering portfolio inspired by [James Chugh's portfolio](https
 ## Experience
 
 - Layered painted landscape with pointer and scroll parallax, animated clouds, and a day/night switch.
-- A miniature record player with quiet, original ambient music that starts only when clicked.
 - Clickable ENSAH, MEF, Java, and Oracle Cloud landmarks.
 - Portrait illustration generated from the original portfolio photo.
 - Draggable personal notes and a portrait polaroid.
 - Career route with eight real milestones and keyboard accessible controls.
 - Seven projects presented in a physical card box, with accessible screenshot dialogs.
+- Three shareable case studies at `/work/mef-fleet-management`, `/work/interview-ai`, and `/work/modeya`, with documented scope, implementation decisions, and architecture diagrams.
+- Selected work immediately after the hero, including a genuine capture of MODEYA's public storefront.
+- PFE 2027 availability and a direct work link in the hero, plus a persisted pause/resume control that respects system reduced motion.
 - Twelve credentials with original verification links and PDFs.
-- Interactive engineering toolbox with all five skill groups.
+- Interactive engineering toolbox with seven skill groups.
 - Contact keyboard, email copying, resume, social links, and a Formspree message form.
 - Responsive layouts, visible keyboard focus, and reduced motion support.
 

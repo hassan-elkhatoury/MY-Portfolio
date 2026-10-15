@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Bricolage_Grotesque, Caveat } from 'next/font/google'
 import { ThemeProvider } from '@/components/theme-provider'
+import { MotionPreferencesProvider } from '@/components/portfolio/motion-preferences'
 import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from 'sonner'
 import './globals.css'
@@ -71,6 +72,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={`${bricolage.variable} ${caveat.variable}`}>
       <head>
         <script
+          id="portfolio-motion-preferences"
+          dangerouslySetInnerHTML={{ __html: `(function(){var paused=false;try{paused=localStorage.getItem('portfolio-motion-paused-v1')==='true'}catch(e){}document.documentElement.dataset.motionPaused=String(paused||window.matchMedia('(prefers-reduced-motion: reduce)').matches)})()` }}
+        />
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
@@ -109,8 +114,10 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          {children}
-          <Toaster theme="dark" position="bottom-right" />
+          <MotionPreferencesProvider>
+            {children}
+            <Toaster theme="dark" position="bottom-right" />
+          </MotionPreferencesProvider>
         </ThemeProvider>
         <Analytics />
       </body>

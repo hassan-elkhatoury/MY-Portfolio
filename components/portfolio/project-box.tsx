@@ -2,10 +2,12 @@
 
 import { useId, useRef, useState, type CSSProperties } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import * as Dialog from "@radix-ui/react-dialog"
 import { motion, useReducedMotion } from "framer-motion"
-import { ArrowDown, ArrowUpRight, X, Github, FileText, ExternalLink } from "lucide-react"
+import { ArrowDown, ArrowUpRight, X, Github, FileText, ExternalLink, PackageOpen } from "lucide-react"
 import { projects, type Project } from "@/lib/portfolio-data"
+import { projectCaseStudyPath } from "@/lib/project-case-links"
 import "./project-box.css"
 
 const covers = [
@@ -16,6 +18,7 @@ const covers = [
   { name: "MODEYA", color: "#bd6785", ink: "#fffdf7", motif: "shop", line: "A storefront, thoughtfully built." },
   { name: "E-commerce", color: "#aa8054", ink: "#fffdf7", motif: "shop", line: "From browse to checkout." },
   { name: "E-service", color: "#429688", ink: "#fffdf7", motif: "assignments", line: "Making room for everyone." },
+  { name: "Arabela", color: "#8e526d", ink: "#fffdf7", motif: "shop", line: "Modest fashion, across languages." },
 ]
 
 function CoverArt({ motif }: { motif: string }) {
@@ -77,7 +80,7 @@ export function ProjectBox() {
     <section id="projects" className="portfolio-section work-section" aria-labelledby="work-heading">
       <div className="section-inner">
         <div className="work-intro">
-          <p className="section-label"><span aria-hidden="true">✳</span> THE THINGS I BUILD</p>
+          <p className="section-label"><PackageOpen size={18} aria-hidden="true" /> THE THINGS I BUILD</p>
           <h2 id="work-heading" className="section-heading">A box of <span className="highlight">good work.</span></h2>
           <p className="section-copy">Pick a card from the box.</p>
         </div>
@@ -149,7 +152,7 @@ export function ProjectBox() {
           <span className="work-shelf-hint"><ArrowDown size={14} aria-hidden="true" /> Tap a card to take a closer look</span>
         </motion.div>
 
-        <div className="work-index" aria-label="All projects" style={{ "--project-count": projects.length } as CSSProperties}>
+        <div className="work-index" aria-label="All projects" style={{ "--project-count": Math.min(4, projects.length) } as CSSProperties}>
           {projects.map((project, index) => (
             <button
               type="button"
@@ -193,7 +196,8 @@ export function ProjectBox() {
                 <span className="work-dialog-detail-label">BUILT WITH</span>
                 <ul className="work-dialog-tech">{selected.tech.map((tech) => <li key={tech}>{tech}</li>)}</ul>
               </div>
-              {(selected.githubUrl || selected.demoUrl || selected.reportUrl) && <div className="work-dialog-links">
+              {(projectCaseStudyPath(selected.title) || selected.githubUrl || selected.demoUrl || selected.reportUrl) && <div className="work-dialog-links">
+                {projectCaseStudyPath(selected.title) && <Link href={projectCaseStudyPath(selected.title)!} className="work-project-link"><FileText size={17} aria-hidden="true" /> Read the case study <ArrowUpRight size={17} aria-hidden="true" /></Link>}
                 {selected.githubUrl && <a href={selected.githubUrl} target="_blank" rel="noopener noreferrer" className="work-project-link"><Github size={17} /> Explore the code <ArrowUpRight size={17} /></a>}
                 {selected.demoUrl && <a href={selected.demoUrl} target="_blank" rel="noopener noreferrer" className="work-project-link work-project-link-secondary"><ExternalLink size={17} /> Live project <ArrowUpRight size={17} /></a>}
                 {selected.reportUrl && <a href={selected.reportUrl} target="_blank" rel="noopener noreferrer" className="work-project-link work-project-link-secondary"><FileText size={17} /> Read the report <ArrowUpRight size={17} /></a>}

@@ -2,9 +2,10 @@
 
 import { useId, useRef, useState } from "react"
 import { motion, useInView, useReducedMotion } from "framer-motion"
-import { Coffee, GitBranch, Database, Container, Cloud, Braces, Network, Terminal } from "lucide-react"
+import { Coffee, GitBranch, Database, Container, Cloud, Braces, Network, Terminal, Wrench } from "lucide-react"
 import { skillGroups } from "@/lib/portfolio-data"
 import "./toolkit.css"
+import { useMotionPreferences } from "./motion-preferences"
 
 const tools = [
   { name: "Java", group: 0, Icon: Coffee, className: "java" },
@@ -21,7 +22,9 @@ const tools = [
 
 export function Toolkit() {
   const [selected, setSelected] = useState(0)
-  const reduceMotion = useReducedMotion()
+  const { paused } = useMotionPreferences()
+  const systemReducedMotion = useReducedMotion()
+  const reduceMotion = paused || systemReducedMotion
   const id = useId()
   const boxId = `${id.replace(/:/g, "")}-toolbox`
   const stage = useRef<HTMLDivElement>(null)
@@ -31,7 +34,7 @@ export function Toolkit() {
   return (
     <section id="skills" className="portfolio-section portfolio-toolkit" aria-labelledby="toolkit-heading">
       <div className="section-inner">
-        <div className="section-label"><span aria-hidden="true">✳</span> MY EVERYDAY ESSENTIALS</div>
+        <div className="section-label"><Wrench size={18} aria-hidden="true" /> MY EVERYDAY ESSENTIALS</div>
         <h2 id="toolkit-heading" className="section-heading">A peek inside<br />my <span className="highlight">toolbox.</span></h2>
         <p className="section-copy">The languages, tools, and ideas I reach for to turn a good problem into a working solution.</p>
 

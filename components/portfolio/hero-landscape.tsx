@@ -1,10 +1,10 @@
 "use client"
 
-import { useRef } from "react"
-import { motion, useMotionValue, useSpring, useScroll, useTransform, useReducedMotion } from "framer-motion"
+import { useEffect, useRef } from "react"
+import { motion, useMotionValue, useSpring, useScroll, useTransform } from "framer-motion"
 import { ArrowDown, ArrowUpRight } from "lucide-react"
-import { AmbientPlayer } from "./ambient-player"
 import { SceneDepth } from "./scene-depth"
+import { useMotionPreferences } from "./motion-preferences"
 import { profile } from "@/lib/portfolio-data"
 import "./hero-landscape.css"
 
@@ -21,8 +21,9 @@ const layers = [
   { file: "fgB.webp", distance: 54, left: "23.869%", top: "72.775%", width: "31.31%", height: "27.225%" },
 ]
 
-function Place({ href, className, icon, name, year }: { href: string; className: string; icon?: string; name: string; year: string }) {
-  return <a href={href} className={`valley-place ${className}`} aria-label={`${name}, ${year}. Explore ${name}`}>
+function Place({ href, className, icon, name, year, journeyStop }: { href: string; className: string; icon?: string; name: string; year: string; journeyStop?: string }) {
+  return <a href={href} className={`valley-place ${className}`} aria-label={`${name}, ${year}. Explore ${name}`}
+    onClick={journeyStop ? () => window.dispatchEvent(new CustomEvent("portfolio:journey-select", { detail: journeyStop })) : undefined}>
     <span className="valley-place-chip">{icon ? <img src={icon} alt="" width="26" height="26" /> : <span className="valley-place-initials" aria-hidden="true">{name.slice(0, 3)}</span>}<strong>{name}</strong><small>{year}</small></span>
     <span className="valley-place-stem" aria-hidden="true" /><span className="valley-place-dot" aria-hidden="true" />
   </a>
@@ -30,7 +31,7 @@ function Place({ href, className, icon, name, year }: { href: string; className:
 
 export function HeroLandscape() {
   const root = useRef<HTMLElement>(null)
-  const reduceMotion = useReducedMotion()
+  const { paused: reduceMotion } = useMotionPreferences()
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
   const x = useSpring(mouseX, { stiffness: 65, damping: 22, mass: .7 })
@@ -41,9 +42,16 @@ export function HeroLandscape() {
   const { scrollYProgress } = useScroll({ target: root, offset: ["start start", "end start"] })
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.13])
   const copyY = useTransform(scrollYProgress, [0, 1], [0, -90])
+  useEffect(() => {
+    if (!reduceMotion) return
+    mouseX.set(0)
+    mouseY.set(0)
+    x.jump(0)
+    y.jump(0)
+  }, [reduceMotion, mouseX, mouseY, x, y])
   return <section ref={root} id="home" className="valley-hero" aria-label={`Welcome to ${profile.name.split(" ")[0]}'s world`}
     onPointerMove={event => { if (reduceMotion || event.pointerType !== "mouse") return; const bounds = event.currentTarget.getBoundingClientRect(); if (bounds.width <= 700) { mouseX.set(0); mouseY.set(0); return } mouseX.set(Math.max(-1, Math.min(1, 1 - (event.clientX - bounds.left) / bounds.width * 2))); mouseY.set(Math.max(-1, Math.min(1, 1 - (event.clientY - bounds.top) / bounds.height * 2))) }}
-    onPointerLeave={() => { mouseX.set(0); mouseY.set(0) }}>
+    onPointerLeave={() => { if (!reduceMotion) { mouseX.set(0); mouseY.set(0) } }}>
     <motion.div className="valley-camera" style={reduceMotion ? {} : { scale, rotateX, rotateY }}>
       <div className="valley-scene" aria-hidden="true">
         <SceneDepth {...depthProps} distance={4} name="clean-valley" className="valley-terrain"><img className="valley-base" src={`${scenery}landscape-clean.webp`} alt="" fetchPriority="high" /></SceneDepth>
@@ -54,22 +62,31 @@ export function HeroLandscape() {
       </div>
       <div className="valley-landmarks">
         <SceneDepth {...depthProps} distance={26} name="college-label"><Place className="valley-college-pin" href="#journey" icon="/images/logos/ensah.png" name="ENSAH" year="2022" /></SceneDepth>
-        <SceneDepth {...depthProps} distance={30} name="bistro-label"><Place className="valley-work-pin" href="#journey" name="MEF" year="2026" /></SceneDepth>
+        <SceneDepth {...depthProps} distance={30} name="bistro-label"><Place className="valley-work-pin" href="#journey-detail" journeyStop="MEF internship" name="MEF" year="2026" /></SceneDepth>
         <SceneDepth {...depthProps} distance={24} name="tower-label"><Place className="valley-java-pin" href="#certifications" icon="/images/logos/oracle.png" name="Java OCP" year="2026" /></SceneDepth>
         <SceneDepth {...depthProps} distance={18} name="hotel-label"><Place className="valley-cloud-pin" href="#certifications" icon="/images/logos/oracle.png" name="Oracle Cloud" year="2025" /></SceneDepth>
-        <SceneDepth {...depthProps} distance={35} name="record-player"><AmbientPlayer /></SceneDepth>
-        <SceneDepth {...depthProps} distance={52} name="hasan"><a className="valley-person" href="#about" aria-label={`Meet ${profile.name}`}><span className="valley-person-label"><img src="/images/hasan-portrait.png" width="24" height="24" alt="" /> That&apos;s me <ArrowUpRight size={12} /></span><img className="valley-person-figure" src="/images/hasan-illustration.webp" alt={`Painted illustration of ${profile.name.split(" ")[0]} waving hello`} width="600" height="900" /></a></SceneDepth>
+        <SceneDepth {...depthProps} distance={52} name="hasan"><a className="valley-person" href="#about" aria-label={`Meet ${profile.name}`}><span className="valley-person-label"><img src="/images/hassan-profile-photo.jpg" width="24" height="24" alt="" /> That&apos;s me <ArrowUpRight size={12} /></span><img className="valley-person-figure" src="/images/hasan-illustration.webp" alt={`Painted illustration of ${profile.name.split(" ")[0]} waving hello`} width="600" height="900" /></a></SceneDepth>
       </div>
     </motion.div>
     <div className="valley-shade" aria-hidden="true" />
     <motion.div className="valley-copy" style={reduceMotion ? {} : { y: copyY }}>
       <motion.p className="valley-greeting" initial={{ y: reduceMotion ? 0 : 14 }} animate={{ y: 0 }} transition={{ duration: .7 }}><span className="valley-hand" aria-hidden="true">✋</span> hey, I&apos;m {profile.name.split(" ")[0]}</motion.p>
       <motion.h1 initial={{ y: reduceMotion ? 0 : 25 }} animate={{ y: 0 }} transition={{ duration: .8, delay: .08 }}>Building systems<br />that <span className="valley-marker">just work.<svg viewBox="0 0 400 22" preserveAspectRatio="none" aria-hidden="true"><path d="M5 16C95 2 149 20 211 10S324 17 395 6" /></svg></span></motion.h1>
-      <motion.p className="valley-description" initial={{ y: reduceMotion ? 0 : 20 }} animate={{ y: 0 }} transition={{ duration: .8, delay: .16 }}>Java &amp; Spring Boot. Oracle-certified.<br className="valley-mobile-break" /> Building reliable systems.</motion.p>
+      <motion.p className="valley-description" initial={{ y: reduceMotion ? 0 : 20 }} animate={{ y: 0 }} transition={{ duration: .8, delay: .16 }}>Computer engineering student.<br className="valley-mobile-break" /> Java &amp; Spring Boot backends.</motion.p>
+      <div className="valley-actions">
+        <a className="valley-primary-action" href="#selected-work">View my work <ArrowDown size={16} aria-hidden="true" /></a>
+        <span className="valley-availability" title={`${profile.availability} · ${profile.pfeTarget}`}><span aria-hidden="true" />Seeking PFE {profile.graduationYear}</span>
+      </div>
     </motion.div>
-    <div className="valley-banner" aria-hidden="true"><span>Welcome to my little world</span><svg viewBox="0 0 60 30"><path d="m3 15 22-3 8-10 6 1-2 9 18 1c7 1 7 7-1 8l-17-1 2 8-6-1-8-8-21-2Z" fill="#efeee7" /><path d="m20 12 3 7m20-5 5 1" stroke="#d96b50" strokeWidth="3" /></svg></div>
+    <div className="valley-banner" aria-hidden="true">
+      <div className="valley-flight">
+        <span className="valley-banner-cloth">Welcome to my little world</span>
+        <span className="valley-tow-line" />
+        <svg className="valley-aircraft" viewBox="0 0 64 32"><path d="m3 15 22-3 8-10 6 1-2 9 18 1c7 1 7 7-1 8l-17-1 2 8-6-1-8-8-21-2Z" fill="#efeee7" /><path d="m20 12 3 7m20-5 5 1" stroke="#d96b50" strokeWidth="3" /><ellipse className="valley-propeller" cx="60" cy="16" rx="1.1" ry="7" fill="#f5f2e8" /></svg>
+      </div>
+    </div>
     <div className="valley-click-note" aria-hidden="true">click a place <svg viewBox="0 0 70 35"><path d="M2 20C20-1 42 6 58 22m-12-1 13 3-1-13" /></svg></div>
-    <a className="valley-explore" href="#about"><span className="valley-scroll-mouse" aria-hidden="true" /> scroll to explore <ArrowDown size={14} /></a>
+    <a className="valley-explore" href="#journey"><span className="valley-scroll-mouse" aria-hidden="true" /> scroll to explore <ArrowDown size={14} /></a>
     <div className="valley-tear" aria-hidden="true" />
   </section>
 }

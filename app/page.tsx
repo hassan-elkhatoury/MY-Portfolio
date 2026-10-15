@@ -6,15 +6,17 @@ import { ProjectBox } from "@/components/portfolio/project-box"
 import { Credentials } from "@/components/portfolio/credentials"
 import { Toolkit } from "@/components/portfolio/toolkit"
 import { ContactDesk } from "@/components/portfolio/contact-desk"
+import { SelectedWork } from "@/components/portfolio/selected-work"
 
 export default function Home() {
   return (
     <main className="portfolio-main">
       <FloatingNav />
       <HeroLandscape />
-      <PersonalStory />
       <Journey />
+      <SelectedWork />
       <ProjectBox />
+      <PersonalStory />
       <Credentials />
       <Toolkit />
       <ContactDesk />

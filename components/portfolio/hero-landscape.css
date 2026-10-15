@@ -22,7 +22,11 @@
 @media (prefers-reduced-motion: reduce) { .valley-depth { transform: none !important; } }
 @media (max-width: 700px) { .valley-landmarks { inset: 0; } .valley-depth, .valley-camera { transform: none !important; } }
 .valley-shade { position: absolute; inset: 0; background: linear-gradient(110deg, #0c283938 0%, transparent 65%), linear-gradient(0deg, #17302026, transparent 55%); pointer-events: none; }
-.valley-copy { position: absolute; z-index: 3; left: 5%; top: 13%; max-width: 850px; }
+.valley-copy { position: absolute; z-index: 3; left: 5%; top: 13%; max-width: 850px; pointer-events: none; }
+.valley-copy a, .valley-greeting, .valley-copy h1, .valley-description, .valley-availability { pointer-events: auto; }
+.valley-banner, .valley-click-note { pointer-events: none; }
+.valley-place { cursor: pointer; }
+.valley-place:focus-visible { outline: 3px solid #fff3cd; outline-offset: 6px; border-radius: 24px; }
 .valley-greeting { margin: 0 0 22px; display: flex; align-items: center; gap: 17px; font-size: clamp(20px, 1.8vw, 27px); font-weight: 550; }
 .valley-hand { display: inline-block; font-size: 27px; transform-origin: 65% 80%; animation: valley-wave 2s ease-in-out 1s 2; }
 .valley-copy h1 { margin: 0; font-size: clamp(55px, 5.5vw, 88px); font-weight: 800; letter-spacing: -.063em; line-height: .98; text-wrap: balance; text-shadow: 0 2px 14px #163b3810; }
@@ -32,9 +36,12 @@
 .valley-marker path { stroke: #f58b6b; stroke-width: 6; stroke-linecap: round; fill: none; stroke-dasharray: 410; animation: valley-marker-draw 1.2s ease .5s backwards; }
 .valley-description { font-size: clamp(17px, 1.5vw, 22px); line-height: 1.45; max-width: 660px; margin: 26px 0 0; font-weight: 450; text-shadow: 0 1px 10px #1237274d; }
 .valley-mobile-break { display: none; }
-.valley-banner { position: absolute; z-index: 2; top: 7%; left: 45%; display: flex; align-items: center; gap: 13px; transform: rotate(-3deg); animation: valley-plane 50s ease-in-out infinite alternate; }
-.valley-banner span { padding: 6px 22px; background: #f6ead2; border-block: 2px solid #ce6651; color: #2a3540; font-family: var(--font-caveat), cursive; font-size: 17px; font-weight: 700; letter-spacing: .05em; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 5% 50%); }
-.valley-banner svg { width: 65px; filter: drop-shadow(0 3px 4px #14233730); }
+.valley-banner { --flight-origin: 45vw; position: absolute; z-index: 2; top: 7%; left: var(--flight-origin); width: max-content; animation: valley-plane-cruise 108s linear -54s infinite; }
+.valley-flight { display: flex; align-items: center; width: max-content; transform-origin: 90% 50%; animation: valley-plane-lift 9.6s ease-in-out -2s infinite; }
+.valley-banner-cloth { display: block; padding: 6px 22px; background: #f6ead2; border-block: 2px solid #ce6651; color: #2a3540; font-family: var(--font-caveat), cursive; font-size: 17px; font-weight: 700; letter-spacing: .05em; white-space: nowrap; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 5% 50%); transform-origin: 100% 50%; animation: valley-banner-sway 6.8s ease-in-out -1.6s infinite; }
+.valley-tow-line { display: block; width: 25px; height: 4px; flex-shrink: 0; border-bottom: 1px solid #f6ead2c9; border-radius: 0 0 50% 50%; }
+.valley-aircraft { width: 65px; flex-shrink: 0; overflow: visible; filter: drop-shadow(0 3px 4px #14233730); }
+.valley-propeller { opacity: .48; filter: blur(.6px); transform-box: fill-box; transform-origin: center; animation: valley-propeller-spin .24s linear infinite; }
 .valley-place { position: absolute; z-index: 5; display: flex; flex-direction: column; align-items: center; transform: translateX(-50%); text-decoration: none; }
 .valley-place-chip { display: flex; align-items: center; gap: 7px; padding: 5px 10px 5px 5px; border: 1px solid #ffffff50; border-radius: 30px; background: #1c393358; backdrop-filter: blur(12px); box-shadow: 0 3px 10px #0d1b1930; font-size: 13px; white-space: nowrap; transition: transform .25s, background .25s; }
 .valley-place-chip img { width: 27px; height: 27px; padding: 3px; border-radius: 50%; object-fit: contain; background: #fff; }
@@ -43,7 +50,7 @@
 .valley-place-stem { width: 1px; height: 13px; background: #fff8; }
 .valley-place-dot { width: 13px; height: 13px; background: #ef856b; border: 3px solid #fff; border-radius: 50%; box-shadow: 0 0 0 6px #ef856b35; }
 .valley-place:hover .valley-place-chip { transform: translateY(-5px); background: #152c318a; }
-.valley-college-pin { top: 51%; left: 14%; }
+.valley-college-pin { top: 63%; left: 14%; }
 .valley-work-pin { top: 54%; left: 45%; }
 .valley-java-pin { top: 28%; left: 69%; }
 .valley-cloud-pin { top: 13%; left: 88%; }
@@ -61,11 +68,51 @@
 .valley-scroll-mouse::before { content: ''; position: absolute; left: 6px; top: 5px; height: 6px; width: 2px; background: #fff; animation: valley-scroll 1.7s ease infinite; }
 .valley-tear { position: absolute; z-index: 6; bottom: -1px; left: -1%; width: 102%; height: 23px; background: var(--page); clip-path: polygon(0 40%, 1% 50%, 2% 28%, 3% 48%, 4% 37%, 5% 58%, 6% 45%, 8% 55%, 9% 34%, 10% 60%, 12% 45%, 15% 70%, 18% 45%, 22% 69%, 25% 43%, 30% 72%, 35% 50%, 40% 76%, 45% 44%, 50% 75%, 55% 63%, 60% 78%, 65% 49%, 70% 74%, 75% 57%, 80% 76%, 85% 60%, 90% 77%, 95% 48%, 98% 68%, 100% 51%, 100% 100%, 0 100%); }
 @keyframes valley-cloud-drift { to { transform: translateX(65px); } }
-@keyframes valley-plane { 0% { transform: translateX(-30px) rotate(-3deg); } 100% { transform: translateX(80px) rotate(2deg); } }
+/* One forward pass; the loop resets only after the entire plane and banner leave the sky. */
+@keyframes valley-plane-cruise {
+  from { transform: translateX(calc(0px - var(--flight-origin) - 100% - 24px)); }
+  to { transform: translateX(calc(100vw - var(--flight-origin) + 24px)); }
+}
+@keyframes valley-plane-lift {
+  0%, 100% { transform: translateY(0) rotate(-.5deg); }
+  28% { transform: translateY(-5px) rotate(.4deg); }
+  66% { transform: translateY(3px) rotate(-.8deg); }
+}
+@keyframes valley-banner-sway {
+  0%, 100% { transform: rotate(-2deg) skewY(.3deg); }
+  50% { transform: rotate(.6deg) skewY(-.4deg); }
+}
+@keyframes valley-propeller-spin { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(.3); } }
+@media (prefers-reduced-motion: reduce) {
+  .valley-banner, .valley-flight, .valley-banner-cloth, .valley-propeller { animation: none !important; }
+}
 @keyframes valley-wave { 0%, 100% { transform: rotate(0); } 20%, 60% { transform: rotate(20deg); } 40%, 80% { transform: rotate(-10deg); } }
 @keyframes valley-marker-draw { from { stroke-dashoffset: 410; } to { stroke-dashoffset: 0; } }
 @keyframes valley-scroll { to { transform: translateY(7px); opacity: 0; } }
 @media (min-width: 1800px) { .valley-copy { left: 8%; } }
-@media (max-width: 1000px) { .valley-copy { top: 16%; } .valley-copy h1 { font-size: clamp(52px, 6.5vw, 72px); } .valley-banner { left: 43%; top: 10%; } .valley-cloud-pin { left: 88%; top: 19%; } .valley-person { width: 140px; right: 3%; height: 31%; } .valley-description { max-width: 500px; } }
-@media (max-width: 700px) { .valley-hero { height: 100svh; min-height: 640px; max-height: 920px; } .valley-camera { inset: 0; } .valley-scene { width: 980px; height: 100%; left: 50%; margin-left: -565px; } .valley-copy { top: 18%; left: 24px; right: 22px; } .valley-greeting { font-size: 20px; gap: 11px; margin-bottom: 19px; } .valley-hand { font-size: 22px; } .valley-copy h1 { font-size: clamp(44px, 9.7vw, 65px); letter-spacing: -.057em; } .valley-description { font-size: 16px; max-width: 410px; line-height: 1.4; margin-top: 21px; } .valley-mobile-break { display: block; } .valley-banner { top: 11%; left: 22%; } .valley-banner span { font-size: 14px; padding-inline: 17px; } .valley-banner svg { width: 40px; } .valley-cloud-pin { display: none; } .valley-college-pin { left: 16%; top: 48%; } .valley-work-pin { left: 46%; top: 67%; } .valley-java-pin { left: 79%; top: 47%; } .valley-place-chip { gap: 5px; font-size: 11px; } .valley-place-chip img { width: 22px; height: 22px; } .valley-place-chip small { display: none; } .valley-person { bottom: 16%; right: 0%; height: 25%; width: 120px; } .valley-person-label { font-size: 10px; } .valley-person-label img { width: 20px; height: 20px; } .valley-explore { bottom: 13%; padding: 8px 11px; font-size: 11px; } .valley-click-note { left: 20%; top: 72%; font-size: 17px; transform: rotate(-9deg); } .valley-click-note svg { width: 48px; } .valley-marker svg { height: 16px; } }
+@media (max-width: 1000px) { .valley-copy { top: 16%; } .valley-copy h1 { font-size: clamp(52px, 6.5vw, 72px); } .valley-banner { --flight-origin: 43vw; top: 10%; } .valley-cloud-pin { left: 88%; top: 19%; } .valley-person { width: 140px; right: 3%; height: 31%; } .valley-description { max-width: 500px; } }
+@media (max-width: 700px) { .valley-hero { height: 100svh; min-height: 640px; max-height: 920px; } .valley-camera { inset: 0; } .valley-scene { width: 980px; height: 100%; left: 50%; margin-left: -565px; } .valley-copy { top: 18%; left: 24px; right: 22px; } .valley-greeting { font-size: 20px; gap: 11px; margin-bottom: 19px; } .valley-hand { font-size: 22px; } .valley-copy h1 { font-size: clamp(44px, 9.7vw, 65px); letter-spacing: -.057em; } .valley-description { font-size: 16px; max-width: 410px; line-height: 1.4; margin-top: 21px; } .valley-mobile-break { display: block; } .valley-banner { --flight-origin: 22vw; top: 11%; } .valley-banner-cloth { font-size: 14px; padding-inline: 17px; } .valley-banner svg { width: 40px; } .valley-cloud-pin { display: none; } .valley-college-pin { left: 16%; top: 48%; } .valley-work-pin { left: 46%; top: 67%; } .valley-java-pin { left: 79%; top: 47%; } .valley-place-chip { gap: 5px; font-size: 11px; } .valley-place-chip img { width: 22px; height: 22px; } .valley-place-chip small { display: none; } .valley-person { bottom: 16%; right: 0%; height: 25%; width: 120px; } .valley-person-label { font-size: 10px; } .valley-person-label img { width: 20px; height: 20px; } .valley-explore { bottom: 13%; padding: 8px 11px; font-size: 11px; } .valley-click-note { left: 20%; top: 72%; font-size: 17px; transform: rotate(-9deg); } .valley-click-note svg { width: 48px; } .valley-marker svg { height: 16px; } }
 .valley-place-initials { display: grid; place-items: center; width: 26px; height: 26px; flex-shrink: 0; border-radius: 50%; background: #fff9ed; color: #385e5c; font-size: 8px; font-weight: 750; }
+.valley-hero { min-height: 680px; }
+.valley-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 13px; margin-top: 22px; }
+.valley-primary-action { display: inline-flex; align-items: center; justify-content: center; gap: 13px; min-height: 44px; padding: 12px 17px; border: 1px solid #ffffffb3; border-radius: 28px; background: #fff3cd; color: #142337; font-size: 13px; font-weight: 750; text-decoration: none; box-shadow: 0 4px 14px #15362624; transition: background .2s, transform .2s; }
+.valley-primary-action:hover { background: #fffdf5; transform: translateY(-2px); }
+.valley-primary-action:focus-visible { outline: 3px solid #fff; outline-offset: 5px; }
+.valley-availability { display: inline-flex; align-items: center; gap: 7px; min-height: 34px; padding: 8px 11px; background: #173b36b3; border: 1px solid #ffffff35; border-radius: 24px; color: #fff9e9; font-size: 11px; font-weight: 650; white-space: nowrap; backdrop-filter: blur(9px); }
+.valley-availability > span { width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: #ffe18b; }
+html[data-motion-paused="true"] .valley-camera,
+html[data-motion-paused="true"] .valley-depth,
+html[data-motion-paused="true"] .valley-copy { transform: none !important; will-change: auto; }
+@media (max-width: 700px) {
+  .valley-hero { min-height: 720px; }
+  .valley-copy { top: 14%; }
+  .valley-banner { top: 9%; }
+  .valley-greeting { margin-bottom: 16px; }
+  .valley-description { margin-top: 17px; }
+  .valley-actions { gap: 10px; margin-top: 18px; }
+  .valley-primary-action { padding: 11px 13px; font-size: 12px; gap: 10px; }
+  .valley-availability { font-size: 10px; gap: 6px; padding-inline: 9px; }
+  .valley-college-pin { top: 54%; }
+  .valley-java-pin { top: 53%; }
+  .valley-work-pin { top: 60%; }
+}

@@ -1,9 +1,9 @@
 "use client"
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
-import { ArrowLeft, ArrowRight, Building2, GraduationCap, MapPin, Star } from "lucide-react"
+import { ArrowLeft, ArrowRight, Building2, GraduationCap, MapPin, Compass } from "lucide-react"
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { certifications, education, experiences } from "@/lib/portfolio-data"
 import "./journey.css"
 
@@ -120,12 +120,21 @@ export function Journey() {
   const [active, setActive] = useState(() => stops.findIndex(stop => stop.label === "MEF internship"))
   const reducedMotion = useReducedMotion()
   const stop = stops[active]
+  useEffect(() => {
+    const selectStop = (event: Event) => {
+      if (!(event instanceof CustomEvent) || typeof event.detail !== "string") return
+      const index = stops.findIndex(item => item.label === event.detail)
+      if (index >= 0) setActive(index)
+    }
+    window.addEventListener("portfolio:journey-select", selectStop)
+    return () => window.removeEventListener("portfolio:journey-select", selectStop)
+  }, [])
 
   return (
     <section id="journey" className="portfolio-section journey-section" aria-labelledby="journey-heading">
       <div className="section-inner">
         <motion.header className="journey-header" initial={false} whileInView={reducedMotion ? {} : { opacity: [.5, 1], y: [22, 0] }} viewport={{ once: true, amount: .3 }} transition={{ duration: .6 }}>
-          <span className="section-label"><Star size={15} fill="currentColor" aria-hidden="true" /> THE JOURNEY</span>
+          <span className="section-label"><Compass size={18} aria-hidden="true" /> THE JOURNEY</span>
           <h2 id="journey-heading" className="section-heading">Engineer by degree,<br />builder by <span className="journey-highlight">curiosity.</span></h2>
           <p className="section-copy">A few milestones, a lot of learning, and a love for figuring things out.</p>
         </motion.header>

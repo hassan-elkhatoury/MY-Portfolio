@@ -3,29 +3,66 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react"
 import { flushSync } from "react-dom"
 import { useTheme } from "next-themes"
-import { Moon, Sun, ArrowUpRight } from "lucide-react"
+import { Moon, Sun, ArrowUpRight, Pause, Play } from "lucide-react"
 import { profile } from "@/lib/portfolio-data"
 import "./floating-nav.css"
+import { useMotionPreferences } from "./motion-preferences"
 
-const links = [{name: "Home", id: "home"}, {name: "Journey", id: "journey"}, {name: "Work", id: "projects"}, {name: "About", id: "about"}, {name: "Contact", id: "contact"}]
+const links = [{name: "Home", id: "home"}, {name: "Journey", id: "journey"}, {name: "Work", id: "selected-work"}, {name: "About", id: "about"}, {name: "Contact", id: "contact"}]
+const sections = [
+  { id: "home", tab: "home" },
+  { id: "journey", tab: "journey" },
+  { id: "selected-work", tab: "selected-work" },
+  { id: "projects", tab: "selected-work" },
+  { id: "about", tab: "about" },
+  { id: "certifications", tab: "about" },
+  { id: "skills", tab: "about" },
+  { id: "contact", tab: "contact" },
+]
 
 export function FloatingNav() {
   const { resolvedTheme, setTheme } = useTheme()
+  const { paused, systemReducedMotion, ready: motionReady, toggleMotion } = useMotionPreferences()
   const [mounted, setMounted] = useState(false)
   const [active, setActive] = useState("home")
   const themeTransition = useRef(false)
   const [changingTheme, setChangingTheme] = useState(false)
   useEffect(() => { setMounted(true) }, [])
   useEffect(() => {
-    const observer = new IntersectionObserver(entries => { for (const entry of entries) if (entry.isIntersecting) setActive(entry.target.id) }, { rootMargin: "-15% 0px -65% 0px", threshold: 0 })
-    links.forEach(({id}) => { const el = document.getElementById(id); if (el) observer.observe(el) })
-    return () => observer.disconnect()
+    let frame = 0
+    const updateActive = () => {
+      frame = 0
+      const readingLine = Math.min(window.innerHeight * .3, 240)
+      let current = "home"
+      for (const section of sections) {
+        const element = document.getElementById(section.id)
+        if (element && element.getBoundingClientRect().top <= readingLine) current = section.tab
+      }
+      // Contact may be shorter than the viewport on wide screens.
+      if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4) current = "contact"
+      setActive(current)
+    }
+    const scheduleUpdate = () => { if (!frame) frame = window.requestAnimationFrame(updateActive) }
+    const observer = new ResizeObserver(scheduleUpdate)
+    const main = document.querySelector(".portfolio-main")
+    if (main) observer.observe(main)
+    window.addEventListener("scroll", scheduleUpdate, { passive: true })
+    window.addEventListener("resize", scheduleUpdate)
+    window.addEventListener("hashchange", scheduleUpdate)
+    scheduleUpdate()
+    return () => {
+      window.cancelAnimationFrame(frame)
+      observer.disconnect()
+      window.removeEventListener("scroll", scheduleUpdate)
+      window.removeEventListener("resize", scheduleUpdate)
+      window.removeEventListener("hashchange", scheduleUpdate)
+    }
   }, [])
   const dark = mounted && resolvedTheme === "dark"
   async function changeTheme(event: MouseEvent<HTMLButtonElement>) {
     if (!mounted || themeTransition.current) return
     const nextTheme = dark ? "light" : "dark"
-    if (!document.startViewTransition || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (paused || !document.startViewTransition || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setTheme(nextTheme)
       return
     }
@@ -67,8 +104,14 @@ export function FloatingNav() {
     }
   }
   return <header className="portfolio-header">
-    <a className="portfolio-avatar" href="#home" aria-label={`${profile.name}, back to top`}><img src="/images/hasan-portrait.png" width="34" height="34" alt={profile.name} /></a>
-    <div className="portfolio-header-controls"><span className="portfolio-location"><span aria-hidden="true" />Based in {profile.location.split(",")[0]}</span><button className="portfolio-theme" onClick={changeTheme} disabled={!mounted} aria-disabled={changingTheme} aria-busy={changingTheme} aria-label={`Switch to ${dark ? "day" : "night"} mode`}>{dark ? <Sun size={17} /> : <Moon size={17} />}<span>{dark ? "Day" : "Night"}</span></button></div>
-    <nav className="portfolio-dock" aria-label="Main navigation">{links.map(({name,id}) => <a key={id} aria-label={name} className={`portfolio-dock-link ${active === id ? "is-active" : ""} ${id === "about" ? "dock-about" : ""}`} href={`#${id}`} aria-current={active === id ? "location" : undefined} onClick={() => setActive(id)}>{id === "home" && <img src="/images/hasan-portrait.png" width="22" height="22" alt="" />}<span>{name}</span></a>)}<a className="portfolio-dock-resume" href={profile.resume} target="_blank" rel="noopener noreferrer">Resume <ArrowUpRight size={14} /></a></nav>
+    <a className="portfolio-avatar" href="#home" aria-label={`${profile.name}, back to top`}><img src="/images/hassan-profile-photo.jpg" width="34" height="34" alt={profile.name} /></a>
+    <div className="portfolio-header-controls">
+      <span className="portfolio-location"><span aria-hidden="true" />Based in {profile.location.split(",")[0]}</span>
+      <button type="button" className="portfolio-motion" onClick={toggleMotion} disabled={!motionReady || systemReducedMotion} aria-pressed={paused} aria-label={!motionReady ? "Animation preferences" : systemReducedMotion ? "Motion reduced: animations follow your system preference" : paused ? "Resume animations" : "Pause animations"} title={systemReducedMotion ? "Animations respect your device’s reduced motion setting." : "Pause or resume decorative animations."}>
+        {paused && motionReady ? <Play size={16} aria-hidden="true" /> : <Pause size={16} aria-hidden="true" />}<span>{!motionReady ? "Animations" : systemReducedMotion ? "Motion reduced" : paused ? "Resume animations" : "Pause animations"}</span>
+      </button>
+      <button type="button" className="portfolio-theme" onClick={changeTheme} disabled={!mounted} aria-disabled={changingTheme} aria-busy={changingTheme} aria-label={`Switch to ${dark ? "day" : "night"} mode`}>{dark ? <Sun size={17} /> : <Moon size={17} />}<span>{dark ? "Day" : "Night"}</span></button>
+    </div>
+    <nav className="portfolio-dock" aria-label="Main navigation"><div className="portfolio-dock-links">{links.map(({name,id}) => <a key={id} aria-label={name} className={`portfolio-dock-link ${active === id ? "is-active" : ""}`} href={`#${id}`} aria-current={active === id ? "location" : undefined} onClick={() => setActive(id)}>{id === "home" && <img src="/images/hassan-profile-photo.jpg" width="22" height="22" alt="" />}<span>{name}</span></a>)}</div><a className="portfolio-dock-resume" href={profile.resume} target="_blank" rel="noopener noreferrer">Resume <ArrowUpRight size={14} aria-hidden="true" /></a></nav>
   </header>
 }

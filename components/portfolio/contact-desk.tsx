@@ -100,7 +100,7 @@ export function ContactDesk() {
     <div className="contact-sky">
       <section id="contact" className="portfolio-section contact-desk" aria-labelledby="contact-desk-heading">
         <div className="section-inner">
-          <div className="section-label"><span aria-hidden="true">✳</span> GREAT THINGS START WITH A HELLO</div>
+          <div className="section-label"><Mail size={18} aria-hidden="true" /> GREAT THINGS START WITH A HELLO</div>
           <h2 id="contact-desk-heading" className="section-heading">Let&apos;s make<br /><span className="highlight">something great.</span></h2>
           <p className="section-copy">{profile.availability} in Java backend development.<br className="contact-desk-desktop-break" /> Have an opportunity, a project, or a question? My inbox is open.</p>
 

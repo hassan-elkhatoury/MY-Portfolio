@@ -2,7 +2,7 @@
 
 import { useRef } from "react"
 import { motion, useReducedMotion } from "framer-motion"
-import { ArrowUpRight, Move } from "lucide-react"
+import { ArrowUpRight, Move, UserRound } from "lucide-react"
 import { education, experiences, certifications, profile } from "@/lib/portfolio-data"
 import "./personal-story.css"
 
@@ -16,7 +16,7 @@ export function PersonalStory() {
   return (
     <section id="about" className="portfolio-section personal-story" aria-labelledby="personal-story-heading">
       <div className="section-inner">
-        <div className="section-label"><span aria-hidden="true">✳</span> A LITTLE ABOUT ME</div>
+        <div className="section-label"><UserRound size={18} aria-hidden="true" /> A LITTLE ABOUT ME</div>
         <motion.div className="personal-story-intro" initial={false} whileInView={reduceMotion ? {} : { opacity: [0.5, 1], y: [25, 0] }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
           <h2 id="personal-story-heading">Behind the code,<br />there&apos;s <span className="highlight">a curious mind.</span></h2>
           <p>I&apos;m {profile.name.split(" ")[0]}, a computer science engineering student at ENSAH, graduating in {profile.graduationYear}. I build <strong>Java and Spring Boot backends</strong>, from enterprise fleet management at MEF to AI coaching and distributed database projects.</p>
@@ -36,7 +36,7 @@ export function PersonalStory() {
 
           <motion.figure className="personal-story-polaroid" drag={!reduceMotion} dragConstraints={desk} dragElastic={0.12} dragMomentum={false} whileDrag={{ scale: 1.04, zIndex: 5 }} initial={false} whileHover={reduceMotion ? {} : { rotate: 1 }}>
             <span className="personal-story-tape" aria-hidden="true" />
-            <img className="personal-story-portrait" src="/images/hasan-portrait.png" alt={profile.name} width={320} height={370} />
+            <img className="personal-story-portrait" src="/images/hassan-profile-photo.jpg" alt={profile.name} width={320} height={370} />
             <figcaption>{profile.name.split(" ")[0]}, from Morocco <span aria-hidden="true">↗</span></figcaption>
           </motion.figure>
 

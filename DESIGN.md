@@ -6,6 +6,12 @@ Visual thesis: a personal, painterly world with a warm paper canvas, expressive 
 
 Content plan: landscape introduction → personal story and notes → education and experience journey → six actual project cards → twelve real credentials → interactive engineering toolkit → contact keyboard and message form.
 
+Recruiter-focused extension: retain the painterly world, Bricolage typography, warm paper, yellow highlighter, coral details, physical project box, and keyboard contact panel. The hero now states the Java/Spring student focus and PFE 2027 search, with a direct link to selected work. A wide MEF feature followed by paired InterviewAI and MODEYA studies brings the strongest backend evidence earlier in the page. Existing anchors remain available.
+
+Three server-rendered case studies are available at `/work/mef-fleet-management`, `/work/interview-ai`, and `/work/modeya`. They show the problem, actual contribution, application boundaries, supported technical decisions, source-based validation scope, and takeaways. Labeled diagrams explain the documented layers; they are not presented as application screenshots. MODEYA's live public storefront was captured at `https://www.modeya.page/` and saved as `public/images/projects/modeya-storefront.webp` (1411 x 697, approximately 58 KB). InterviewAI uses its original screenshot. No admin screens, customer records, fake results, or invented endorsements were added. MODEYA's 18-table figure refers to the documented project scope; the case study distinguishes the expanded current schema.
+
+Global motion preferences respect system reduced motion and store an explicit pause choice under `portfolio-motion-paused-v1`. An early script applies the preference before hydration. Pausing freezes CSS loops, stops pointer/scroll transforms, and bypasses the circular theme reveal; record audio remains under its own control. The overview and case-study content are server components; interactive leaves use client state.
+
 Interaction thesis: layered pointer and scroll parallax in the valley; tactile cards, notes, and keyboard controls; selectable map milestones and project dialogs. Reduced motion removes travel and continuous animation.
 
 ## Independent scenery depth

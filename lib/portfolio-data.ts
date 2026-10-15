@@ -32,7 +32,7 @@ export const profile: Profile = {
   tagline: "Building reliable Java backends, thoughtful APIs, and database-driven applications.",
   about: [
     "I am a Computer Engineering student at ENSA Al Hoceima, graduating in 2027 and specializing in software engineering. Based in Marrakech, Morocco, I focus on Java backend development, Spring Boot, REST APIs, and relational databases. I hold Oracle Certified Professional credentials for Java SE 11 and Java SE 17, alongside an Oracle Cloud Infrastructure Foundations credential.",
-    "My experience includes building an enterprise fleet-management backend at the Ministry of Economy and Finance and developing the MODEYA e-commerce platform with Next.js, React, and Supabase. I also explore AI-integrated Java applications, machine learning, and distributed MongoDB systems. I am seeking a PFE internship for 2027 in Java backend or software engineering, with remote opportunities preferred when available.",
+    "My experience includes building an enterprise fleet-management backend at the Ministry of Economy and Finance and developing the MODEYA and Arabela Collection e-commerce platforms with Next.js, React, and Supabase. I also explore AI-integrated Java applications, machine learning, and distributed MongoDB systems. I am seeking a PFE internship for 2027 in Java backend or software engineering, with remote opportunities preferred when available.",
   ],
   email: "hassanelkhatoury@gmail.com",
   github: "https://github.com/hassan-elkhatoury",
@@ -110,6 +110,8 @@ export const projects: Project[] = [
     description:
       "Premium scarf e-commerce platform built with Next.js 16, React 19, TypeScript, and Supabase. Designed an 18-table PostgreSQL schema and implemented role-based authentication, Cash on Delivery checkout, inventory and order management, and an admin analytics dashboard.",
     tech: ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS 4", "Supabase", "PostgreSQL", "Zustand", "Zod"],
+    image: "/images/projects/modeya-storefront.webp",
+    demoUrl: "https://www.modeya.page",
     featured: true,
   },
   {
@@ -129,6 +131,16 @@ export const projects: Project[] = [
     image: "/images/projects/student-management.png",
     tech: ["PHP", "MySQL", "Composer", "XAMPP"],
     githubUrl: "https://github.com/hassan-elkhatoury/e-service",
+  },
+  {
+    title: "Arabela Collection",
+    category: "Full Stack",
+    description:
+      "Multilingual modest-fashion e-commerce platform for abayas, ensembles, and hijabs in Morocco. Built with Next.js, React, TypeScript, and Supabase, with Arabic, French, and English interfaces, customer accounts, wishlist, Cash on Delivery checkout with city-based shipping, and a protected admin dashboard for catalog and order management.",
+    tech: ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS 4", "Supabase", "PostgreSQL", "Zustand", "Zod", "Framer Motion"],
+    image: "/images/projects/arabela-storefront-en.jpg",
+    demoUrl: "https://arabela.store/",
+    featured: true,
   },
 
 ]

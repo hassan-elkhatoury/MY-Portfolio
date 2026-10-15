@@ -1,7 +1,7 @@
 "use client"
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
-import { ArrowDown, ArrowUp, ArrowUpRight, Check, FileDown, Sparkles } from "lucide-react"
+import { ArrowDown, ArrowUp, ArrowUpRight, Check, FileDown, BadgeCheck } from "lucide-react"
 import Image from "next/image"
 import { useState, type CSSProperties } from "react"
 import { certifications, profile, type Certification } from "@/lib/portfolio-data"
@@ -50,7 +50,7 @@ export function Credentials() {
     <section id="certifications" className="portfolio-section credential-section" aria-labelledby="credential-heading">
       <div className="section-inner">
         <motion.header className="credential-header" initial={false} whileInView={reducedMotion ? {} : { opacity: [.5, 1], y: [20, 0] }} viewport={{ once: true, amount: .2 }} transition={{ duration: .6 }}>
-          <span className="section-label"><Sparkles size={17} aria-hidden="true" /> ALWAYS A STUDENT</span>
+          <span className="section-label"><BadgeCheck size={18} aria-hidden="true" /> ALWAYS A STUDENT</span>
           <h2 id="credential-heading" className="section-heading">A little curiosity.<br />A lot of <span className="highlight">commitment.</span></h2>
           <p className="section-copy">Learning is part of the craft. Here are the credentials collected along the way.</p>
         </motion.header>
