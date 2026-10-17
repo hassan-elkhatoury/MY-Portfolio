@@ -1,10 +1,11 @@
 "use client"
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
+import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion"
 import { ArrowLeft, ArrowRight, Building2, GraduationCap, MapPin, Compass } from "lucide-react"
 import Image from "next/image"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { certifications, education, experiences } from "@/lib/portfolio-data"
+import { useMotionPreferences } from "./motion-preferences"
 import "./journey.css"
 
 const codsoft = experiences.find(item => item.company.toLowerCase().includes("codsoft"))
@@ -73,7 +74,7 @@ function OrganizationLogo({ src }: { src?: string }) {
     : <span className="journey-organization-fallback" aria-hidden="true"><Building2 size={19} strokeWidth={1.5} /></span>
 }
 
-function RouteMap({ active, onSelect }: { active: number; onSelect: (index: number) => void }) {
+function RouteMap({ active, onSelect, charge, charged }: { active: number; onSelect: (index: number) => void; charge?: import("framer-motion").MotionValue<number>; charged: number }) {
   return (
     <div className="journey-map" aria-label="Interactive career route">
       <div className="journey-map-note"><span /> A work in progress. Always.</div>
@@ -89,6 +90,8 @@ function RouteMap({ active, onSelect }: { active: number; onSelect: (index: numb
         </g>
         <path className="journey-road-shadow" d="M98 410C70 335 65 265 98 194S171 130 259 130S350 130 427 130S570 128 588 194S626 333 588 410S482 448 420 427S316 420 252 427" />
         <path className="journey-road" d="M98 410C70 335 65 265 98 194S171 130 259 130S350 130 427 130S570 128 588 194S626 333 588 410S482 448 420 427S316 420 252 427" />
+        {/* The charge line follows the same route and fills with the reader's scroll. */}
+        {charge && <motion.path className="journey-road-charge" style={{ pathLength: charge }} d="M98 410C70 335 65 265 98 194S171 130 259 130S350 130 427 130S570 128 588 194S626 333 588 410S482 448 420 427S316 420 252 427" />}
         <g className="journey-mountains" transform="translate(326 365)">
           <path d="M0 61L41 0L79 61Z" fill="#b9c5ad" /><path d="M42 61L77 14L112 61Z" fill="#d0d8bf" /><path d="M28 20L41 0L54 20L44 15L38 22Z" fill="#fffef4" />
           <path d="M60 37L77 14L89 33L78 30L73 37Z" fill="#fffef4" />
@@ -99,7 +102,7 @@ function RouteMap({ active, onSelect }: { active: number; onSelect: (index: numb
       {stops.map((stop, index) => (
         <button
           key={stop.label}
-          className={`journey-map-stop${active === index ? " is-active" : ""}${index === stops.length - 1 ? " is-future" : ""}`}
+          className={`journey-map-stop${active === index ? " is-active" : ""}${index === stops.length - 1 ? " is-future" : ""}${index <= charged ? " is-charged" : ""}`}
           style={{ left: `${stop.x}%`, top: `${stop.y}%` }}
           onClick={() => onSelect(index)}
           aria-label={`${stop.period}: ${stop.label}`}
@@ -119,6 +122,19 @@ function RouteMap({ active, onSelect }: { active: number; onSelect: (index: numb
 export function Journey() {
   const [active, setActive] = useState(() => stops.findIndex(stop => stop.label === "MEF internship"))
   const reducedMotion = useReducedMotion()
+  const { paused } = useMotionPreferences()
+  const map = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({ target: map, offset: ["start 88%", "end 42%"] })
+  const charge = useSpring(scrollYProgress, { stiffness: 90, damping: 26, restDelta: .001 })
+  const [charged, setCharged] = useState(0)
+  const chargePct = useTransform(charge, value => Math.round(value * (stops.length - 1) + 1))
+
+  useEffect(() => {
+    if (paused) return
+    const unsubscribe = chargePct.on("change", value => setCharged(Math.max(0, Math.min(stops.length - 1, value - 1))))
+    return unsubscribe
+  }, [chargePct, paused])
+
   const stop = stops[active]
   useEffect(() => {
     const selectStop = (event: Event) => {
@@ -139,7 +155,9 @@ export function Journey() {
           <p className="section-copy">A few milestones, a lot of learning, and a love for figuring things out.</p>
         </motion.header>
         <motion.div className="journey-layout" initial={false} whileInView={reducedMotion ? {} : { opacity: [.5, 1], y: [26, 0] }} viewport={{ once: true, amount: .15 }} transition={{ duration: .7 }}>
-          <RouteMap active={active} onSelect={setActive} />
+          <div ref={map}>
+            <RouteMap active={active} onSelect={setActive} charge={paused ? undefined : charge} charged={paused ? stops.length - 1 : charged} />
+          </div>
           <div className="journey-story-wrap">
             <div className="journey-paper-tape" aria-hidden="true" />
             <div className="journey-story" id="journey-detail" aria-live="polite" aria-atomic="true">

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState, type FormEvent } from "react"
 import { motion, useReducedMotion } from "framer-motion"
 import { ArrowDown, ArrowUp, ArrowUpRight, Check, Copy, Github, Linkedin, Mail, Send } from "lucide-react"
 import { profile } from "@/lib/portfolio-data"
+import { AmbientPlayer } from "./ambient-player"
 import "./contact-desk.css"
 
 const contactKeys = [
@@ -13,6 +14,40 @@ const contactKeys = [
   { key: "S", label: "Message", href: "#contact-message-form", Icon: Send, color: "coral", caption: "Prefer a little note? Write right here.", position: "before" },
   { key: "R", label: "Résumé", href: profile.resume, Icon: ArrowDown, color: "yellow", caption: "My résumé, one click away.", position: "after" },
 ]
+
+/** A live desk readout: availability, local time in Marrakech, and a reply window. */
+function DeskStatus() {
+  const [clock, setClock] = useState<string | null>(null)
+
+  useEffect(() => {
+    const format = () => {
+      try {
+        setClock(new Intl.DateTimeFormat("en-GB", { timeZone: "Africa/Casablanca", hour: "2-digit", minute: "2-digit" }).format(new Date()))
+      } catch {
+        setClock(new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }))
+      }
+    }
+    format()
+    const timer = window.setInterval(format, 30000)
+    return () => window.clearInterval(timer)
+  }, [])
+
+  return (
+    <div className="contact-desk-status" aria-label="Current availability">
+      <span className="contact-desk-status-item contact-desk-status-live">
+        <i aria-hidden="true" /><span>Open to PFE {profile.graduationYear}</span>
+      </span>
+      <span className="contact-desk-status-item">
+        <span className="contact-desk-status-label">Marrakech</span>
+        <span className="contact-desk-clock" suppressHydrationWarning>{clock ?? "—"}{clock && <small> local</small>}</span>
+      </span>
+      <span className="contact-desk-status-item">
+        <span className="contact-desk-status-label">Replies</span><span>within a day</span>
+      </span>
+    </div>
+  )
+}
+
 
 export function ContactDesk() {
   const reduceMotion = useReducedMotion()
@@ -104,7 +139,10 @@ export function ContactDesk() {
           <h2 id="contact-desk-heading" className="section-heading">Let&apos;s make<br /><span className="highlight">something great.</span></h2>
           <p className="section-copy">{profile.availability} in Java backend development.<br className="contact-desk-desktop-break" /> Have an opportunity, a project, or a question? My inbox is open.</p>
 
+          <DeskStatus />
+
           <div className="contact-desk-panel">
+          <AmbientPlayer />
           <div className="contact-desk-keyboard" data-contact-keyboard tabIndex={0} role="region" aria-label="Contact keyboard. Press M for email, G for GitHub, L for LinkedIn, S to write a message, or R for résumé." aria-describedby="contact-keyboard-hint">
             <p id="contact-keyboard-hint" className="contact-desk-keyboard-hint">psst, these work on your keyboard too: {contactKeys.map(({ key }) => <kbd key={key}>{key}</kbd>)}<small>Click a key, or focus this panel and press its letter.</small></p>
             <div className="contact-desk-keyboard-base">

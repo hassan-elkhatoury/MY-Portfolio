@@ -1,0 +1,10 @@
+.case-reading-line { position: fixed; z-index: 60; left: 0; right: 0; top: 0; height: 2px; transform-origin: left; background: linear-gradient(90deg, var(--coral), var(--yellow)); }
+.case-chapter-rail { position: fixed; z-index: 40; left: 26px; top: 50%; transform: translateY(-50%); display: none; }
+@media (min-width: 1280px) { .case-chapter-rail { display: block; } }
+.case-chapter-rail ol { position: relative; display: flex; flex-direction: column; gap: 13px; margin: 0; padding: 0; list-style: none; }
+.case-chapter-rail a { display: flex; align-items: center; gap: 10px; color: var(--muted-ink); font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; transition: color .2s; }
+.case-rail-dot { width: 7px; height: 7px; flex-shrink: 0; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--muted-ink) 55%, transparent); background: var(--page); transition: background .2s, border-color .2s, transform .2s; }
+.case-chapter-rail a:hover { color: var(--ink); }
+.case-chapter-rail a.is-active { color: var(--ink); }
+.case-chapter-rail a.is-active .case-rail-dot { background: var(--coral); border-color: var(--coral); transform: scale(1.25); }
+.case-chapter-rail a:focus-visible { outline: 2px solid var(--coral); outline-offset: 4px; border-radius: 8px; }

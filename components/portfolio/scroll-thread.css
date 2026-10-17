@@ -1,0 +1,16 @@
+.scroll-thread { position: fixed; z-index: 40; left: 22px; top: 50%; transform: translateY(-50%); display: none; }
+@media (min-width: 1180px) { .scroll-thread { display: block; } }
+.scroll-thread-rail { position: absolute; left: 5px; top: -9px; bottom: -9px; width: 1px; background: color-mix(in srgb, var(--muted-ink) 32%, transparent); }
+.scroll-thread-fill { position: absolute; inset: 0; transform-origin: top; background: linear-gradient(var(--coral), var(--yellow)); }
+.scroll-thread ol { position: relative; display: flex; flex-direction: column; gap: 15px; margin: 0; padding: 0; list-style: none; }
+.scroll-thread a { position: relative; display: flex; align-items: center; gap: 11px; padding-block: 2px; text-decoration: none; }
+.scroll-thread-dot { position: relative; z-index: 1; width: 11px; height: 11px; flex-shrink: 0; border: 1px solid color-mix(in srgb, var(--muted-ink) 62%, transparent); border-radius: 50%; background: var(--page); transition: background .25s, border-color .25s, transform .25s, box-shadow .25s; }
+.scroll-thread a:hover .scroll-thread-dot { border-color: var(--coral); }
+.scroll-thread a.is-active .scroll-thread-dot { background: var(--coral); border-color: var(--coral); transform: scale(1.12); box-shadow: 0 0 0 4px color-mix(in srgb, var(--coral) 16%, transparent); }
+.scroll-thread-label { color: var(--muted-ink); font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; opacity: 0; transform: translateX(-5px); transition: opacity .22s, transform .22s, color .22s; }
+.scroll-thread a:hover .scroll-thread-label,
+.scroll-thread a:focus-visible .scroll-thread-label,
+.scroll-thread a.is-active .scroll-thread-label { opacity: 1; transform: none; }
+.scroll-thread a.is-active .scroll-thread-label { color: var(--ink); }
+.scroll-thread a:focus-visible { outline: 2px solid var(--coral); outline-offset: 5px; border-radius: 12px; }
+@media (prefers-reduced-motion: reduce) { .scroll-thread-dot, .scroll-thread-label { transition: none; } }

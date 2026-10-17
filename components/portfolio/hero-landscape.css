@@ -18,10 +18,14 @@
 .dark .valley-terrain { filter: brightness(.53) saturate(.7); }
 .dark .valley-cloud { filter: brightness(.4); }
 .dark .valley-stars, .dark .valley-moon { opacity: 1; }
+.dark .valley-glare { mix-blend-mode: screen; opacity: .5; }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) { .valley-camera, .valley-depth { will-change: transform; } }
+@media (max-width: 700px) { .valley-glare { display: none; } }
 @media (prefers-reduced-motion: reduce) { .valley-depth { transform: none !important; } }
 @media (max-width: 700px) { .valley-landmarks { inset: 0; } .valley-depth, .valley-camera { transform: none !important; } }
 .valley-shade { position: absolute; inset: 0; background: linear-gradient(110deg, #0c283938 0%, transparent 65%), linear-gradient(0deg, #17302026, transparent 55%); pointer-events: none; }
+/* A cursor-following pool of daylight, painted above the scenery and below the copy. */
+.valley-glare { position: absolute; inset: 0; z-index: 2; pointer-events: none; mix-blend-mode: soft-light; will-change: background; }
 .valley-copy { position: absolute; z-index: 3; left: 5%; top: 13%; max-width: 850px; pointer-events: none; }
 .valley-copy a, .valley-greeting, .valley-copy h1, .valley-description, .valley-availability { pointer-events: auto; }
 .valley-banner, .valley-click-note { pointer-events: none; }

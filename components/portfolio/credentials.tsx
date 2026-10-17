@@ -1,10 +1,11 @@
 "use client"
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
-import { ArrowDown, ArrowUp, ArrowUpRight, Check, FileDown, BadgeCheck } from "lucide-react"
+import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "framer-motion"
+import { ArrowDown, ArrowUp, ArrowUpRight, Check, Copy, FileDown, BadgeCheck } from "lucide-react"
 import Image from "next/image"
-import { useState, type CSSProperties } from "react"
+import { useEffect, useState, type CSSProperties, type PointerEvent } from "react"
 import { certifications, profile, type Certification } from "@/lib/portfolio-data"
+import { useMotionPreferences } from "./motion-preferences"
 import "./credentials.css"
 
 const featuredCredentials = certifications.filter(certification => certification.featured)
@@ -19,12 +20,74 @@ function CredentialLinks({ certificate, compact = false }: { certificate: Certif
   )
 }
 
+function CopyId({ certificate }: { certificate: Certification }) {
+  const [state, setState] = useState<"idle" | "copied" | "failed">("idle")
+  useEffect(() => {
+    if (state === "idle") return
+    const timer = window.setTimeout(() => setState("idle"), 2400)
+    return () => window.clearTimeout(timer)
+  }, [state])
+
+  async function copy() {
+    if (!certificate.credentialId) return
+    try {
+      await navigator.clipboard.writeText(certificate.credentialId)
+      setState("copied")
+    } catch {
+      setState("failed")
+    }
+  }
+
+  if (!certificate.credentialId) return null
+  return (
+    <button type="button" className={`credential-copy${state === "copied" ? " is-copied" : ""}`} onClick={copy} aria-label={`Copy credential ID ${certificate.credentialId}`}>
+      {state === "copied" ? <Check size={12} aria-hidden="true" /> : <Copy size={12} aria-hidden="true" />}
+      <span>{state === "copied" ? "Copied" : state === "failed" ? "Select the ID" : "Copy ID"}</span>
+    </button>
+  )
+}
+
 function CredentialPaper({ certificate, index }: { certificate: Certification; index: number }) {
-  const reducedMotion = useReducedMotion()
+  const systemReducedMotion = useReducedMotion()
+  const { paused } = useMotionPreferences()
+  const reduce = paused || systemReducedMotion
   const styles = { "--credential-rotation": `${[-3, 1.5, -1][index]}deg` } as CSSProperties
   const title = certificate.title.replace("Oracle Certified Professional: ", "").replace("Oracle Cloud Infrastructure 2025 Certified ", "Cloud Infrastructure 2025 ")
+
+  // Cards lift toward the pointer like a sheet picked up at one edge.
+  const px = useMotionValue(0)
+  const py = useMotionValue(0)
+  const sx = useSpring(px, { stiffness: 150, damping: 18, mass: .5 })
+  const sy = useSpring(py, { stiffness: 150, damping: 18, mass: .5 })
+  // The resting tilt lives in the CSS `rotate` property; the pointer tilt uses transform,
+  // so the two compose instead of overwriting each other.
+  const rotateX = useTransform(sy, [-1, 1], [6, -6])
+  const rotateY = useTransform(sx, [-1, 1], [-7, 7])
+
+  function track(event: PointerEvent<HTMLElement>) {
+    if (reduce || event.pointerType !== "mouse") return
+    const bounds = event.currentTarget.getBoundingClientRect()
+    const nx = ((event.clientX - bounds.left) / bounds.width) * 2 - 1
+    const ny = ((event.clientY - bounds.top) / bounds.height) * 2 - 1
+    px.set(nx); py.set(ny)
+    event.currentTarget.style.setProperty("--holo-x", `${((nx + 1) / 2) * 100}%`)
+    event.currentTarget.style.setProperty("--holo-y", `${((ny + 1) / 2) * 100}%`)
+    event.currentTarget.style.setProperty("--holo-tilt", `${nx * 22}deg`)
+  }
+
   return (
-    <motion.article className={`credential-paper credential-paper-${index + 1}`} style={styles} initial={false} whileInView={reducedMotion ? {} : { opacity: [.5, 1], y: [34, 0] }} viewport={{ once: true, amount: .2 }} transition={{ duration: .55, delay: reducedMotion ? 0 : index * .12 }}>
+    <motion.article
+      className={`credential-paper credential-paper-${index + 1}`}
+      style={reduce ? styles : { ...styles, rotateX, rotateY, transformPerspective: 1100 }}
+      initial={false}
+      whileInView={reduce ? {} : { opacity: [.5, 1], y: [34, 0] }}
+      viewport={{ once: true, amount: .2 }}
+      transition={{ duration: .55, delay: reduce ? 0 : index * .12 }}
+      onPointerMove={track}
+      onPointerLeave={() => { px.set(0); py.set(0) }}
+      data-credential
+    >
+      <span className="credential-holo" aria-hidden="true" />
       <span className="credential-tape" aria-hidden="true" />
       <div className="credential-paper-content">
         <div className="credential-paper-top"><Image src={certificate.logo} width={68} height={29} alt={certificate.issuer} /><span>{certificate.issued}</span></div>
@@ -33,7 +96,12 @@ function CredentialPaper({ certificate, index }: { certificate: Certification; i
         <h3>{title}</h3>
         <div className="credential-recipient"><small>AWARDED TO</small><strong>{profile.name}</strong></div>
         <div className="credential-paper-footer">
-          <div><span className="credential-id-label">CREDENTIAL ID</span><span className="credential-id">{certificate.credentialId}</span>{certificate.expires && <span className="credential-expiry">Valid through {certificate.expires}</span>}</div>
+          <div>
+            <span className="credential-id-label">CREDENTIAL ID</span>
+            <span className="credential-id">{certificate.credentialId}</span>
+            {certificate.expires && <span className="credential-expiry">Valid through {certificate.expires}</span>}
+            <CopyId certificate={certificate} />
+          </div>
           <div className="credential-seal" aria-hidden="true"><Check size={23} strokeWidth={1.7} /></div>
         </div>
         <CredentialLinks certificate={certificate} />

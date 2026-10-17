@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react"
 import { flushSync } from "react-dom"
 import { useTheme } from "next-themes"
+import { motion, useMotionValue, useScroll, useSpring } from "framer-motion"
 import { Moon, Sun, ArrowUpRight, Pause, Play } from "lucide-react"
 import { profile } from "@/lib/portfolio-data"
 import "./floating-nav.css"
@@ -20,6 +21,38 @@ const sections = [
   { id: "contact", tab: "contact" },
 ]
 
+/** A dock link that leans a few pixels toward the cursor. */
+function MagneticLink({ id, name, active, onSelect, reduceMotion }: { id: string; name: string; active: boolean; onSelect: () => void; reduceMotion: boolean }) {
+  const x = useMotionValue(0)
+  const y = useMotionValue(0)
+  const leanX = useSpring(x, { stiffness: 340, damping: 22, mass: .35 })
+  const leanY = useSpring(y, { stiffness: 340, damping: 22, mass: .35 })
+
+  return (
+    <motion.a
+      aria-label={name}
+      className={`portfolio-dock-link ${active ? "is-active" : ""}`}
+      href={`#${id}`}
+      aria-current={active ? "location" : undefined}
+      onClick={onSelect}
+      style={reduceMotion ? undefined : { x: leanX, y: leanY }}
+      onPointerMove={event => {
+        if (reduceMotion || event.pointerType !== "mouse") return
+        const bounds = event.currentTarget.getBoundingClientRect()
+        x.set(((event.clientX - bounds.left) / bounds.width - .5) * 8)
+        y.set(((event.clientY - bounds.top) / bounds.height - .5) * 6)
+      }}
+      onPointerLeave={() => { x.set(0); y.set(0) }}
+    >
+      {active && <motion.span layoutId="dock-active-pill" className="portfolio-dock-pill" aria-hidden="true" transition={{ type: "spring", stiffness: 420, damping: 34 }} />}
+      <span className="portfolio-dock-content">
+        {id === "home" && <img src="/images/hassan-profile-photo.jpg" width="22" height="22" alt="" />}
+        <span>{name}</span>
+      </span>
+    </motion.a>
+  )
+}
+
 export function FloatingNav() {
   const { resolvedTheme, setTheme } = useTheme()
   const { paused, systemReducedMotion, ready: motionReady, toggleMotion } = useMotionPreferences()
@@ -27,7 +60,11 @@ export function FloatingNav() {
   const [active, setActive] = useState("home")
   const themeTransition = useRef(false)
   const [changingTheme, setChangingTheme] = useState(false)
+  const { scrollYProgress } = useScroll()
+  const progress = useSpring(scrollYProgress, { stiffness: 160, damping: 30, restDelta: .001 })
+  const reduceMotion = paused || systemReducedMotion
   useEffect(() => { setMounted(true) }, [])
+
   useEffect(() => {
     let frame = 0
     const updateActive = () => {
@@ -104,6 +141,7 @@ export function FloatingNav() {
     }
   }
   return <header className="portfolio-header">
+    <motion.span className="portfolio-progress" aria-hidden="true" style={{ scaleX: paused ? scrollYProgress : progress }} />
     <a className="portfolio-avatar" href="#home" aria-label={`${profile.name}, back to top`}><img src="/images/hassan-profile-photo.jpg" width="34" height="34" alt={profile.name} /></a>
     <div className="portfolio-header-controls">
       <span className="portfolio-location"><span aria-hidden="true" />Based in {profile.location.split(",")[0]}</span>
@@ -112,6 +150,6 @@ export function FloatingNav() {
       </button>
       <button type="button" className="portfolio-theme" onClick={changeTheme} disabled={!mounted} aria-disabled={changingTheme} aria-busy={changingTheme} aria-label={`Switch to ${dark ? "day" : "night"} mode`}>{dark ? <Sun size={17} /> : <Moon size={17} />}<span>{dark ? "Day" : "Night"}</span></button>
     </div>
-    <nav className="portfolio-dock" aria-label="Main navigation"><div className="portfolio-dock-links">{links.map(({name,id}) => <a key={id} aria-label={name} className={`portfolio-dock-link ${active === id ? "is-active" : ""}`} href={`#${id}`} aria-current={active === id ? "location" : undefined} onClick={() => setActive(id)}>{id === "home" && <img src="/images/hassan-profile-photo.jpg" width="22" height="22" alt="" />}<span>{name}</span></a>)}</div><a className="portfolio-dock-resume" href={profile.resume} target="_blank" rel="noopener noreferrer">Resume <ArrowUpRight size={14} aria-hidden="true" /></a></nav>
+    <nav className="portfolio-dock" aria-label="Main navigation"><div className="portfolio-dock-links">{links.map(({name,id}) => <MagneticLink key={id} id={id} name={name} active={active === id} onSelect={() => setActive(id)} reduceMotion={reduceMotion} />)}</div><a className="portfolio-dock-resume" href={profile.resume} target="_blank" rel="noopener noreferrer">Resume <ArrowUpRight size={14} aria-hidden="true" /></a></nav>
   </header>
 }

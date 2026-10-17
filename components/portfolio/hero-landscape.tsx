@@ -31,6 +31,7 @@ function Place({ href, className, icon, name, year, journeyStop }: { href: strin
 
 export function HeroLandscape() {
   const root = useRef<HTMLElement>(null)
+  const action = useRef<HTMLAnchorElement>(null)
   const { paused: reduceMotion } = useMotionPreferences()
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
@@ -42,17 +43,38 @@ export function HeroLandscape() {
   const { scrollYProgress } = useScroll({ target: root, offset: ["start start", "end start"] })
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.13])
   const copyY = useTransform(scrollYProgress, [0, 1], [0, -90])
+  const copyOpacity = useTransform(scrollYProgress, [0, .55, 1], [1, .55, 0])
+  const sceneBlur = useTransform(scrollYProgress, [0, .7, 1], [0, .5, 4])
+  const sceneFilter = useTransform(sceneBlur, value => `blur(${value.toFixed(2)}px) saturate(${(1 - value * .017).toFixed(3)})`)
+  // A soft light that follows the cursor across the landscape.
+  const glareX = useMotionValue(50)
+  const glareY = useMotionValue(40)
+  const glareSmoothX = useSpring(glareX, { stiffness: 90, damping: 24 })
+  const glareSmoothY = useSpring(glareY, { stiffness: 90, damping: 24 })
+  const glareBackground = useTransform([glareSmoothX, glareSmoothY], ([gx, gy]: number[]) => `radial-gradient(680px 420px at ${gx}% ${gy}%, rgba(255,239,190,.34), transparent 62%)`)
+  const actionX = useSpring(useMotionValue(0), { stiffness: 260, damping: 18, mass: .4 })
+  const actionY = useSpring(useMotionValue(0), { stiffness: 260, damping: 18, mass: .4 })
   useEffect(() => {
     if (!reduceMotion) return
     mouseX.set(0)
     mouseY.set(0)
     x.jump(0)
     y.jump(0)
-  }, [reduceMotion, mouseX, mouseY, x, y])
+    actionX.jump(0)
+    actionY.jump(0)
+  }, [reduceMotion, mouseX, mouseY, x, y, actionX, actionY])
   return <section ref={root} id="home" className="valley-hero" aria-label={`Welcome to ${profile.name.split(" ")[0]}'s world`}
-    onPointerMove={event => { if (reduceMotion || event.pointerType !== "mouse") return; const bounds = event.currentTarget.getBoundingClientRect(); if (bounds.width <= 700) { mouseX.set(0); mouseY.set(0); return } mouseX.set(Math.max(-1, Math.min(1, 1 - (event.clientX - bounds.left) / bounds.width * 2))); mouseY.set(Math.max(-1, Math.min(1, 1 - (event.clientY - bounds.top) / bounds.height * 2))) }}
-    onPointerLeave={() => { if (!reduceMotion) { mouseX.set(0); mouseY.set(0) } }}>
-    <motion.div className="valley-camera" style={reduceMotion ? {} : { scale, rotateX, rotateY }}>
+    onPointerMove={event => {
+      if (reduceMotion || event.pointerType !== "mouse") return
+      const bounds = event.currentTarget.getBoundingClientRect()
+      glareX.set(((event.clientX - bounds.left) / bounds.width) * 100)
+      glareY.set(((event.clientY - bounds.top) / bounds.height) * 100)
+      if (bounds.width <= 700) { mouseX.set(0); mouseY.set(0); return }
+      mouseX.set(Math.max(-1, Math.min(1, 1 - (event.clientX - bounds.left) / bounds.width * 2)))
+      mouseY.set(Math.max(-1, Math.min(1, 1 - (event.clientY - bounds.top) / bounds.height * 2)))
+    }}
+    onPointerLeave={() => { if (!reduceMotion) { mouseX.set(0); mouseY.set(0); glareX.set(50); glareY.set(40); actionX.set(0); actionY.set(0) } }}>
+    <motion.div className="valley-camera" style={reduceMotion ? {} : { scale, rotateX, rotateY, filter: sceneFilter }}>
       <div className="valley-scene" aria-hidden="true">
         <SceneDepth {...depthProps} distance={4} name="clean-valley" className="valley-terrain"><img className="valley-base" src={`${scenery}landscape-clean.webp`} alt="" fetchPriority="high" /></SceneDepth>
         <SceneDepth {...depthProps} distance={3} name="sky"><div className="valley-night-sky" /><img className="valley-day-sky" src={`${scenery}sky.webp`} alt="" /><div className="valley-stars" /><div className="valley-moon" /></SceneDepth>
@@ -68,13 +90,26 @@ export function HeroLandscape() {
         <SceneDepth {...depthProps} distance={52} name="hasan"><a className="valley-person" href="#about" aria-label={`Meet ${profile.name}`}><span className="valley-person-label"><img src="/images/hassan-profile-photo.jpg" width="24" height="24" alt="" /> That&apos;s me <ArrowUpRight size={12} /></span><img className="valley-person-figure" src="/images/hasan-illustration.webp" alt={`Painted illustration of ${profile.name.split(" ")[0]} waving hello`} width="600" height="900" /></a></SceneDepth>
       </div>
     </motion.div>
+    <motion.div className="valley-glare" aria-hidden="true" style={reduceMotion ? undefined : { background: glareBackground }} />
     <div className="valley-shade" aria-hidden="true" />
-    <motion.div className="valley-copy" style={reduceMotion ? {} : { y: copyY }}>
+    <motion.div className="valley-copy" style={reduceMotion ? {} : { y: copyY, opacity: copyOpacity }}>
       <motion.p className="valley-greeting" initial={{ y: reduceMotion ? 0 : 14 }} animate={{ y: 0 }} transition={{ duration: .7 }}><span className="valley-hand" aria-hidden="true">✋</span> hey, I&apos;m {profile.name.split(" ")[0]}</motion.p>
       <motion.h1 initial={{ y: reduceMotion ? 0 : 25 }} animate={{ y: 0 }} transition={{ duration: .8, delay: .08 }}>Building systems<br />that <span className="valley-marker">just work.<svg viewBox="0 0 400 22" preserveAspectRatio="none" aria-hidden="true"><path d="M5 16C95 2 149 20 211 10S324 17 395 6" /></svg></span></motion.h1>
       <motion.p className="valley-description" initial={{ y: reduceMotion ? 0 : 20 }} animate={{ y: 0 }} transition={{ duration: .8, delay: .16 }}>Computer engineering student.<br className="valley-mobile-break" /> Java &amp; Spring Boot backends.</motion.p>
       <div className="valley-actions">
-        <a className="valley-primary-action" href="#selected-work">View my work <ArrowDown size={16} aria-hidden="true" /></a>
+        <motion.a
+          ref={action}
+          className="valley-primary-action"
+          href="#selected-work"
+          style={reduceMotion ? undefined : { x: actionX, y: actionY }}
+          onPointerMove={event => {
+            if (reduceMotion || event.pointerType !== "mouse") return
+            const bounds = event.currentTarget.getBoundingClientRect()
+            actionX.set(((event.clientX - bounds.left) / bounds.width - .5) * 12)
+            actionY.set(((event.clientY - bounds.top) / bounds.height - .5) * 8)
+          }}
+          onPointerLeave={() => { actionX.set(0); actionY.set(0) }}
+        >View my work <ArrowDown size={16} aria-hidden="true" /></motion.a>
         <span className="valley-availability" title={`${profile.availability} · ${profile.pfeTarget}`}><span aria-hidden="true" />Seeking PFE {profile.graduationYear}</span>
       </div>
     </motion.div>

@@ -1,18 +1,27 @@
 .portfolio-toolkit { text-align: center; padding-top: 95px; padding-bottom: 100px; }
 .portfolio-toolkit .section-label { justify-content: center; }
 .portfolio-toolkit .section-heading { margin-top: 25px; }
-.portfolio-toolkit .section-copy { max-width: 540px; margin-inline: auto; }
-.portfolio-toolkit-stage { --tool-size: 82px; --compact-size: 65px; position: relative; height: 460px; width: min(100%, 780px); margin: 25px auto 20px; }
-.portfolio-toolkit-orbit { position: absolute; inset: 0; z-index: 2; }
-.portfolio-tool-token { position: absolute; width: var(--tool-size); height: var(--tool-size); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; border: 1px solid #ffffffad; border-radius: 19px; box-shadow: 0 5px 0 #171b2b15, 0 12px 22px #1a254914, inset 0 2px 3px #ffffffa1; background: #fffdf7; cursor: pointer; transition: box-shadow .2s; animation: portfolio-tool-float 6.2s ease-in-out infinite; animation-play-state: paused; }
+.portfolio-toolkit .section-copy { max-width: 560px; margin-inline: auto; }
+
+/* ---------- Stage ---------- */
+.portfolio-toolkit-stage { --tool-size: 82px; --compact-size: 65px; --tool-accent: #c2473a; position: relative; display: grid; grid-template-rows: 470px auto; width: min(100%, 800px); margin: 20px auto 18px; }
+.portfolio-toolkit-orbit { position: relative; height: 470px; }
+.portfolio-tool-token { position: absolute; width: var(--tool-size); height: var(--tool-size); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; border: 1px solid #ffffffad; border-radius: 19px; box-shadow: 0 5px 0 #171b2b15, 0 12px 22px #1a254914, inset 0 2px 3px #ffffffa1; background: #fffdf7; cursor: pointer; transition: box-shadow .25s, opacity .25s, filter .25s; animation: portfolio-tool-float 6.2s ease-in-out infinite; animation-play-state: paused; }
 .portfolio-toolkit-stage.is-visible .portfolio-tool-token { animation-play-state: running; }
 .portfolio-tool-token:nth-child(2n) { animation-delay: -2.4s; animation-duration: 7.2s; }
 .portfolio-tool-token:nth-child(3n) { animation-delay: -4.1s; animation-duration: 6.8s; }
-.portfolio-toolkit-stage.is-visible .portfolio-tool-token:hover, .portfolio-toolkit-stage.is-visible .portfolio-tool-token:focus-visible { animation-play-state: paused; box-shadow: 0 6px 0 #171b2b15, 0 18px 30px #1a25491d, inset 0 2px 3px #ffffffa1; }
+.portfolio-toolkit-stage.is-visible .portfolio-tool-token:hover,
+.portfolio-toolkit-stage.is-visible .portfolio-tool-token:focus-visible { animation-play-state: paused; box-shadow: 0 6px 0 #171b2b15, 0 18px 30px #1a25491d, inset 0 2px 3px #ffffffa1; }
 .portfolio-tool-token:focus-visible { outline: 3px solid var(--ink); outline-offset: 6px; }
 .portfolio-tool-token span { font-size: 11px; font-weight: 600; color: #142337; }
 .portfolio-tool-cpp span, .portfolio-tool-linux span { color: #fff; }
 .portfolio-tool-token b { font-size: 29px; letter-spacing: -.07em; }
+/* Selecting a tool lights its whole domain and quiets the rest. */
+.portfolio-tool-token.is-dimmed { opacity: .46; filter: saturate(.55); }
+.portfolio-tool-token.is-lit { box-shadow: 0 5px 0 #171b2b15, 0 14px 26px #1a25491a, inset 0 2px 3px #ffffffa1, 0 0 0 2px color-mix(in srgb, var(--tool-accent) 55%, transparent); }
+.portfolio-tool-token.is-selected { opacity: 1; filter: none; box-shadow: 0 6px 0 #171b2b15, 0 18px 32px #1a254924, inset 0 2px 3px #ffffffa1, 0 0 0 3px var(--tool-accent); }
+.portfolio-tool-token.is-selected::after { content: ""; position: absolute; inset: -9px; border-radius: 26px; border: 1px dashed color-mix(in srgb, var(--tool-accent) 55%, transparent); pointer-events: none; }
+
 .portfolio-tool-java { left: 32%; top: 3%; rotate: -8deg; color: #de5941; }
 .portfolio-tool-python { left: 2%; top: 30%; rotate: -12deg; background: #ffdb68; color: #355d8b; }
 .portfolio-tool-cpp { left: 6%; top: 58%; rotate: 7deg; background: #416daa; color: white; }
@@ -25,42 +34,58 @@
 .portfolio-tool-rest svg { width: 24px; height: 24px; }
 .portfolio-tool-linux { right: 13%; top: 12%; rotate: 8deg; width: var(--compact-size); height: var(--compact-size); border-radius: 15px; background: #333a50; color: #f8e6ac; }
 .portfolio-tool-linux svg { width: 24px; height: 24px; }
-.portfolio-toolbox { position: absolute; width: 400px; height: 320px; left: 50%; top: 104px; transform: translateX(-50%) rotate(-4deg); filter: drop-shadow(5px 14px 10px #2e273214); pointer-events: none; }
-.portfolio-toolbox svg { display: block; width: 100%; height: 100%; overflow: visible; }
-.portfolio-toolkit-annotation { position: absolute; bottom: 0; left: 0; right: 0; font-size: 13px; color: var(--muted-ink); }
-.portfolio-toolkit-annotation span { display: inline-block; margin-left: 8px; color: var(--ink); font-size: 22px; }
-.portfolio-toolkit-details { max-width: 1000px; margin: 42px auto 0; }
-.portfolio-toolkit-tabs { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 16px; }
-.portfolio-toolkit-tabs button { color: var(--muted-ink); background: transparent; padding: 10px 14px; border-radius: 6px; border: 1px solid transparent; cursor: pointer; font-size: 12px; transition: background .18s, color .18s; }
-.portfolio-toolkit-tabs button:hover { color: var(--ink); background: #22283b08; }
-.portfolio-toolkit-tabs button.is-selected { color: #142337; background: var(--yellow); border-color: #22283b12; }
+
+/* ---------- Box ---------- */
+.portfolio-toolbox { position: absolute; width: 400px; height: 320px; left: 50%; top: 118px; transform: translateX(-50%) rotate(-4deg); filter: drop-shadow(5px 14px 10px #2e273214); pointer-events: none; }
+.portfolio-toolbox svg { position: relative; display: block; width: 100%; height: 100%; overflow: visible; }
+.portfolio-toolbox-glow { position: absolute; left: 50%; top: 52%; width: 340px; height: 240px; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--tool-accent) 26%, transparent), transparent 72%); filter: blur(18px); transition: background .45s; }
+
+/* ---------- Spotlight ---------- */
+.portfolio-toolkit-spotlight { position: relative; z-index: 3; margin: 6px auto 0; width: min(100%, 660px); padding: 15px 18px 14px; border: 1px solid var(--line); border-radius: 14px; background: color-mix(in srgb, var(--paper) 76%, var(--page)); box-shadow: 0 12px 30px #1423370d; text-align: left; }
+.portfolio-toolkit-spotlight::before { content: ""; position: absolute; left: 18px; right: 18px; top: -7px; height: 6px; border-left: 1px solid color-mix(in srgb, var(--muted-ink) 34%, transparent); border-right: 1px solid color-mix(in srgb, var(--muted-ink) 34%, transparent); border-top: 1px solid color-mix(in srgb, var(--muted-ink) 34%, transparent); border-radius: 6px 6px 0 0; opacity: .6; }
+.portfolio-toolkit-spotlight-head { display: flex; align-items: center; gap: 8px; padding-bottom: 10px; }
+.portfolio-toolkit-spotlight-dot { width: 7px; height: 7px; flex-shrink: 0; border-radius: 50%; background: var(--tool-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--tool-accent) 20%, transparent); transition: background .35s, box-shadow .35s; }
+.portfolio-toolkit-spotlight-label { font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--coral); }
+.portfolio-toolkit-spotlight-count { margin-left: auto; font-size: 9px; color: var(--muted-ink); }
+.portfolio-toolkit-spotlight-chips { display: flex; flex-wrap: wrap; gap: 5px; margin: 0; padding: 0; list-style: none; }
+.portfolio-toolkit-spotlight-chips li { padding: 4px 8px; border: 1px solid var(--line); border-radius: 4px; background: color-mix(in srgb, var(--page) 72%, transparent); font-size: 10.5px; font-weight: 600; color: var(--ink); }
+.portfolio-toolkit-spotlight-chips .is-more { color: var(--muted-ink); border-style: dashed; }
+.portfolio-toolkit-spotlight-evidence { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 11px; padding-top: 10px; border-top: 1px dashed var(--line); }
+.portfolio-toolkit-spotlight-caption { font-size: 8px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; color: var(--muted-ink); }
+.portfolio-toolkit-evidence-pill { display: inline-flex; align-items: baseline; gap: 6px; padding: 3px 8px; border-radius: 4px; background: color-mix(in srgb, var(--ink) 4%, transparent); border-left: 2px solid var(--coral); }
+.portfolio-toolkit-evidence-pill strong { font-size: 10px; font-weight: 700; color: var(--ink); letter-spacing: -.01em; }
+.portfolio-toolkit-evidence-pill em { font-style: normal; font-size: 9px; color: var(--muted-ink); }
+
+/* ---------- Index ---------- */
+.portfolio-toolkit-tabs { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-top: 18px; }
+.portfolio-toolkit-tabs button { color: var(--muted-ink); background: transparent; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--line); cursor: pointer; font-size: 11px; font-weight: 650; transition: background .18s, color .18s, border-color .18s; }
+.portfolio-toolkit-tabs button:hover { color: var(--ink); border-color: color-mix(in srgb, var(--ink) 26%, var(--line)); }
+.portfolio-toolkit-tabs button.is-selected { color: #142337; background: var(--yellow); border-color: color-mix(in srgb, var(--ink) 10%, transparent); }
 .portfolio-toolkit-tabs button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
-.portfolio-toolkit-panel { padding: 24px 0 0; min-height: 123px; }
-.portfolio-toolkit-panel[hidden] { display: none; }
-.portfolio-toolkit-group-label { color: var(--muted-ink); font-size: 11px; }
-.portfolio-toolkit-panel ul { display: flex; justify-content: center; gap: 12px 22px; flex-wrap: wrap; margin: 16px 0 0; padding: 0; list-style: none; }
-.portfolio-toolkit-panel li { font-size: 22px; font-weight: 600; letter-spacing: -.035em; }
-.portfolio-toolkit-panel li:not(:last-child)::after { content: "/"; color: #a09f93; font-weight: 400; margin-left: 22px; }
-.portfolio-toolkit-footnote { font-size: 12px; color: var(--muted-ink); margin-top: 12px; }
+.portfolio-toolkit-footnote { font-size: 12px; color: var(--muted-ink); margin: 16px 0 0; }
+.portfolio-toolkit-footnote .text-link { font-size: 12px; margin-left: 5px; }
+
 @keyframes portfolio-tool-float { 0%, 100% { translate: 0 0; } 50% { translate: 0 calc(-1 * var(--float-distance, 5px)); } }
+
 @media (min-width: 641px) and (max-height: 820px) {
   .portfolio-toolkit { padding-top: 55px; padding-bottom: 70px; }
   .portfolio-toolkit .section-label { margin-bottom: 12px; }
   .portfolio-toolkit .section-heading { margin-top: 12px; font-size: 52px; }
   .portfolio-toolkit .section-copy { font-size: 16px; margin-top: 16px; }
-  .portfolio-toolkit-stage { --tool-size: 64px; --compact-size: 54px; --float-distance: 4px; width: min(100%, 660px); height: 360px; margin-top: 14px; }
+  .portfolio-toolkit-stage { --tool-size: 64px; --compact-size: 54px; --float-distance: 4px; grid-template-rows: 390px auto; }
+  .portfolio-toolkit-orbit { height: 390px; }
   .portfolio-tool-token { border-radius: 15px; }
   .portfolio-tool-token svg { width: 26px; height: 26px; }
   .portfolio-tool-token span { font-size: 10px; }
   .portfolio-tool-token b { font-size: 24px; }
   .portfolio-tool-rest svg, .portfolio-tool-linux svg { width: 21px; height: 21px; }
-  .portfolio-toolbox { width: 330px; height: 264px; top: 74px; }
-  .portfolio-toolkit-annotation { font-size: 11px; }
-  .portfolio-toolkit-details { margin-top: 25px; }
+  .portfolio-toolbox { width: 330px; height: 264px; top: 92px; }
+  .portfolio-toolbox-glow { width: 280px; height: 200px; }
 }
 @media (max-width: 640px) {
   .portfolio-toolkit { padding-top: 60px; padding-bottom: 64px; }
-  .portfolio-toolkit-stage { --tool-size: 54px; --compact-size: 44px; --float-distance: 3px; width: min(100%, 390px); height: 370px; margin-top: 25px; }
+  .portfolio-toolkit-stage { --tool-size: 54px; --compact-size: 44px; --float-distance: 3px; grid-template-rows: 400px auto; margin-top: 22px; }
+  .portfolio-toolkit-orbit { height: 400px; }
   .portfolio-tool-token { border-radius: 14px; gap: 3px; }
   .portfolio-tool-token svg { width: 25px; height: 25px; }
   .portfolio-tool-token span { font-size: 9px; }
@@ -76,17 +101,15 @@
   .portfolio-tool-rest { left: 7%; top: 9%; border-radius: 12px; }
   .portfolio-tool-linux { right: 3%; top: 10%; border-radius: 12px; }
   .portfolio-tool-rest svg, .portfolio-tool-linux svg { width: 19px; height: 19px; }
-  .portfolio-toolbox { width: 230px; height: 184px; top: 103px; }
-  .portfolio-toolkit-annotation { font-size: 10px; }
-  .portfolio-toolkit-details { margin-top: 27px; }
-  .portfolio-toolkit-tabs { gap: 4px; }
-  .portfolio-toolkit-tabs button { padding: 8px 10px; font-size: 10px; }
-  .portfolio-toolkit-panel { min-height: 143px; }
-  .portfolio-toolkit-panel ul { gap: 9px 14px; }
-  .portfolio-toolkit-panel li { font-size: 18px; }
-  .portfolio-toolkit-panel li:not(:last-child)::after { margin-left: 14px; }
+  .portfolio-toolbox { width: 230px; height: 184px; top: 116px; }
+  .portfolio-toolbox-glow { width: 210px; height: 150px; }
+  .portfolio-toolkit-spotlight { padding: 13px 14px 12px; border-radius: 12px; }
+  .portfolio-toolkit-spotlight-chips li { font-size: 10px; }
+  .portfolio-toolkit-tabs { gap: 4px; margin-top: 14px; }
+  .portfolio-toolkit-tabs button { padding: 7px 10px; font-size: 9.5px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .portfolio-tool-token, .portfolio-toolkit-tabs button { transition: none; }
   .portfolio-tool-token { animation: none; }
+  .portfolio-tool-token.is-selected::after { display: none; }
 }

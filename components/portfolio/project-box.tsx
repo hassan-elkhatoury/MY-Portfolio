@@ -1,13 +1,14 @@
 "use client"
 
-import { useId, useRef, useState, type CSSProperties } from "react"
+import { useId, useRef, useState, type CSSProperties, type PointerEvent } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import * as Dialog from "@radix-ui/react-dialog"
-import { motion, useReducedMotion } from "framer-motion"
+import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "framer-motion"
 import { ArrowDown, ArrowUpRight, X, Github, FileText, ExternalLink, PackageOpen } from "lucide-react"
 import { projects, type Project } from "@/lib/portfolio-data"
 import { projectCaseStudyPath } from "@/lib/project-case-links"
+import { ProjectMicroScene } from "./project-micro-scene"
 import "./project-box.css"
 
 const covers = [
@@ -71,9 +72,24 @@ export function ProjectBox() {
   const [selected, setSelected] = useState<Project | null>(null)
   const lastTrigger = useRef<HTMLButtonElement | null>(null)
 
+  // The box behaves like a light object: it leans toward the cursor and settles back.
+  const tiltX = useMotionValue(0)
+  const tiltY = useMotionValue(0)
+  const leanX = useSpring(tiltX, { stiffness: 120, damping: 18, mass: .6 })
+  const leanY = useSpring(tiltY, { stiffness: 120, damping: 18, mass: .6 })
+  const rotateX = useTransform(leanY, [-1, 1], [6, -6])
+  const rotateY = useTransform(leanX, [-1, 1], [-7, 7])
+
   function openProject(project: Project, trigger: HTMLButtonElement) {
     lastTrigger.current = trigger
     setSelected(project)
+  }
+
+  function trackBox(event: PointerEvent<HTMLDivElement>) {
+    if (reducedMotion || event.pointerType !== "mouse") return
+    const bounds = event.currentTarget.getBoundingClientRect()
+    tiltX.set(Math.max(-1, Math.min(1, ((event.clientX - bounds.left) / bounds.width) * 2 - 1)))
+    tiltY.set(Math.max(-1, Math.min(1, ((event.clientY - bounds.top) / bounds.height) * 2 - 1)))
   }
 
   return (
@@ -91,9 +107,11 @@ export function ProjectBox() {
           whileInView={reducedMotion ? undefined : { y: [24, 0], rotate: [-1, 0] }}
           viewport={{ once: true, amount: 0.25 }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          onPointerLeave={() => setActive(null)}
+          onPointerMove={trackBox}
+          onPointerLeave={() => { setActive(null); tiltX.set(0); tiltY.set(0) }}
         >
           <div className="work-box-model">
+            <motion.div className="work-box-tilt" style={reducedMotion ? undefined : { rotateX, rotateY }}>
             <svg className="work-box-shell work-box-shell-back" viewBox="0 0 500 420" fill="none" aria-hidden="true">
               <defs>
                 <linearGradient id={`${boxId}-lid`} x1="90" y1="20" x2="450" y2="260" gradientUnits="userSpaceOnUse"><stop stopColor="#f4e3bd" /><stop offset="1" stopColor="#dfc18e" /></linearGradient>
@@ -148,6 +166,7 @@ export function ProjectBox() {
               <path d="M363 337 367 389" stroke="#c39d66" strokeWidth="1" />
               <g transform="matrix(1 .345 .075 1 113 273)"><text className="work-box-emboss-shadow" x="0" y="1">Things I built</text><text className="work-box-emboss" x="0" y="0">Things I built</text></g>
             </svg>
+          </motion.div>
           </div>
           <span className="work-shelf-hint"><ArrowDown size={14} aria-hidden="true" /> Tap a card to take a closer look</span>
         </motion.div>
@@ -191,6 +210,7 @@ export function ProjectBox() {
               </div>
               <Dialog.Title className="work-dialog-title">{selected.title}</Dialog.Title>
               <Dialog.Description className="work-dialog-description">{selected.description}</Dialog.Description>
+              <ProjectMicroScene project={selected} accent={covers[projects.findIndex(project => project.title === selected.title) % covers.length]?.color ?? "#e76c43"} />
               {selected.image && <div className="work-dialog-image"><Image src={selected.image} alt={`${selected.title} project screenshot`} width={1200} height={740} sizes="(max-width: 800px) 90vw, 760px" style={{ width: "100%", height: "auto" }} /></div>}
               <div className="work-dialog-detail">
                 <span className="work-dialog-detail-label">BUILT WITH</span>

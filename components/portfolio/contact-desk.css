@@ -8,6 +8,25 @@
 .contact-desk .highlight::before { background: #ffe18b; }
 .contact-desk .section-copy { margin-inline: auto; max-width: 650px; color: #fff; text-shadow: 0 1px 10px #294b6326; }
 .contact-desk-panel { --ink: #172a40; --muted-ink: #596d7f; --page: #fff9ed; --paper: #fffdf8; --line: #d7ddd9; position: relative; margin: 42px auto 0; padding: 25px 36px 23px; color: #172a40; border-radius: 34px; background-color: #fff9ed; background-image: linear-gradient(#a5b4b92b 1px, transparent 1px), linear-gradient(90deg, #a5b4b92b 1px, transparent 1px); background-size: 31px 31px; box-shadow: 0 16px 55px #23496916; }
+/* The record player sits on the desk's top-right corner, like a real object would. */
+.contact-desk-panel > .ambient-player { position: absolute; right: 30px; top: -74px; z-index: 6; width: auto; }
+.contact-desk-panel > .ambient-player .ambient-player-object { width: 96px; height: 88px; }
+.contact-desk-panel > .ambient-player .ambient-player-wood { width: 95px; height: 76px; }
+.contact-desk-panel > .ambient-player .ambient-player-record { width: 55px; height: 55px; }
+.contact-desk-panel > .ambient-player .ambient-player-record span { width: 19px; height: 19px; top: calc(50% - 9.5px); left: calc(50% - 9.5px); border-width: 5px; }
+.contact-desk-panel > .ambient-player .ambient-player-record span::after { top: 3px; left: 3px; }
+.contact-desk-panel > .ambient-player .ambient-player-arm { width: 38px; top: 14px; right: 10px; }
+.contact-desk-panel > .ambient-player .ambient-player-chip { margin-top: 6px; }
+.contact-desk-panel > .ambient-player .ambient-player-status { width: 150px; margin-left: -27px; font-size: 9px; }
+
+/* Live desk readout above the keyboard. */
+.contact-desk-status { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; margin: 26px auto 0; }
+.contact-desk-status-item { display: inline-flex; align-items: center; gap: 7px; padding: 8px 13px; border: 1px solid #ffffff4d; border-radius: 24px; background: #1b48633d; color: #f4fbff; font-size: 11px; font-weight: 600; letter-spacing: .01em; backdrop-filter: blur(8px); }
+.contact-desk-status-label { font-size: 8px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; opacity: .68; }
+.contact-desk-status-item time { display: inline-flex; align-items: baseline; gap: 4px; font-variant-numeric: tabular-nums; font-size: 12px; font-weight: 700; }
+.contact-desk-status-item time small { font-size: 8px; font-weight: 600; opacity: .68; }
+.contact-desk-status-live i { position: relative; width: 7px; height: 7px; flex-shrink: 0; border-radius: 50%; background: #7ee2a8; box-shadow: 0 0 0 0 #7ee2a88c; animation: contact-live 2.6s ease-out infinite; }
+@keyframes contact-live { 0% { box-shadow: 0 0 0 0 #7ee2a880; } 70%, 100% { box-shadow: 0 0 0 8px #7ee2a800; } }
 .contact-desk-keyboard { position: relative; margin: 0 auto; }
 .contact-desk-keyboard:focus-visible { outline: 3px solid #e76750; outline-offset: 11px; border-radius: 15px; }
 .contact-desk-keyboard-hint { margin: 0; color: #526b80; font-size: 12px; font-weight: 550; line-height: 1.8; }
@@ -67,6 +86,7 @@
 .contact-desk-back-top:hover { background: #fff9ed; color: #172a40; }
 @media (max-width: 1000px) {
   .contact-desk-panel { padding: 24px 22px 22px; }
+  .contact-desk-panel > .ambient-player { right: 16px; top: -70px; transform: scale(.9); transform-origin: top right; }
   .contact-desk-keyboard-base { gap: 12px; }
   .contact-desk-key { flex-basis: 102px; width: 102px; height: 105px; padding: 5px 8px 22px; border-radius: 24px; }
   .contact-desk-key-top { border-radius: 17px; }
@@ -76,6 +96,13 @@
 }
 @media (max-width: 700px) {
   .contact-desk { padding-top: 70px; padding-bottom: 25px; }
+  .contact-desk-panel > .ambient-player { position: relative; right: auto; top: auto; transform: none; display: flex; align-items: center; justify-content: center; gap: 9px; margin: 0 0 14px; }
+  .contact-desk-panel > .ambient-player .ambient-player-object { display: none; }
+  .contact-desk-panel > .ambient-player .ambient-player-chip { left: auto; transform: none; margin-top: 0; min-height: 36px; font-size: 10px; }
+  .contact-desk-panel > .ambient-player .ambient-player-status { width: auto; margin: 0; text-align: left; }
+  .contact-desk-status { margin-top: 20px; gap: 7px; }
+  .contact-desk-status-item { padding: 7px 10px; font-size: 10px; }
+  .contact-desk-status-label { font-size: 7px; }
   .contact-desk-desktop-break { display: none; }
   .contact-desk-panel { padding: 21px 18px 20px; border-radius: 26px; margin-top: 33px; }
   .contact-desk-keyboard-hint { font-size: 10px; }
@@ -117,4 +144,5 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .contact-desk-key-top, .contact-desk-back-top { transition: none; }
+  .contact-desk-status-live i { animation: none; }
 }

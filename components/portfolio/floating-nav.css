@@ -39,12 +39,18 @@
 .portfolio-motion:disabled { opacity: .8; cursor: default; }
 
 .portfolio-dock { position: fixed; left: 50%; bottom: max(22px, env(safe-area-inset-bottom)); transform: translateX(-50%); display: flex; align-items: center; gap: 14px; padding: 7px; border-radius: 999px; white-space: nowrap; isolation: isolate; box-shadow: inset 0 1px 0 rgb(255 255 255 / .65), inset 0 -1px 0 rgb(255 255 255 / .2), 0 12px 36px rgb(20 35 55 / .16); }
+/* Page progress, measured against the width of the page rather than the dock. */
+.portfolio-progress { position: fixed; z-index: 31; left: 0; right: 0; top: 0; height: 2px; transform-origin: left; background: linear-gradient(90deg, var(--coral), var(--yellow)); pointer-events: none; }
+
 .portfolio-dock::before { content: ""; pointer-events: none; position: absolute; inset: 2px; border: 1px solid rgb(255 255 255 / .16); border-radius: inherit; z-index: -1; }
 .portfolio-dock-links { display: flex; align-items: center; gap: 3px; }
-.portfolio-dock-link { display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid transparent; border-radius: 999px; padding: 13px 18px; min-height: 48px; color: var(--nav-muted); font-size: 13px; font-weight: 650; text-decoration: none; transition: background .2s, box-shadow .2s, color .2s, transform .2s; }
+.portfolio-dock-link { position: relative; display: inline-flex; align-items: center; justify-content: center; border: 1px solid transparent; border-radius: 999px; color: var(--nav-muted); font-size: 13px; font-weight: 650; text-decoration: none; transition: color .2s; }
+.portfolio-dock-content { position: relative; z-index: 1; display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 13px 18px; min-height: 48px; }
+.portfolio-dock-pill { position: absolute; inset: 0; border-radius: 999px; background: var(--nav-highlight); border: 1px solid var(--nav-edge); box-shadow: inset 0 1px 0 rgb(255 255 255 / .45), 0 3px 10px rgb(20 35 55 / .08); }
 .portfolio-dock-link img { width: 22px; height: 22px; flex-shrink: 0; max-width: none; border-radius: 50%; object-fit: cover; }
-.portfolio-dock-link:hover { background: rgb(255 255 255 / .28); color: var(--nav-ink); }
-.portfolio-dock-link.is-active { background: var(--nav-highlight); border-color: var(--nav-edge); color: var(--nav-ink); box-shadow: inset 0 1px 0 rgb(255 255 255 / .45), 0 3px 10px rgb(20 35 55 / .08); }
+.portfolio-dock-link:hover { color: var(--nav-ink); }
+.portfolio-dock-link:hover .portfolio-dock-content::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: 999px; background: rgb(255 255 255 / .28); }
+.portfolio-dock-link.is-active { color: var(--nav-ink); }
 .portfolio-dock-resume { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid rgb(255 255 255 / .18); border-radius: 999px; background: rgb(20 35 55 / .94); color: #fff; padding: 14px 21px; min-height: 48px; font-size: 13px; font-weight: 700; text-decoration: none; box-shadow: inset 0 1px 0 rgb(255 255 255 / .12), 0 4px 12px rgb(20 35 55 / .12); transition: transform .2s, background .2s; }
 .portfolio-dock-resume::before { content: ""; position: absolute; left: -9px; top: 12px; bottom: 12px; width: 1px; background: rgb(73 91 115 / .2); }
 .portfolio-dock-resume:hover { transform: translateY(-2px); background: #2c4158; }
@@ -64,9 +70,10 @@
   .portfolio-motion svg { width: 14px; height: 14px; }
   .portfolio-dock { bottom: max(14px, env(safe-area-inset-bottom)); gap: 10px; padding: 5px; max-width: calc(100% - 20px); }
   .portfolio-dock-links { gap: 1px; }
-  .portfolio-dock-link { min-height: 42px; padding: 10px 9px; font-size: 11px; gap: 4px; }
+  .portfolio-dock-link { min-height: 42px; font-size: 11px; }
+  .portfolio-dock-content { padding: 10px 9px; min-height: 42px; gap: 4px; }
   .portfolio-dock-link:first-child img { width: 20px; height: 20px; }
-  .portfolio-dock-link:first-child span { display: none; }
+  .portfolio-dock-link:first-child .portfolio-dock-content > span:last-child { display: none; }
   .portfolio-dock-resume { min-height: 42px; padding: 11px 12px; font-size: 11px; gap: 3px; }
   .portfolio-dock-resume::before { left: -7px; top: 10px; bottom: 10px; }
 }

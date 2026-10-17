@@ -4,6 +4,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { CodeXml } from "lucide-react"
 import { CaseStudyVisual } from "@/components/portfolio/case-study-visual"
+import { CaseProgress } from "@/components/portfolio/case-progress"
 import { caseStudies, getCaseStudy } from "@/lib/case-studies"
 import { profile } from "@/lib/portfolio-data"
 import "@/components/portfolio/case-study.css"
@@ -37,6 +38,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
 
   return (
     <main id="about" className="case-page" tabIndex={-1} aria-labelledby="case-title">
+      <CaseProgress />
       <div className="case-page-inner">
         <header className="case-topbar">
           <Link href="/#selected-work" className="case-back"><span aria-hidden="true">←</span> Back to selected work</Link>

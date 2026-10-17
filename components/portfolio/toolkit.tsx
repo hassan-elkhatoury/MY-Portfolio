@@ -1,53 +1,99 @@
 "use client"
 
-import { useId, useRef, useState } from "react"
+import { useId, useRef, useState, type CSSProperties } from "react"
 import { motion, useInView, useReducedMotion } from "framer-motion"
-import { Coffee, GitBranch, Database, Container, Cloud, Braces, Network, Terminal, Wrench } from "lucide-react"
-import { skillGroups } from "@/lib/portfolio-data"
+import { Coffee, GitBranch, Database, Container, Cloud, Braces, Network, Terminal, Wrench, ArrowUpRight } from "lucide-react"
+import { projects, skillGroups, type SkillGroup } from "@/lib/portfolio-data"
 import "./toolkit.css"
-import { useMotionPreferences } from "./motion-preferences"
 
-const tools = [
-  { name: "Java", group: 0, Icon: Coffee, className: "java" },
-  { name: "Python", group: 0, Icon: Braces, className: "python" },
-  { name: "C++", group: 0, Icon: null, className: "cpp" },
-  { name: "Git", group: 3, Icon: GitBranch, className: "git" },
-  { name: "Docker", group: 3, Icon: Container, className: "docker" },
-  { name: "MongoDB", group: 2, Icon: Database, className: "mongo" },
-  { name: "SQL", group: 2, Icon: Database, className: "sql" },
-  { name: "OCI", group: 3, Icon: Cloud, className: "oci" },
-  { name: "REST", group: 1, Icon: Network, className: "rest" },
-  { name: "Linux", group: 3, Icon: Terminal, className: "linux" },
+type Tool = { name: string; group: number; Icon: typeof Coffee | null; className: string; ink: string }
+
+const tools: Tool[] = [
+  { name: "Java", group: 1, Icon: Coffee, className: "java", ink: "#de5941" },
+  { name: "Python", group: 0, Icon: Braces, className: "python", ink: "#355d8b" },
+  { name: "C++", group: 0, Icon: null, className: "cpp", ink: "#ffffff" },
+  { name: "Git", group: 3, Icon: GitBranch, className: "git", ink: "#ee593d" },
+  { name: "Docker", group: 3, Icon: Container, className: "docker", ink: "#ffffff" },
+  { name: "MongoDB", group: 2, Icon: Database, className: "mongo", ink: "#32613c" },
+  { name: "SQL", group: 2, Icon: Database, className: "sql", ink: "#755133" },
+  { name: "OCI", group: 3, Icon: Cloud, className: "oci", ink: "#c54538" },
+  { name: "REST", group: 1, Icon: Network, className: "rest", ink: "#57536e" },
+  { name: "Linux", group: 3, Icon: Terminal, className: "linux", ink: "#f8e6ac" },
 ]
 
+const domainLabels = ["Languages", "Backend", "Databases", "Tools & platforms", "CS fundamentals", "Frontend", "AI / ML"]
+
+/** Match a domain's real skills against the tech actually listed on each project. */
+function shippedIn(group: SkillGroup) {
+  const terms = group.skills.map(skill => skill.toLowerCase())
+  return projects
+    .map(project => {
+      const hits = project.tech.filter(tech => {
+        const value = tech.toLowerCase()
+        return terms.some(term => value === term || value.split(/[\s/&.,+-]+/).includes(term))
+      })
+      return { project, hits }
+    })
+    .filter(item => item.hits.length)
+    .sort((a, b) => b.hits.length - a.hits.length)
+    .slice(0, 3)
+}
+
 export function Toolkit() {
-  const [selected, setSelected] = useState(0)
-  const { paused } = useMotionPreferences()
   const systemReducedMotion = useReducedMotion()
-  const reduceMotion = paused || systemReducedMotion
   const id = useId()
   const boxId = `${id.replace(/:/g, "")}-toolbox`
   const stage = useRef<HTMLDivElement>(null)
   const visible = useInView(stage, { margin: "80px" })
-  const group = skillGroups[selected]
+  const [selected, setSelected] = useState(1)
+  const [preview, setPreview] = useState<number | null>(null)
+  const reduceMotion = Boolean(systemReducedMotion)
+
+  const shown = preview ?? selected
+  const group = skillGroups[shown]
+  const shipped = shippedIn(group)
+  const activeTool = tools.find(tool => tool.group === shown)
+  const accent = activeTool?.ink ?? "#c2473a"
+  const accentStyle = { "--tool-accent": accent } as CSSProperties
 
   return (
     <section id="skills" className="portfolio-section portfolio-toolkit" aria-labelledby="toolkit-heading">
       <div className="section-inner">
         <div className="section-label"><Wrench size={18} aria-hidden="true" /> MY EVERYDAY ESSENTIALS</div>
         <h2 id="toolkit-heading" className="section-heading">A peek inside<br />my <span className="highlight">toolbox.</span></h2>
-        <p className="section-copy">The languages, tools, and ideas I reach for to turn a good problem into a working solution.</p>
+        <p className="section-copy">Pick a tool. The box opens on that part of the stack, and shows where it shipped.</p>
 
-        <div ref={stage} className={`portfolio-toolkit-stage${visible ? " is-visible" : ""}`}>
-          <div className="portfolio-toolkit-orbit" aria-label="Explore the tools in my toolkit">
-            {tools.map(({ name, group: toolGroup, Icon, className }, index) => (
-              <motion.button key={name} type="button" className={`portfolio-tool-token portfolio-tool-${className}`} onClick={() => setSelected(toolGroup)} aria-label={`Explore ${name} and ${skillGroups[toolGroup].title}`} aria-controls={`${id}-panel-${toolGroup}`} initial={false} whileInView={reduceMotion ? {} : { opacity: [0, 1], scale: [0.85, 1], y: [12, 0] }} viewport={{ once: true }} transition={{ duration: 0.5, delay: index * 0.035 }} whileHover={reduceMotion ? {} : { y: -6, rotate: index % 2 ? 4 : -4, scale: 1.05 }} whileTap={reduceMotion ? {} : { scale: 0.95 }}>
+        <div ref={stage} className={`portfolio-toolkit-stage${visible ? " is-visible" : ""}`} style={accentStyle}>
+          <div className="portfolio-toolkit-orbit" role="group" aria-label="Explore the tools in my toolkit">
+            {tools.map(({ name, group: toolGroup, Icon, className, ink }, index) => (
+              <motion.button
+                key={name}
+                type="button"
+                className={`portfolio-tool-token portfolio-tool-${className}${selected === toolGroup ? " is-selected" : ""}${preview === toolGroup ? " is-previewed" : ""}${shown === toolGroup ? " is-lit" : " is-dimmed"}`}
+                onClick={() => { setSelected(toolGroup); setPreview(null) }}
+                onPointerEnter={event => { if (event.pointerType === "mouse") setPreview(toolGroup) }}
+                onPointerLeave={() => setPreview(null)}
+                onFocus={() => setPreview(toolGroup)}
+                onBlur={() => setPreview(null)}
+                aria-pressed={selected === toolGroup}
+                aria-controls={`${id}-spotlight`}
+                aria-label={`${name}: show ${skillGroups[toolGroup].title}`}
+                style={{ "--tool-ink": ink } as CSSProperties}
+                initial={false}
+                whileInView={reduceMotion ? {} : { opacity: [0, 1], scale: [0.85, 1], y: [12, 0] }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.035 }}
+                whileHover={reduceMotion ? {} : { y: -6, rotate: index % 2 ? 4 : -4, scale: 1.05 }}
+                whileTap={reduceMotion ? {} : { scale: 0.95 }}
+              >
                 {Icon ? <Icon aria-hidden="true" size={32} strokeWidth={1.8} /> : <b aria-hidden="true">C++</b>}
                 <span>{name}</span>
               </motion.button>
             ))}
           </div>
+
           <div className="portfolio-toolbox" aria-hidden="true">
+            <span className="portfolio-toolbox-glow" />
             <svg viewBox="0 0 400 320" fill="none" focusable="false">
               <defs>
                 <linearGradient id={`${boxId}-front`} x1="94" y1="145" x2="241" y2="270" gradientUnits="userSpaceOnUse"><stop stopColor="#DBB185" /><stop offset="1" stopColor="#C7996B" /></linearGradient>
@@ -83,27 +129,59 @@ export function Toolkit() {
               </g>
             </svg>
           </div>
-          <span className="portfolio-toolkit-annotation">Pick a tool. Take a look inside. <span aria-hidden="true">↗</span></span>
+
+          {/* The answer appears under the box, where the eye already is. */}
+          <div id={`${id}-spotlight`} className="portfolio-toolkit-spotlight" aria-live="polite" aria-atomic="true">
+            <div className="portfolio-toolkit-spotlight-head">
+              <span className="portfolio-toolkit-spotlight-dot" aria-hidden="true" />
+              <span className="portfolio-toolkit-spotlight-label">{group.status} / {group.title}</span>
+              <span className="portfolio-toolkit-spotlight-count">{group.skills.length} skills</span>
+            </div>
+            <ul className="portfolio-toolkit-spotlight-chips">
+              {group.skills.slice(0, 8).map(skill => <li key={skill}>{skill}</li>)}
+              {group.skills.length > 8 && <li className="is-more">+{group.skills.length - 8}</li>}
+            </ul>
+            <div className="portfolio-toolkit-spotlight-evidence">
+              {shipped.length ? <>
+                <span className="portfolio-toolkit-spotlight-caption">Shipped in</span>
+                {shipped.map(({ project, hits }) => (
+                  <span key={project.title} className="portfolio-toolkit-evidence-pill">
+                    <strong>{project.title.startsWith("MODEYA") ? "MODEYA" : project.title.startsWith("Gestion") ? "E-service" : project.title}</strong>
+                    <em>{hits.slice(0, 2).join(" · ")}</em>
+                  </span>
+                ))}
+              </> : <span className="portfolio-toolkit-spotlight-caption">The groundwork behind every project on this page.</span>}
+            </div>
+          </div>
         </div>
 
-        <div className="portfolio-toolkit-details">
-          <div className="portfolio-toolkit-tabs" role="tablist" aria-label="Skill categories">
-            {skillGroups.map((item, index) => <button key={item.title} type="button" role="tab" id={`${id}-tab-${index}`} aria-selected={selected === index} aria-controls={`${id}-panel-${index}`} className={selected === index ? "is-selected" : ""} onClick={() => setSelected(index)} onKeyDown={(event) => {
-              if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return
-              event.preventDefault()
-              const next = event.key === "Home" ? 0 : event.key === "End" ? skillGroups.length - 1 : (index + (event.key === "ArrowRight" ? 1 : -1) + skillGroups.length) % skillGroups.length
-              setSelected(next)
-              document.getElementById(`${id}-tab-${next}`)?.focus()
-            }} tabIndex={selected === index ? 0 : -1}>{item.title}</button>)}
-          </div>
+        <div className="portfolio-toolkit-tabs" role="tablist" aria-label="Skill categories">
           {skillGroups.map((item, index) => (
-            <div key={item.title} role="tabpanel" tabIndex={0} id={`${id}-panel-${index}`} aria-labelledby={`${id}-tab-${index}`} hidden={selected !== index} className="portfolio-toolkit-panel">
-              <span className="portfolio-toolkit-group-label">{item.status} / {item.title}</span>
-              <ul>{item.skills.map(skill => <li key={skill}>{skill}</li>)}</ul>
-            </div>
+            <button
+              key={item.title}
+              type="button"
+              role="tab"
+              id={`${id}-tab-${index}`}
+              aria-selected={selected === index}
+              aria-controls={`${id}-spotlight`}
+              className={selected === index ? "is-selected" : ""}
+              onClick={() => setSelected(index)}
+              onKeyDown={event => {
+                if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return
+                event.preventDefault()
+                const next = event.key === "Home" ? 0 : event.key === "End" ? skillGroups.length - 1 : (index + (event.key === "ArrowRight" ? 1 : -1) + skillGroups.length) % skillGroups.length
+                setSelected(next)
+                document.getElementById(`${id}-tab-${next}`)?.focus()
+              }}
+              tabIndex={selected === index ? 0 : -1}
+            >{domainLabels[index] ?? item.title}</button>
           ))}
-          <p className="portfolio-toolkit-footnote">{group.title === "Backend & Software Engineering" ? "Thoughtful architecture, clear boundaries, and APIs that do their job." : "Always building on the fundamentals. Always making room to learn."}</p>
         </div>
+
+        <p className="portfolio-toolkit-footnote">
+          Always building on the fundamentals. Always making room to learn.
+          {" "}<a href="#selected-work" className="text-link">See the work <ArrowUpRight size={13} aria-hidden="true" /></a>
+        </p>
       </div>
     </section>
   )
