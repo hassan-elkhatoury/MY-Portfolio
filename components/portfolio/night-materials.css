@@ -1,0 +1,40 @@
+/* Shared material changes keep day/night transitions local and non-blocking. */
+body, .portfolio-section, .portfolio-dock, .contact-desk-panel, .credential-paper, .personal-story-note, .personal-story-polaroid, .personal-story-intern-note, .tool-object, .crate-plane, .tool-box-face { transition: background-color .45s ease, color .35s ease, border-color .35s ease; }
+.dark .credential-section .credential-paper { background: #21313d; border-color: #53606a; box-shadow: 1px 3px 3px #080f1738, 3px 18px 26px #080f1730; }
+.dark .credential-paper-content::before { border-color: #425360; }
+.dark .credential-paper h3, .dark .credential-recipient strong, .dark .credential-paper .credential-links a { color: #e7ebe5; }
+.dark .credential-paper :is(.credential-designation, .credential-id, .credential-expiry, .credential-id-label, .credential-recipient small), .dark .credential-paper-top > span, .dark .credential-footnote { color: #b3c0c4; }
+.dark .credential-copy { color: #d7dfdd; border-color: #536473; min-height: 44px; }
+.dark .credential-copy:hover { background: #354958; }
+.dark .credential-paper .credential-links, .dark .credential-rule { border-color: #435764; }
+.dark .credential-rule { background: #435764; }
+.dark .credential-paper-top img, .dark .credential-list-logo { background: #e7e9e2; border-radius: 3px; padding: 4px; }
+.dark .credential-seal { color: #cfbb80; background: #8b775b24; border-color: #8a8167; outline-color: #8a8167; }
+.dark .credential-count { background: #34453d; color: #c2cdb0; }
+.dark .personal-story-school { background: #4c4932; }
+.dark .personal-story-java { background: #583d49; }
+.dark .personal-story-note, .dark .personal-story-polaroid, .dark .personal-story-intern-note { color: #edf0e7; box-shadow: 2px 10px 24px #060d143d; }
+.dark .personal-story-polaroid { background: #25333d; }
+.dark .personal-story-intern-note { background: #34463f; }
+.dark .personal-story-note-kicker, .dark .personal-story-note p span { color: #d6d7cd; }
+.dark .personal-story-logo { mix-blend-mode: normal; background: #e3e5dc; padding: 4px; border-radius: 3px; }
+.dark .personal-story-note-footer { border-color: #ffffff30; }
+.dark .personal-story-note-link:focus-visible { outline-color: #ffe18b; }
+.dark .contact-desk-panel { --ink: #e8eee9; --muted-ink: #b3c2cd; --page: #1a2c3e; --paper: #21364a; --line: #42586a; background-color: var(--page); color: var(--ink); border-color: #4d6a7f; box-shadow: 0 28px 60px #040b194d, inset 0 1px 0 #8ca3b52e; }
+.dark .contact-desk-panel :is(.contact-desk-key-caption, .contact-desk-keyboard-hint, .contact-desk-copy-status, .contact-desk-message summary) { color: #b9c9d5; }
+.dark .contact-desk-message { border-color: #42586a; }
+.dark .contact-desk-message summary > span, .dark .contact-desk-form label { color: #e8eee9; }
+.dark .contact-desk-keyboard-hint kbd, .dark .contact-desk-email button { background: #30475a; color: #f0f0e8; border-color: #536c7e; box-shadow: none; }
+.dark .contact-desk-form input, .dark .contact-desk-form textarea { background: #132536; color: #edf1ec; border-color: #4c667a; }
+.dark .contact-desk-form input::placeholder, .dark .contact-desk-form textarea::placeholder { color: #a2b5c3; }
+.dark .contact-desk-form input:focus, .dark .contact-desk-form textarea:focus { outline-color: #e7c777; }
+.dark .contact-desk-send { background: #e7c777; color: #172a40; }
+.dark .contact-desk-form-status { color: #a2d6b6; }
+.dark .contact-desk-form-status.is-error { color: #ffbaad; }
+.dark .contact-desk-key { box-shadow: 0 3px 0 #081424, 0 15px 20px #050d185c; }
+.dark .contact-desk-key-top { border-color: #c5deef54; }
+.dark .contact-desk-footer { background: #0715237a; }
+.dark .contact-desk-status-item { background: #0e2437ad; }
+.dark .contact-desk .highlight { color: #192b3d; }
+html[data-motion-paused="true"] :is(.contact-sky-art, .portfolio-section, .contact-desk-panel) { transition: none; }
+@media(prefers-reduced-motion: reduce) { body, .contact-sky-art { transition: none; } }

@@ -1,11 +1,12 @@
 "use client"
 
-import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion"
-import { ArrowLeft, ArrowRight, Building2, GraduationCap, MapPin, Compass } from "lucide-react"
+import { motion, useMotionValue, useScroll, useSpring, useTransform, type MotionValue } from "framer-motion"
+import { ArrowDown, ArrowLeft, ArrowRight, Building2, MapPin, Compass, Maximize2, LocateFixed } from "lucide-react"
 import Image from "next/image"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { certifications, education, experiences } from "@/lib/portfolio-data"
 import { useMotionPreferences } from "./motion-preferences"
+import { JourneyTerrain } from "./journey-terrain"
 import "./journey.css"
 
 const codsoft = experiences.find(item => item.company.toLowerCase().includes("codsoft"))
@@ -18,52 +19,52 @@ const stops = [
     organization: education[1].institution, location: education[1].location,
     description: education[1].degree,
     details: ["ENSAH — " + education[0].details![1], "Started the Engineering Degree in Computer Science at ENSAH."],
-    logo: undefined, x: 14, y: 76,
+    logo: undefined, x: 230, y: 610,
   },
   {
     year: "2024", period: "2024 – 2027", label: "Engineering cycle", title: "Going deeper into systems.",
     organization: education[0].institution, location: education[0].location,
     description: education[0].details![0], details: education[0].focus!,
-    logo: education[0].logo, x: 14, y: 36,
+    logo: education[0].logo, x: 400, y: 400,
   },
   {
     year: "2025", period: codsoft?.period ?? "Feb 2025 – Mar 2025", label: "First internship", title: "Building with a real team.",
     organization: codsoft?.company ?? "CodSoft", location: codsoft?.location ?? "Remote",
     description: codsoft?.title ?? "Web Development Intern", details: codsoft?.responsibilities ?? [],
-    logo: codsoft?.logo, x: 37, y: 24,
+    logo: codsoft?.logo, x: 650, y: 320,
   },
   {
     year: "2025", period: certifications[2].issued!, label: "Into the cloud", title: "A new view from the cloud.",
     organization: certifications[2].issuer, location: "Oracle Cloud Infrastructure",
     description: certifications[2].title,
     details: ["Credential ID: " + certifications[2].credentialId, "Expires " + certifications[2].expires],
-    logo: certifications[2].logo, x: 61, y: 24,
+    logo: certifications[2].logo, x: 900, y: 430,
   },
   {
     year: "2026", period: certifications[0].issued!, label: "Java certified", title: "Making Java my specialty.",
     organization: "Oracle", location: "Java SE 11 & Java SE 17",
     description: "Oracle Certified Professional",
     details: [certifications[0].title, certifications[1].title],
-    logo: certifications[0].logo, x: 84, y: 36,
+    logo: certifications[0].logo, x: 1100, y: 270,
   },
   {
     year: "2026", mapLabel: "Mar 2026", period: modeya?.period ?? "Mar 2026 – Jun 2026", label: "MODEYA freelance", title: "Building a storefront end to end.",
     organization: modeya?.company ?? "MODEYA", location: modeya?.location ?? "",
     description: modeya?.title ?? "Freelance Full-Stack Developer", details: modeya?.responsibilities ?? [],
-    logo: modeya?.logo, x: 84, y: 76,
+    logo: modeya?.logo, x: 1320, y: 430,
   },
   {
     year: "2026", mapLabel: "Jul 2026", period: mef?.period ?? "Jul 2026 – Sep 2026", label: "MEF internship", title: "Engineering with purpose.",
     organization: mef?.company ?? "MEF", location: mef?.location ?? "",
     description: mef?.title ?? "Internship", details: mef?.responsibilities ?? [],
-    logo: mef?.logo, x: 60, y: 79,
+    logo: mef?.logo, x: 1430, y: 650,
   },
   {
     year: "2027", period: "2027 (Expected)", label: "The next chapter", title: "Still plenty of road ahead.",
     organization: education[0].institution, location: education[0].location,
     description: education[0].degree,
     details: ["Expected graduation: 2027", "Engineering Cycle: 2024 – 2027", "Seeking a 2027 PFE internship in Java backend engineering."],
-    logo: education[0].logo, x: 36, y: 79,
+    logo: education[0].logo, x: 1670, y: 520,
   },
 ]
 
@@ -74,117 +75,219 @@ function OrganizationLogo({ src }: { src?: string }) {
     : <span className="journey-organization-fallback" aria-hidden="true"><Building2 size={19} strokeWidth={1.5} /></span>
 }
 
-function RouteMap({ active, onSelect, charge, charged }: { active: number; onSelect: (index: number) => void; charge?: import("framer-motion").MotionValue<number>; charged: number }) {
+const routeSegments = [
+  "M230 610C155 505 290 510 400 400",
+  "M400 400C490 310 525 250 650 320",
+  "M650 320C755 385 765 500 900 430",
+  "M900 430C1010 365 950 215 1100 270",
+  "M1100 270C1240 310 1180 430 1320 430",
+  "M1320 430C1480 425 1290 620 1430 650",
+  "M1430 650C1560 690 1545 505 1670 520",
+]
+const route = routeSegments.map((segment, index) => index ? segment.replace(/^M[\d ]+C/, "C") : segment).join(" ")
+const clamp = (value: number, min = 0, max = 1) => Math.max(min, Math.min(max, value))
+// Leave a little room at both ends to settle into and out of the journey.
+const journeyProgress = (value: number) => clamp((value - .06) / .88)
+const progressForStop = (index: number) => .06 + index / (stops.length - 1) * .88
+
+function RouteMap({ active, onSelect, progress, paused }: {
+  active: number
+  onSelect: (index: number) => void
+  progress: MotionValue<number>
+  paused: boolean
+}) {
+  const viewport = useRef<HTMLDivElement>(null)
+  const [overview, setOverview] = useState(false)
+  const cameraX = useMotionValue(0)
+  const cameraY = useMotionValue(0)
+  const cameraScale = useMotionValue(.65)
+  const x = useSpring(cameraX, { stiffness: 120, damping: 30 })
+  const y = useSpring(cameraY, { stiffness: 120, damping: 30 })
+  const scale = useSpring(cameraScale, { stiffness: 120, damping: 30 })
+  const travelerX = useMotionValue(stops[0].x)
+  const travelerY = useMotionValue(stops[0].y)
+  const distance = useMotionValue(0)
+  const inverseScale = useTransform(paused ? cameraScale : scale, value => 1 / Math.max(value, .1))
+
+  useEffect(() => {
+    const element = viewport.current
+    if (!element) return
+    // Measure each curve once. Scroll frames update motion values without React renders.
+    const curves = routeSegments.map(d => {
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path")
+      path.setAttribute("d", d)
+      return { path, length: path.getTotalLength() }
+    })
+    const totalLength = curves.reduce((sum, curve) => sum + curve.length, 0)
+    let width = element.clientWidth
+    let height = element.clientHeight
+    const update = (value: number) => {
+      const position = journeyProgress(value) * (stops.length - 1)
+      const index = Math.min(Math.floor(position), curves.length - 1)
+      const curve = curves[index]
+      const localDistance = clamp(position - index) * curve.length
+      const point = curve.path.getPointAtLength(localDistance)
+      travelerX.set(point.x)
+      travelerY.set(point.y)
+      distance.set((curves.slice(0, index).reduce((sum, item) => sum + item.length, 0) + localDistance) / totalLength)
+
+      const showAll = overview || paused
+      const zoom = showAll
+        ? Math.min(width / 1840, height / 940)
+        : Math.max(width / (width < 600 ? 850 : 1120), height / 820)
+      cameraScale.set(zoom)
+      cameraX.set(showAll ? (width - 1800 * zoom) / 2 : clamp(width * .48 - point.x * zoom, Math.min(0, width - 1800 * zoom), 0))
+      cameraY.set(showAll ? (height - 900 * zoom) / 2 : clamp(height * .56 - point.y * zoom, Math.min(0, height - 900 * zoom), 0))
+      if (paused) {
+        x.jump(cameraX.get())
+        y.jump(cameraY.get())
+        scale.jump(zoom)
+      }
+    }
+    const observer = new ResizeObserver(([entry]) => {
+      width = entry.contentRect.width
+      height = entry.contentRect.height
+      update(progress.get())
+    })
+    observer.observe(element)
+    update(progress.get())
+    const unsubscribe = progress.on("change", update)
+    return () => { observer.disconnect(); unsubscribe() }
+  }, [progress, overview, paused, cameraX, cameraY, cameraScale, travelerX, travelerY, distance, x, y, scale])
+
   return (
-    <div className="journey-map" aria-label="Interactive career route">
-      <div className="journey-map-note"><span /> A work in progress. Always.</div>
-      <svg className="journey-terrain" viewBox="0 0 700 540" preserveAspectRatio="none" aria-hidden="true">
-        <defs>
-          <pattern id="journey-grid" width="42" height="42" patternUnits="userSpaceOnUse"><path d="M 42 0 L 0 0 0 42" fill="none" stroke="#ddd8ba" strokeWidth=".6" /></pattern>
-        </defs>
-        <rect width="700" height="540" fill="url(#journey-grid)" />
-        <g fill="none" stroke="#e1dcc2" strokeWidth="1.4">
-          <path d="M-40 160C140 125 88 36 201 15S395 61 461 5M-20 181C110 166 126 75 221 56S401 87 487 25M-13 204C128 184 124 111 225 101S394 107 505 64M-15 226C162 232 148 138 246 141S410 148 519 107" />
-          <path d="M465 545C399 412 589 442 652 333S715 222 769 216M442 555C364 417 528 415 622 317S700 214 754 186M418 553C338 422 499 373 583 300S672 199 738 162M390 568C305 408 472 354 548 272S636 185 728 138" />
-          <path d="M-40 410C37 323 142 489 245 431S320 401 339 542M-29 442C44 370 128 528 221 476S285 451 296 560M-19 470C30 416 121 560 200 515S245 502 263 580" />
-        </g>
-        <path className="journey-road-shadow" d="M98 410C70 335 65 265 98 194S171 130 259 130S350 130 427 130S570 128 588 194S626 333 588 410S482 448 420 427S316 420 252 427" />
-        <path className="journey-road" d="M98 410C70 335 65 265 98 194S171 130 259 130S350 130 427 130S570 128 588 194S626 333 588 410S482 448 420 427S316 420 252 427" />
-        {/* The charge line follows the same route and fills with the reader's scroll. */}
-        {charge && <motion.path className="journey-road-charge" style={{ pathLength: charge }} d="M98 410C70 335 65 265 98 194S171 130 259 130S350 130 427 130S570 128 588 194S626 333 588 410S482 448 420 427S316 420 252 427" />}
-        <g className="journey-mountains" transform="translate(326 365)">
-          <path d="M0 61L41 0L79 61Z" fill="#b9c5ad" /><path d="M42 61L77 14L112 61Z" fill="#d0d8bf" /><path d="M28 20L41 0L54 20L44 15L38 22Z" fill="#fffef4" />
-          <path d="M60 37L77 14L89 33L78 30L73 37Z" fill="#fffef4" />
-        </g>
-        <g transform="translate(56 58)" fill="none" stroke="#b2ad91" strokeWidth="1.4"><circle cx="0" cy="0" r="24" /><path d="M0-18V18M-18 0H18" /><path d="M0-16L5 4L0 0L-5 4Z" fill="#ef856b" stroke="none" /><text x="-5" y="-33" fill="#938e75" stroke="none" fontSize="12">N</text></g>
-        <text x="306" y="457" className="journey-map-caption">THE LEARNING NEVER STOPS</text>
-      </svg>
-      {stops.map((stop, index) => (
-        <button
-          key={stop.label}
-          className={`journey-map-stop${active === index ? " is-active" : ""}${index === stops.length - 1 ? " is-future" : ""}${index <= charged ? " is-charged" : ""}`}
-          style={{ left: `${stop.x}%`, top: `${stop.y}%` }}
-          onClick={() => onSelect(index)}
-          aria-label={`${stop.period}: ${stop.label}`}
-          aria-pressed={active === index}
-          aria-controls="journey-detail"
-        >
-          <span className="journey-pin-shadow" />
-          <span className="journey-pin"><span /></span>
-          <span className="journey-pin-label">{stop.mapLabel ?? stop.year}</span>
-        </button>
-      ))}
-      <div className="journey-map-legend"><span /> A few stops along the way</div>
+    <div ref={viewport} className={`journey-map${overview || paused ? " is-overview" : ""}`} role="group" aria-label="Interactive illustrated career map">
+      <motion.div className="journey-world" style={{ x: paused ? cameraX : x, y: paused ? cameraY : y, scale: paused ? cameraScale : scale }}>
+        <JourneyTerrain />
+        <svg className="journey-route" viewBox="0 0 1800 900" aria-hidden="true">
+          <path className="journey-road-shadow" d={route} />
+          <path className="journey-road-edge" d={route} />
+          <path className="journey-road" d={route} />
+          <motion.path className="journey-road-traveled" style={{ pathLength: distance }} d={route} />
+        </svg>
+        {stops.map((stop, index) => (
+          <div className="journey-stop-position" key={stop.label} style={{ left: stop.x, top: stop.y }}>
+            <motion.div style={{ scale: inverseScale }}>
+              <button
+                type="button"
+                className={`journey-map-stop${active === index ? " is-active" : ""}${index < active ? " is-visited" : ""}${index === stops.length - 1 ? " is-future" : ""}`}
+                onClick={() => onSelect(index)}
+                aria-label={`${stop.period}: ${stop.label}`}
+                aria-pressed={active === index}
+                aria-controls="journey-detail"
+                tabIndex={overview || paused || Math.abs(index - active) <= 1 ? 0 : -1}
+              >
+                <span className="journey-pin">{String(index + 1).padStart(2, "0")}</span>
+                <span className="journey-pin-label"><strong>{stop.mapLabel ?? stop.year}</strong><small>{stop.label}</small></span>
+              </button>
+            </motion.div>
+          </div>
+        ))}
+        <motion.div className="journey-traveler-position" style={{ x: travelerX, y: travelerY }} aria-hidden="true">
+          <motion.span className="journey-traveler" style={{ scale: inverseScale }} />
+        </motion.div>
+      </motion.div>
+      <div className="journey-map-heading" aria-hidden="true"><span>THE CURIOSITY ATLAS</span><small>A personal map, still unfolding.</small></div>
+      <div className="journey-compass" aria-hidden="true"><span>N</span><Compass size={34} strokeWidth={1} /></div>
+      <button type="button" className="journey-map-view" onClick={() => setOverview(value => !value)} aria-pressed={overview || paused} disabled={paused}>
+        {overview || paused ? <LocateFixed size={15} /> : <Maximize2 size={15} />}
+        {paused ? "Full route" : overview ? "Follow the route" : "View full map"}
+      </button>
+      <div className="journey-map-key" aria-hidden="true"><span /> {active === stops.length - 1 ? "The road ahead" : "Follow the coral thread"}</div>
     </div>
   )
 }
 
 export function Journey() {
-  const [active, setActive] = useState(() => stops.findIndex(stop => stop.label === "MEF internship"))
-  const reducedMotion = useReducedMotion()
+  const [active, setActive] = useState(0)
   const { paused } = useMotionPreferences()
-  const map = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({ target: map, offset: ["start 88%", "end 42%"] })
-  const charge = useSpring(scrollYProgress, { stiffness: 90, damping: 26, restDelta: .001 })
-  const [charged, setCharged] = useState(0)
-  const chargePct = useTransform(charge, value => Math.round(value * (stops.length - 1) + 1))
+  const section = useRef<HTMLElement>(null)
+  const stage = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({ target: section, offset: ["start start", "end end"] })
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: .0001 })
+  const progress = paused ? scrollYProgress : smoothProgress
+  const completion = useTransform(progress, journeyProgress)
 
   useEffect(() => {
-    if (paused) return
-    const unsubscribe = chargePct.on("change", value => setCharged(Math.max(0, Math.min(stops.length - 1, value - 1))))
-    return unsubscribe
-  }, [chargePct, paused])
+    let previous = -1
+    const update = (value: number) => {
+      const next = Math.round(journeyProgress(value) * (stops.length - 1))
+      if (next !== previous) { previous = next; setActive(next) }
+    }
+    update(progress.get())
+    return progress.on("change", update)
+  }, [progress])
 
-  const stop = stops[active]
+  const selectStop = useCallback((index: number) => {
+    const element = section.current
+    if (!element) return
+    const target = clamp(index, 0, stops.length - 1)
+    // Navigation and manual scrolling share one timeline, so neither can desync the story.
+    const start = element.getBoundingClientRect().top + window.scrollY
+    const distance = element.offsetHeight - window.innerHeight
+    window.scrollTo({ top: start + distance * progressForStop(target), behavior: paused ? "instant" : "smooth" })
+  }, [paused])
+
   useEffect(() => {
-    const selectStop = (event: Event) => {
+    const navigate = (event: Event) => {
       if (!(event instanceof CustomEvent) || typeof event.detail !== "string") return
       const index = stops.findIndex(item => item.label === event.detail)
-      if (index >= 0) setActive(index)
+      if (index >= 0) {
+        selectStop(index)
+        stage.current?.focus({ preventScroll: true })
+      }
     }
-    window.addEventListener("portfolio:journey-select", selectStop)
-    return () => window.removeEventListener("portfolio:journey-select", selectStop)
-  }, [])
+    window.addEventListener("portfolio:journey-select", navigate)
+    return () => window.removeEventListener("portfolio:journey-select", navigate)
+  }, [selectStop])
 
+  const stop = stops[active]
   return (
-    <section id="journey" className="portfolio-section journey-section" aria-labelledby="journey-heading">
-      <div className="section-inner">
-        <motion.header className="journey-header" initial={false} whileInView={reducedMotion ? {} : { opacity: [.5, 1], y: [22, 0] }} viewport={{ once: true, amount: .3 }} transition={{ duration: .6 }}>
-          <span className="section-label"><Compass size={18} aria-hidden="true" /> THE JOURNEY</span>
-          <h2 id="journey-heading" className="section-heading">Engineer by degree,<br />builder by <span className="journey-highlight">curiosity.</span></h2>
-          <p className="section-copy">A few milestones, a lot of learning, and a love for figuring things out.</p>
-        </motion.header>
-        <motion.div className="journey-layout" initial={false} whileInView={reducedMotion ? {} : { opacity: [.5, 1], y: [26, 0] }} viewport={{ once: true, amount: .15 }} transition={{ duration: .7 }}>
-          <div ref={map}>
-            <RouteMap active={active} onSelect={setActive} charge={paused ? undefined : charge} charged={paused ? stops.length - 1 : charged} />
+    <section ref={section} id="journey" className="journey-section" aria-labelledby="journey-heading">
+      <div ref={stage} className="journey-stage" tabIndex={-1}>
+        <header className="journey-header">
+          <div>
+            <span className="journey-eyebrow"><Compass size={15} aria-hidden="true" /> A LITTLE CURIOSITY. A LONG WAY.</span>
+            <h2 id="journey-heading">Every turn, <span>a new chapter.</span></h2>
           </div>
-          <div className="journey-story-wrap">
-            <div className="journey-paper-tape" aria-hidden="true" />
-            <div className="journey-story" id="journey-detail" aria-live="polite" aria-atomic="true">
-              <div className="journey-story-top"><span>STOP {String(active + 1).padStart(2, "0")} / {String(stops.length).padStart(2, "0")}</span><GraduationCap size={21} strokeWidth={1.5} aria-hidden="true" /></div>
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div key={active} initial={false} animate={reducedMotion ? { opacity: 1, y: 0 } : { opacity: [.5, 1], y: [10, 0] }} exit={{ opacity: 0, y: reducedMotion ? 0 : -8 }} transition={{ duration: reducedMotion ? 0 : .2 }}>
-                  <p className="journey-story-period">{stop.period}</p>
-                  <h3>{stop.title}</h3>
-                  <div className="journey-organization">
-                    <OrganizationLogo src={stop.logo} />
-                    <div><strong>{stop.organization}</strong>{stop.location && <span><MapPin size={12} aria-hidden="true" />{stop.location}</span>}</div>
-                  </div>
-                  <p className="journey-story-description">{stop.description}</p>
+          <p>From the first line of code to what comes next.<br /><span><ArrowDown size={13} aria-hidden="true" /> Scroll to travel. Pick a stop to linger.</span></p>
+        </header>
+        <div className="journey-layout">
+          <RouteMap active={active} onSelect={selectStop} progress={progress} paused={paused} />
+          <article className="journey-story" id="journey-detail" aria-label="Milestone details">
+            <div className="journey-story-top"><span>FIELD NOTES</span><span aria-live="polite" aria-atomic="true">{String(active + 1).padStart(2, "0")} <i>/ {String(stops.length).padStart(2, "0")}</i><span className="sr-only">: {stop.label}</span></span></div>
+            <div className="journey-story-content">
+              <motion.div key={active} initial={paused ? false : { opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: paused ? 0 : .35, ease: [.22, 1, .36, 1] }}>
+                <p className="journey-story-period">{stop.period}</p>
+                <h3>{stop.title}</h3>
+                <div className="journey-organization">
+                  <OrganizationLogo src={stop.logo} />
+                  <div><strong>{stop.organization}</strong>{stop.location && <span><MapPin size={12} aria-hidden="true" />{stop.location}</span>}</div>
+                </div>
+                <p className="journey-story-description">{stop.description}</p>
+                <ul className="journey-story-details journey-desktop-notes">{stop.details.map(detail => <li key={detail}>{detail}</li>)}</ul>
+                <details className="journey-field-notes" key={active}>
+                  <summary>The details <span>+</span></summary>
                   <ul className="journey-story-details">{stop.details.map(detail => <li key={detail}>{detail}</li>)}</ul>
-                </motion.div>
-              </AnimatePresence>
-              <div className="journey-story-navigation">
-                <button onClick={() => setActive(Math.max(0, active - 1))} disabled={active === 0} aria-label="Previous milestone"><ArrowLeft size={19} /></button>
-                <span>{stop.label}</span>
-                <button onClick={() => setActive(Math.min(stops.length - 1, active + 1))} disabled={active === stops.length - 1} aria-label="Next milestone"><ArrowRight size={19} /></button>
-              </div>
+                </details>
+              </motion.div>
             </div>
-          </div>
-        </motion.div>
-        <div className="journey-year-navigation" aria-label="Choose a milestone">
-          {stops.map((item, index) => <button key={item.label} aria-pressed={active === index} aria-controls="journey-detail" className={active === index ? "is-active" : ""} onClick={() => setActive(index)}><span>{item.year}</span><small>{item.label}</small></button>)}
+            <div className="journey-story-navigation">
+              <button type="button" onClick={() => selectStop(active - 1)} disabled={active === 0} aria-label="Previous milestone"><ArrowLeft size={18} /></button>
+              <span>{stop.label}</span>
+              <button type="button" onClick={() => selectStop(active + 1)} disabled={active === stops.length - 1} aria-label="Next milestone"><ArrowRight size={18} /></button>
+            </div>
+          </article>
         </div>
+        <nav className="journey-year-navigation" aria-label="Choose a milestone">
+          <div className="journey-timeline-track" aria-hidden="true"><motion.span style={{ scaleX: completion }} /></div>
+          {stops.map((item, index) => (
+            <button type="button" key={item.label} aria-label={`${item.mapLabel ?? item.year} ${item.label}`} title={`${item.period}: ${item.label}`} aria-current={active === index ? "step" : undefined} aria-controls="journey-detail" className={`${active === index ? "is-active" : ""} ${index < active ? "is-visited" : ""}`} onClick={() => selectStop(index)}>
+              <span className="journey-timeline-dot" aria-hidden="true" /><strong>{item.year}</strong><small>{item.label}</small>
+            </button>
+          ))}
+        </nav>
+        <a className="journey-skip" href="#selected-work">{active === stops.length - 1 ? "On to the things I've built" : "Skip ahead to my work"} <ArrowRight size={13} /></a>
       </div>
     </section>
   )

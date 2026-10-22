@@ -1,0 +1,9 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e7] [cursor=pointer]:
+    - button "Open issues overlay" [ref=e8]:
+      - generic [ref=e12]:
+        - generic [aria-hidden] [ref=e13]: "0"
+        - generic [ref=e14]: "1"
+      - generic [ref=e15]: Issue
+    - button "Collapse issues badge" [ref=e16]
+  - 'heading "Application error: a client-side exception has occurred while loading localhost (see the browser console for more information)." [level=2] [ref=e21]'

@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next"
 import { caseStudies } from "@/lib/case-studies"
+import { projectSlugs } from "@/lib/project-presentation"
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://hassanelkhatoury.vercel.app"
@@ -17,5 +18,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
+    ...projectSlugs.map(slug => ({ url: `${baseUrl}/projects/${slug}`, changeFrequency: "monthly" as const, priority: 0.7 })),
   ]
 }

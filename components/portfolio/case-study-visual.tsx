@@ -1,6 +1,10 @@
-import type { CSSProperties } from "react"
+"use client"
+
+import { useId, useRef, useState, type CSSProperties } from "react"
+import { useInView } from "framer-motion"
 import type { CaseStudy } from "@/lib/case-studies"
-import "./case-study.css"
+import { useMotionPreferences } from "./motion-preferences"
+import "./architecture-atlas.css"
 const accents: Record<string, string> = {
   "mef-fleet-management": "#6f8f6a",
   "interview-ai": "#5b7fa6",
@@ -29,28 +33,47 @@ function LayerGlyph({ label }: { label: string }) {
 }
 
 export function CaseStudyVisual({ study, compact = false }: { study: CaseStudy; compact?: boolean }) {
+  const id = useId()
+  const root = useRef<HTMLElement>(null)
+  const visible = useInView(root)
+  const { paused } = useMotionPreferences()
+  const [selected, setSelected] = useState(0)
   const branched = study.slug === "interview-ai"
   const style = { "--map-accent": accents[study.slug] ?? "#7f9b6d" } as CSSProperties
+  const positions = branched ? [[80, 140], [250, 140], [470, 65], [470, 215]] : [[75, 130], [225, 130], [375, 130], [525, 130]]
+  const paths = branched ? ["M80 140H250", "M250 140H340Q355 140 355 125V80Q355 65 370 65H470", "M250 140H340Q355 140 355 155V200Q355 215 370 215H470"] : ["M75 130H225", "M225 130H375", "M375 130H525"]
 
   return (
-    <figure className={`case-visual case-visual-${study.slug}${compact ? " case-visual-compact" : ""}`} style={style}>
-      <div className="case-visual-heading">
-        <span className="case-visual-tag"><i aria-hidden="true" /> SYSTEM MAP</span>
-        <span className="case-visual-project">{study.projectTitle}</span>
+    <figure ref={root} className={`architecture-atlas${compact ? " is-compact" : ""}${visible && !paused ? " is-running" : ""}`} style={style}>
+      <div className="architecture-heading">
+        <span>ENGINEERING ATLAS / {branched ? "BRANCHES" : "LAYERS"}</span>
+        <span>{study.projectTitle}</span>
       </div>
-      <ol className={`case-visual-flow${branched ? " case-visual-flow-branched" : ""}`} aria-label={`${study.projectTitle} architecture${branched ? ", with separate persistence and AI integrations" : ", from application entry to data"}`}>
-        {study.architecture.map((layer, index) => (
-          <li key={layer.label} className={`case-visual-node case-visual-node-${index}`}>
-            <span className="case-visual-step">{String(index + 1).padStart(2, "0")}</span>
-            <span className="case-visual-glyph"><LayerGlyph label={layer.label} /></span>
-            <strong>{layer.label}</strong>
-            {!compact && <p>{layer.detail}</p>}
-          </li>
-        ))}
-      </ol>
-      <figcaption>
-        <span>{branched ? "Java application logic connects independently to data storage and AI providers." : "A simplified view of the documented application layers."}</span>
-        <span className="case-visual-note">Architecture illustration.</span>
+      <div className={`architecture-drawing${branched ? " is-branched" : ""}`} role="group" aria-label={`${study.projectTitle} architecture. Select a layer to learn more.`}>
+        <svg viewBox="0 0 600 280" preserveAspectRatio="none" fill="none" aria-hidden="true">
+          <path d="M20 25h16m-8-8v16M564 255h16m-8-8v16" className="architecture-register" />
+          {paths.map((path, index) => <g key={path} className={index < selected || (branched && selected > 1 && index === selected - 1) ? "is-traced" : ""}>
+            <path d={path} className="architecture-wire" />
+            <path d={path} className="architecture-signal" />
+          </g>)}
+        </svg>
+        {study.architecture.map((layer, index) => <button
+          key={layer.label} type="button" className={`architecture-node${selected === index ? " is-selected" : ""}`}
+          style={{ left: `${positions[index][0] / 6}%`, top: `${positions[index][1] / 2.8}%` }}
+          aria-pressed={selected === index} aria-controls={`${id}-explanation`} aria-label={`Explain ${layer.label}`}
+          onClick={() => setSelected(index)} onFocus={() => setSelected(index)}
+        >
+          <span className="architecture-node-symbol"><LayerGlyph label={layer.label} /></span>
+          <span className="architecture-node-label"><small>{String(index + 1).padStart(2, "0")}</small>{layer.label}</span>
+        </button>)}
+      </div>
+      <div id={`${id}-explanation`} className="architecture-explanation" aria-live="polite" aria-atomic="true">
+        <span aria-hidden="true">{String(selected + 1).padStart(2, "0")}</span>
+        <div><strong>{study.architecture[selected].label}</strong><p>{study.architecture[selected].detail}</p></div>
+      </div>
+      <figcaption className="architecture-caption">
+        {branched ? "Persistence and AI providers connect independently to application logic." : "A simplified view of the documented application layers."}
+        <span>Illustrated architecture · select a node</span>
       </figcaption>
     </figure>
   )

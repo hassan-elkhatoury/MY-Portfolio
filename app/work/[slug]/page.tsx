@@ -37,7 +37,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
   const otherStudies = caseStudies.filter(item => item.slug !== study.slug)
 
   return (
-    <main id="about" className="case-page" tabIndex={-1} aria-labelledby="case-title">
+    <main id="main-content" className="case-page" tabIndex={-1} aria-labelledby="case-title">
       <CaseProgress />
       <div className="case-page-inner">
         <header className="case-topbar">

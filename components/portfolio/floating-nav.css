@@ -66,21 +66,24 @@
   .portfolio-avatar { top: 17px; left: 18px; width: 40px; height: 40px; }
   .portfolio-header-controls { right: 16px; top: 16px; gap: 8px; }
   .portfolio-location { display: none; }
-  .portfolio-theme, .portfolio-motion { min-height: 38px; padding: 8px 11px; font-size: 10px; gap: 6px; }
+  .portfolio-theme, .portfolio-motion { min-height: 44px; padding: 8px 11px; font-size: 11px; gap: 6px; }
   .portfolio-motion svg { width: 14px; height: 14px; }
-  .portfolio-dock { bottom: max(14px, env(safe-area-inset-bottom)); gap: 10px; padding: 5px; max-width: calc(100% - 20px); }
-  .portfolio-dock-links { gap: 1px; }
-  .portfolio-dock-link { min-height: 42px; font-size: 11px; }
-  .portfolio-dock-content { padding: 10px 9px; min-height: 42px; gap: 4px; }
+  .portfolio-dock { bottom: max(14px, env(safe-area-inset-bottom)); width: min(480px, calc(100% - 24px)); gap: 6px; padding: 5px; }
+  .portfolio-dock-links { display: grid; grid-template-columns: 30px repeat(4, minmax(0, 1fr)); flex: 1; min-width: 0; gap: 0; }
+  .portfolio-dock-link { min-width: 0; min-height: 44px; font-size: 11px; }
+  .portfolio-dock-content { padding: 10px 3px; min-height: 44px; gap: 0; }
   .portfolio-dock-link:first-child img { width: 20px; height: 20px; }
   .portfolio-dock-link:first-child .portfolio-dock-content > span:last-child { display: none; }
-  .portfolio-dock-resume { min-height: 42px; padding: 11px 12px; font-size: 11px; gap: 3px; }
+  .portfolio-dock-resume { min-height: 44px; padding: 11px 10px; font-size: 11px; gap: 3px; flex-shrink: 0; }
   .portfolio-dock-resume::before { left: -7px; top: 10px; bottom: 10px; }
 }
 @media (max-width: 360px) {
-  .portfolio-dock { gap: 8px; }
-  .portfolio-dock-link { padding-inline: 6px; }
-  .portfolio-dock-resume { padding-inline: 9px; }
+  .portfolio-dock { gap: 5px; }
+  .portfolio-dock-links { gap: 0; }
+  .portfolio-dock-link { padding: 0; font-size: 10px; }
+  .portfolio-dock-content { padding-inline: 2px; }
+  .portfolio-dock-resume { padding-inline: 9px; font-size: 10px; }
+  .portfolio-dock-resume svg { display: none; }
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .portfolio-header { --nav-glass: #f1f5f9; }

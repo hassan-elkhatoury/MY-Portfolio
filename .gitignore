@@ -7,4 +7,10 @@ __v0_jsx-dev-runtime.ts
 node_modules/
 .next/
 .env*.local
+.env
+/.venv/
+/email_queue.db
+/email_queue.db-shm
+/email_queue.db-wal
+__pycache__/
 .DS_Store

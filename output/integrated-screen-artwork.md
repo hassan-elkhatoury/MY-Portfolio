@@ -1,0 +1,20 @@
+## Integrated screen artwork revision
+
+The user requested the Java code and project screens be built into the generated image. The visible HTML editor, MEF diagram, and separate InterviewAI screenshot have been removed from the homepage. Two replacement desk layers contain all three illustrated screens directly. Transparent accessible links sit over the screen areas and move with the desk. The generated interfaces are illustrations, not captures of running applications.
+
+Verification: production build passed, including TypeScript and all 16 generated pages. Component lint returned zero errors and six native-image warnings. Both replacement images loaded in the browser, each screen link has a transparent background, the laptop click opened `/projects/interview-ai`, and day/night artwork was visually inspected. No browser errors were observed. The updated production server is running at http://localhost:3000/.
+
+Built-in ImageGen was used. Original PNGs are retained:
+
+- Day: `C:/Users/Hassan/.codex/generated_images/01a15fa5-c7c8-7040-b6aa-720530809143/exec-329147e6-e7f2-4746-866f-cd56b63bd7e0.png`
+- Night: `C:/Users/Hassan/.codex/generated_images/01a15fa5-c7c8-7040-b6aa-720530809143/exec-120aabe9-58f3-4bbc-950a-73cfb8edc50e.png`
+
+Optimized website files: `public/images/workspace/desk-day-integrated.webp` and `public/images/workspace/desk-night-integrated.webp`. Both preserve alpha transparency.
+
+Day prompt:
+
+Use case: precise-object-edit. Edit target: image 1, the transparent daylight desk layer. Image 2 is the user's original DAY workspace reference, for the three screen contents only. Change ONLY the three blank dark display interiors in image 1: integrate photorealistic screen visuals directly into the image pixels, with correct perspective, lighting, glass reflections and screen borders. Central monitor: dense realistic Java Spring Boot editor with project file tree and syntax-highlighted VehicleService.java, similar to original reference. Laptop: elegant dark InterviewAI interview preparation application, with title InterviewAI and Practice, Feedback, Track Progress. Right monitor: polished dark MEF Fleet Management project interface with a map, vehicle modules and colored charts, inspired by image 2; no invented numeric metrics. This is illustrative portfolio art. Preserve EXACT original full 1672x941 canvas, desk, all object positions, screen bezel geometry, books, plants, whiteboard, keyboard and lighting. Everything outside the desk objects must remain genuinely transparent alpha, including the entire upper half. No city, no website navigation/headlines, no person, no chair, no floating screen panels. Do not reposition or resize anything. The three interfaces must be baked into the photographed screens, not floating above them.
+
+Night prompt:
+
+Use case: precise-object-edit. Edit target: image 1, transparent NIGHT desk layer. Image 2 is the user's original NIGHT workspace reference, for screen contents only. Change ONLY the three blank display interiors in image 1: bake photorealistic interfaces directly into the photographed screen pixels, matching perspective, warm night lighting, subtle glass reflections and bezels. Center monitor: detailed dark Java Spring Boot IDE with file tree and dense syntax-highlighted VehicleService.java code, like image 2. Laptop: dark InterviewAI interview preparation application, title InterviewAI, Practice, Feedback, Track Progress and a violet waveform. Right monitor: dark MEF Fleet Management project interface with map, vehicle modules and colored charts like image 2, without numeric metrics. Illustrative portfolio artwork. Keep EXACT full 1672x941 canvas and every desk object, all original coordinates, monitor shapes, desk lamp, plants, whiteboard, books and amber lighting unchanged. Preserve genuine transparent alpha outside the objects, especially the entire upper half. No background, no city, no person or chair, no website text or navigation, no floating panels. The interfaces are inside the real screen glass, integrated in this single desk image. Never rearrange or crop the scene.

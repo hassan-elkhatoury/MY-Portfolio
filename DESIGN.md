@@ -1,5 +1,43 @@
 # Portfolio redesign
 
+## Current implementation — phases 0–10
+
+The current portfolio uses one warm paper and coral design system, with a coordinated midnight-blue alternative. Shared spacing, type sizes, content width, navigation clearance, and responsive breakpoints connect the workspace, journey, work, personal notes, credentials, toolkit, and contact scene.
+
+The latest homepage replaces the valley with the user's day/night developer-workspace reference. Five generated WebP assets separate the city, daytime desk, nighttime desk, and seated foreground. Four independently moving layers use spring-driven pointer depth with a slight perspective tilt; the scene also responds to scrolling. This is layered 2.5D artwork, not a fully modeled room. The three screens use generated Java, InterviewAI, and MEF interface artwork baked into the desk image. Transparent links over the screen glass lead to the real project pages; no separate HTML screen panels are rendered. The screen art is illustrative. Live text, five city markers, a working introductory dialog, recreate the reference composition; the shared frosted navigation stays at the bottom. Phone layouts use larger project links and a stable crop. Decorative movement respects pause and reduced motion.
+
+Native scrolling drives the illustrated eight-stop journey, its moving camera and traveler, and reversible chapter transitions. Both navigation systems share one active-section store. The dock uses a moving active pill; buttons do not chase the pointer.
+
+The archive uses React Three Fiber and GSAP to reproduce the supplied cream presentation-box reference with real beveled geometry, paper textures, a brown lined lid, a woven gold tab, and eight individual colored cards. Opening clears the lid first, lifts parallel cards, and then fans them out; closing reverses the sequence to prevent intersections. Hover lifts and rotates a card. Clicking brings it forward and expands into the existing accessible project detail surface. Escape, browser history, and direct hash links are supported; eight server-rendered project pages retain permanent URLs and meaningful text. The project index provides keyboard access and a fallback if WebGL is unavailable. The engineering atlas uses selectable layers and explanatory text, with decorative signals active only while visible.
+
+The seven-category skills toolbox starts closed. Opening reveals its flaps and staggered skill tiles. Visitors can inspect documented skill details and project links, drag skills into the box, retrieve stored skills, or use equivalent Store/Retrieve buttons. Closing resets the collection.
+
+The contact scene uses separate original daytime and moonlit sky artwork. Responsive WebP derivatives, slowly moving atmosphere, refined tactile keys, and intentional dark form materials replace the old enlarged cloud texture. Theme changes crossfade locally without a blocking full-screen snapshot. System preferences apply by default; explicit day/night and motion preferences persist.
+
+The archive loads its WebGL runtime only near the section and renders on demand, with capped pixel density and procedural local textures. It does not download a Blender model or external lighting assets. The main navigation uses the same bottom dock on Home and every other section. Large displayed PNGs have optimized WebP alternatives, Next Image optimization is enabled, and decorative loops stop when their scene is offscreen or motion is paused. All eight projects, twelve credentials, seven skill groups, résumé, and supplied professional details remain represented.
+
+See `output/redesign-verification.md` for final checks and limitations, and `output/sky-artwork-provenance.md` and `output/workspace-artwork-provenance.md` for original prompts and asset paths.
+
+## Historical design notes
+
+The notes below record earlier iterations. Counts, theme transitions, old toolbox behavior, and tooling status in these historical notes are superseded by the current implementation above.
+
+## Phase 1: layout and design system
+
+The shared layout now uses a 1160px content width, fluid page gutters, one heading scale, consistent section spacing, and clearance for the fixed navigation dock. The hero, main sections, and case-study pages use these same alignment rules. The three selected case studies each use a matched text/visual row, stacking at tablet widths. Their images remain uncropped, with documented system layers placed directly below each visual.
+
+The project index retains all eight projects. Four columns become two on phones, with shared grid tracks aligning project names and categories across each row. Navigation targets remain usable at 320px, the contact keys reflow on narrow screens, certification papers stack earlier, and personal notes use a single column on small phones. The skip link targets the main content after the navigation. No dependencies or later-phase interaction features were added.
+
+Phase 1 verification includes production compilation, TypeScript, responsive browser checks from 320px to 1440px, and opening all eight project dialogs with Escape dismissal and focus restoration. ESLint remains unavailable in the existing dependency setup. Phase 2 is the cinematic scroll and transition pass.
+
+## Scroll-driven journey atlas
+
+The journey is now an original vector atlas: sage terrain, contour lines, a river, wooded areas, small buildings, and a winding coral route. Its eight milestones preserve the existing portfolio content. The map and field notes share one framed composition, with the timeline below and space reserved for the fixed navigation dock.
+
+Native page scrolling drives a sticky viewport. One normalized timeline controls the selected story, route drawing, and traveler position; a spring camera follows the traveler. Each route segment is measured once using the browser's SVG geometry API. Motion values update the drawing without rendering React on every scroll frame; story state changes only when a milestone changes. Explore, the ENSAH/MEF hero landmarks, map markers, arrow buttons, and timeline buttons all navigate to positions on that timeline. The skip link provides direct access to selected work.
+
+Full-map view fits the complete route. Paused animations and system reduced motion use this stationary overview with immediate navigation. Small screens stack the map and story, expose details through a disclosure, and keep the route controls above the dock. Both day and night themes are supported. Existing portrait references now use the available `hasan-portrait.png` asset.
+
 Reference: https://www.jameschugh.com/
 
 Visual thesis: a personal, painterly world with a warm paper canvas, expressive Bricolage Grotesque typography, hand-drawn highlights, and objects that invite exploration.
@@ -53,3 +91,5 @@ Decorative landscape layers were acquired from the requested reference's rendere
 Built-in ImageGen was used with the portfolio portrait as an identity reference. Final project asset: public/images/hasan-illustration.webp.
 
 Prompt: create a single full-body, transparent hand-painted gouache character of Hasan, preserving his face, dark curly hair, skin tone, and friendly expression; standing and waving in a dark navy blazer, white open-collar shirt, dark trousers, and light sneakers; warm daylight; no scenery, text, logos, or frame. The complete figure is visible and the original generated PNG remains in the Codex generated-images directory.
+
+

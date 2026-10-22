@@ -1,14 +1,13 @@
-.personal-story { padding-top: 100px; padding-bottom: 80px; }
 .personal-story > .section-inner > .section-label { justify-content: center; }
-.personal-story-intro { text-align: center; max-width: 1000px; margin: 30px auto 0; }
-.personal-story-intro h2 { font-size: clamp(40px, 5.3vw, 76px); line-height: 1.03; letter-spacing: -.055em; font-weight: 750; color: var(--ink); margin: 0 0 30px; }
-.personal-story-intro > p { font-size: clamp(21px, 2.45vw, 32px); line-height: 1.4; letter-spacing: -.03em; max-width: 860px; margin: 0 auto; color: var(--ink); }
+.personal-story-intro { text-align: center; max-width: 960px; margin: 0 auto; }
+.personal-story-intro h2 { font-size: var(--heading-size); line-height: 1.08; letter-spacing: -.05em; font-weight: 750; text-wrap: balance; color: var(--ink); margin: 0 0 32px; }
+.personal-story-intro > p { font-size: clamp(21px, 2vw, 28px); line-height: 1.55; letter-spacing: -.02em; max-width: 760px; margin: 0 auto; color: var(--ink); text-wrap: pretty; }
 .personal-story-intro > p strong { font-weight: 750; }
 .personal-story-intro > .personal-story-small { font-size: 17px; letter-spacing: -.01em; color: var(--muted-ink); margin-top: 24px; }
 .personal-story-small a { display: inline-flex; align-items: center; gap: 4px; color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
 .personal-story-profile-details { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px 35px; margin: 28px auto 0; max-width: 900px; }
-.personal-story-profile-details dt { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted-ink); margin-bottom: 6px; }
-.personal-story-profile-details dd { margin: 0; font-size: 12px; color: var(--ink); }
+.personal-story-profile-details dt { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted-ink); margin-bottom: 8px; }
+.personal-story-profile-details dd { margin: 0; font-size: 14px; line-height: 1.6; color: var(--ink); }
 .personal-story-intern-initials { display: grid; place-items: center; flex-shrink: 0; width: 48px; height: 48px; border: 1px solid #344c4840; border-radius: 50%; font-size: 12px; letter-spacing: .03em; }
 .personal-story-desk { position: relative; height: 600px; max-width: 1070px; margin: 54px auto 0; }
 .personal-story-note, .personal-story-polaroid, .personal-story-intern-note { position: absolute; cursor: grab; touch-action: pan-y; }
@@ -46,9 +45,7 @@
   .personal-story-intern-note { left: calc(50% - 220px); bottom: 61px; }
 }
 @media (max-width: 640px) {
-  .personal-story { padding-top: 64px; padding-bottom: 55px; }
-  .personal-story-intro h2 { font-size: 42px; }
-  .personal-story-intro > p { font-size: 23px; }
+  .personal-story-intro > p { font-size: 21px; }
   .personal-story-desk { height: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 25px 12px; margin-top: 40px; padding: 0 3px; }
   .personal-story-polaroid { position: relative; left: auto; top: auto; width: 230px; grid-column: 1/-1; justify-self: center; margin-bottom: 5px; }
   .personal-story-note { position: relative; left: auto; right: auto; top: auto; width: 100%; min-height: 282px; padding: 21px 15px; }
@@ -65,6 +62,12 @@
   .personal-story-intern-note strong { font-size: 18px; }
   .personal-story-intern-note span { font-size: 10px; }
   .personal-story-drag-hint { position: relative; grid-column: 1/-1; order: 5; font-size: 10px; }
+}
+@media (max-width: 400px) {
+  .personal-story-desk { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .personal-story-note { max-width: 280px; justify-self: center; min-height: 0; padding: 26px; }
+  .personal-story-school { rotate: -2deg; }
+  .personal-story-java { rotate: 2deg; }
 }
 @media (prefers-reduced-motion: reduce) {
   .personal-story-note, .personal-story-polaroid, .personal-story-intern-note { cursor: default; }

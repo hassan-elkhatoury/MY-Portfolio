@@ -1,4 +1,5 @@
 .valley-hero { position: relative; width: 100%; min-height: 580px; height: 100svh; max-height: 1160px; overflow: hidden; background: #308ac1; color: #fff; perspective: 1600px; }
+.valley-hero[data-running="false"] *, .valley-hero[data-running="false"] *::before { animation-play-state: paused !important; }
 .valley-camera { position: absolute; inset: -60px; transform-origin: 50% 50%; transform-style: preserve-3d; }
 .valley-scene { position: absolute; inset: 0; }
 .valley-depth { position: absolute; inset: 0; pointer-events: none; }
@@ -26,7 +27,7 @@
 .valley-shade { position: absolute; inset: 0; background: linear-gradient(110deg, #0c283938 0%, transparent 65%), linear-gradient(0deg, #17302026, transparent 55%); pointer-events: none; }
 /* A cursor-following pool of daylight, painted above the scenery and below the copy. */
 .valley-glare { position: absolute; inset: 0; z-index: 2; pointer-events: none; mix-blend-mode: soft-light; will-change: background; }
-.valley-copy { position: absolute; z-index: 3; left: 5%; top: 13%; max-width: 850px; pointer-events: none; }
+.valley-copy { position: absolute; z-index: 3; left: max(var(--page-gutter), calc((100% - var(--content-width)) / 2)); top: 13%; max-width: 850px; pointer-events: none; }
 .valley-copy a, .valley-greeting, .valley-copy h1, .valley-description, .valley-availability { pointer-events: auto; }
 .valley-banner, .valley-click-note { pointer-events: none; }
 .valley-place { cursor: pointer; }
@@ -93,7 +94,6 @@
 @keyframes valley-wave { 0%, 100% { transform: rotate(0); } 20%, 60% { transform: rotate(20deg); } 40%, 80% { transform: rotate(-10deg); } }
 @keyframes valley-marker-draw { from { stroke-dashoffset: 410; } to { stroke-dashoffset: 0; } }
 @keyframes valley-scroll { to { transform: translateY(7px); opacity: 0; } }
-@media (min-width: 1800px) { .valley-copy { left: 8%; } }
 @media (max-width: 1000px) { .valley-copy { top: 16%; } .valley-copy h1 { font-size: clamp(52px, 6.5vw, 72px); } .valley-banner { --flight-origin: 43vw; top: 10%; } .valley-cloud-pin { left: 88%; top: 19%; } .valley-person { width: 140px; right: 3%; height: 31%; } .valley-description { max-width: 500px; } }
 @media (max-width: 700px) { .valley-hero { height: 100svh; min-height: 640px; max-height: 920px; } .valley-camera { inset: 0; } .valley-scene { width: 980px; height: 100%; left: 50%; margin-left: -565px; } .valley-copy { top: 18%; left: 24px; right: 22px; } .valley-greeting { font-size: 20px; gap: 11px; margin-bottom: 19px; } .valley-hand { font-size: 22px; } .valley-copy h1 { font-size: clamp(44px, 9.7vw, 65px); letter-spacing: -.057em; } .valley-description { font-size: 16px; max-width: 410px; line-height: 1.4; margin-top: 21px; } .valley-mobile-break { display: block; } .valley-banner { --flight-origin: 22vw; top: 11%; } .valley-banner-cloth { font-size: 14px; padding-inline: 17px; } .valley-banner svg { width: 40px; } .valley-cloud-pin { display: none; } .valley-college-pin { left: 16%; top: 48%; } .valley-work-pin { left: 46%; top: 67%; } .valley-java-pin { left: 79%; top: 47%; } .valley-place-chip { gap: 5px; font-size: 11px; } .valley-place-chip img { width: 22px; height: 22px; } .valley-place-chip small { display: none; } .valley-person { bottom: 16%; right: 0%; height: 25%; width: 120px; } .valley-person-label { font-size: 10px; } .valley-person-label img { width: 20px; height: 20px; } .valley-explore { bottom: 13%; padding: 8px 11px; font-size: 11px; } .valley-click-note { left: 20%; top: 72%; font-size: 17px; transform: rotate(-9deg); } .valley-click-note svg { width: 48px; } .valley-marker svg { height: 16px; } }
 .valley-place-initials { display: grid; place-items: center; width: 26px; height: 26px; flex-shrink: 0; border-radius: 50%; background: #fff9ed; color: #385e5c; font-size: 8px; font-weight: 750; }
@@ -110,6 +110,7 @@ html[data-motion-paused="true"] .valley-copy { transform: none !important; will-
 @media (max-width: 700px) {
   .valley-hero { min-height: 720px; }
   .valley-copy { top: 14%; }
+  .valley-copy { left: var(--page-gutter); right: var(--page-gutter); }
   .valley-banner { top: 9%; }
   .valley-greeting { margin-bottom: 16px; }
   .valley-description { margin-top: 17px; }

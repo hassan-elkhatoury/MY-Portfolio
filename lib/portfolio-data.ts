@@ -78,7 +78,7 @@ export const projects: Project[] = [
     category: "Academic",
     description:
       "Multi-client real-time messaging system built with C++ and Qt using TCP sockets and asynchronous networking.",
-    image: "/images/projects/qt-messenger.png",
+    image: "/images/projects/qt-messenger.webp",
     tech: ["C++17", "Qt", "TCP", "SQLite", "JSON"],
     githubUrl: "https://github.com/hassan-elkhatoury/qt-messenger",
     featured: true,
@@ -88,7 +88,7 @@ export const projects: Project[] = [
     category: "Distributed Systems",
     description:
       "MongoDB sharded-cluster laboratory deployed across four laptops, combining replica sets, configuration servers, and mongos routing to explore cluster coordination, high availability, and fault testing.",
-    image: "/images/projects/MongoShardLab.png",
+    image: "/images/projects/MongoShardLab.webp",
     tech: ["MongoDB", "Sharding", "Replica Sets", "Docker", "Docker Compose", "Next.js", "LAN"],
     githubUrl: "https://github.com/hassan-elkhatoury/MongoShardLab",
     demoUrl: "https://mongodb-gi2.vercel.app/",
@@ -119,7 +119,7 @@ export const projects: Project[] = [
     category: "Full Stack",
     description:
       "Laravel-based e-commerce platform with authentication, cart, and admin dashboard.",
-    image: "/images/projects/ecommerce.png",
+    image: "/images/projects/ecommerce.webp",
     tech: ["PHP", "Laravel", "MySQL", "Blade"],
     githubUrl: "https://github.com/hassan-elkhatoury/E-Commerce_Website",
   },
@@ -128,7 +128,7 @@ export const projects: Project[] = [
     category: "Full Stack",
     description:
       "Web application for managing teaching unit assignments across academic departments. Features role-based access for admins, department heads, coordinators, and professors with preference selection, workload balancing, grade uploads, and Excel import/export.",
-    image: "/images/projects/student-management.png",
+    image: "/images/projects/student-management.webp",
     tech: ["PHP", "MySQL", "Composer", "XAMPP"],
     githubUrl: "https://github.com/hassan-elkhatoury/e-service",
   },
@@ -185,7 +185,7 @@ export const experiences: Experience[] = [
   {
     title: "Web Development Intern",
     company: "CodSoft",
-    logo: "/images/logos/codsoft.png",
+    logo: "/images/logos/codsoft.webp",
     location: "Remote",
     period: "Feb 2025 – Mar 2025",
     type: "Internship",
@@ -214,7 +214,7 @@ export const education: Education[] = [
     institution: "ENSAH — National School of Applied Sciences, Al Hoceima",
     location: "Al Hoceima, Morocco",
     period: "2022 – 2027 (Expected)",
-    logo: "/images/logos/ensah.png",
+    logo: "/images/logos/ensah.webp",
     details: [
       "Engineering Cycle: 2024 – 2027",
       "Preparatory Classes: 2022 – 2024",
@@ -291,7 +291,7 @@ export const certifications: Certification[] = [
   {
     title: "English for Career Development",
     issuer: "University of Pennsylvania",
-    logo: "/images/logos/upenn.png",
+    logo: "/images/logos/upenn.webp",
     issued: "Nov 2025",
     credentialId: "VZJ8WT1LARVN",
     verifyUrl: "https://coursera.org/verify/VZJ8WT1LARVN",

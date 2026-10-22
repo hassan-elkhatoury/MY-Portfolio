@@ -1,188 +1,98 @@
 "use client"
 
-import { useId, useRef, useState, type CSSProperties } from "react"
-import { motion, useInView, useReducedMotion } from "framer-motion"
-import { Coffee, GitBranch, Database, Container, Cloud, Braces, Network, Terminal, Wrench, ArrowUpRight } from "lucide-react"
-import { projects, skillGroups, type SkillGroup } from "@/lib/portfolio-data"
-import "./toolkit.css"
+import { useId, useRef, useState, type RefObject } from "react"
+import Link from "next/link"
+import { AnimatePresence, motion, type PanInfo } from "framer-motion"
+import { ArrowDown, ArrowUpRight, Box, RotateCcw, Wrench } from "lucide-react"
+import { skillGroups } from "@/lib/portfolio-data"
+import { skillEvidence } from "@/lib/skill-evidence"
+import { useMotionPreferences } from "./motion-preferences"
+import "./toolkit-workbench.css"
 
-type Tool = { name: string; group: number; Icon: typeof Coffee | null; className: string; ink: string }
-
-const tools: Tool[] = [
-  { name: "Java", group: 1, Icon: Coffee, className: "java", ink: "#de5941" },
-  { name: "Python", group: 0, Icon: Braces, className: "python", ink: "#355d8b" },
-  { name: "C++", group: 0, Icon: null, className: "cpp", ink: "#ffffff" },
-  { name: "Git", group: 3, Icon: GitBranch, className: "git", ink: "#ee593d" },
-  { name: "Docker", group: 3, Icon: Container, className: "docker", ink: "#ffffff" },
-  { name: "MongoDB", group: 2, Icon: Database, className: "mongo", ink: "#32613c" },
-  { name: "SQL", group: 2, Icon: Database, className: "sql", ink: "#755133" },
-  { name: "OCI", group: 3, Icon: Cloud, className: "oci", ink: "#c54538" },
-  { name: "REST", group: 1, Icon: Network, className: "rest", ink: "#57536e" },
-  { name: "Linux", group: 3, Icon: Terminal, className: "linux", ink: "#f8e6ac" },
-]
-
-const domainLabels = ["Languages", "Backend", "Databases", "Tools & platforms", "CS fundamentals", "Frontend", "AI / ML"]
-
-/** Match a domain's real skills against the tech actually listed on each project. */
-function shippedIn(group: SkillGroup) {
-  const terms = group.skills.map(skill => skill.toLowerCase())
-  return projects
-    .map(project => {
-      const hits = project.tech.filter(tech => {
-        const value = tech.toLowerCase()
-        return terms.some(term => value === term || value.split(/[\s/&.,+-]+/).includes(term))
-      })
-      return { project, hits }
-    })
-    .filter(item => item.hits.length)
-    .sort((a, b) => b.hits.length - a.hits.length)
-    .slice(0, 3)
+type DragEvent = MouseEvent | TouchEvent | PointerEvent
+function inside(event: DragEvent, info: PanInfo, box: HTMLDivElement | null) {
+  if (!box) return false
+  const p = "clientX" in event ? { x: event.clientX, y: event.clientY } : "changedTouches" in event && event.changedTouches[0] ? { x: event.changedTouches[0].clientX, y: event.changedTouches[0].clientY } : info.point
+  const r = box.getBoundingClientRect()
+  return p.x >= r.left && p.x <= r.right && p.y >= r.top && p.y <= r.bottom
+}
+function SkillToken({ name, index, focused, stage, drop, select, store, over }: { name: string; index: number; focused: boolean; stage: RefObject<HTMLDivElement | null>; drop: RefObject<HTMLDivElement | null>; select: () => void; store: () => void; over: (value: boolean) => void }) {
+  const { paused } = useMotionPreferences()
+  const dragged = useRef(false)
+  const [dragging, setDragging] = useState(false)
+  return <motion.div className={`tool-tile${focused ? " is-focused" : ""}`} style={{ zIndex: dragging ? 20 : focused ? 4 : 1 }} layout initial={paused ? false : { y: 100, opacity: 0, scale: .65, rotateX: 25 }} animate={{ y: focused && !paused ? -8 : 0, opacity: 1, scale: focused ? 1.025 : 1, rotateX: 0 }} exit={{ y: 100, opacity: 0, scale: .5 }} transition={{ duration: paused ? 0 : .4, delay: paused ? 0 : index * .025, ease: [.22, 1, .36, 1] }}>
+    <motion.button type="button" className="tool-object" drag dragConstraints={stage} dragElastic={.08} dragSnapToOrigin dragMomentum={false}
+      whileDrag={{ scale: 1.09, rotate: -4, zIndex: 12, boxShadow: "0 20px 35px #13233733" }} whileHover={paused ? undefined : { y: -4 }}
+      onDragStart={() => { dragged.current = true; setDragging(true) }} onDrag={(event, info) => over(inside(event, info, drop.current))}
+      onDragEnd={(event, info) => { if (inside(event, info, drop.current)) store(); over(false); setDragging(false) }} onPointerDown={() => { dragged.current = false }} onClick={event => { if (!dragged.current || event.detail === 0) select() }}
+      aria-pressed={focused} aria-label={`Explore ${name}`} aria-describedby="tool-drag-help">
+      <span className="tool-object-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span><span className="tool-object-name">{name}</span><span className="tool-object-mark" aria-hidden="true">↗</span>
+    </motion.button>
+    <button type="button" className="tool-store" onClick={store} aria-label={`Put ${name} in the box`}><ArrowDown size={12} /> Store</button>
+  </motion.div>
 }
 
+const labels = ["Languages", "Backend", "Databases", "Tools", "Fundamentals", "Frontend", "AI / ML"]
 export function Toolkit() {
-  const systemReducedMotion = useReducedMotion()
   const id = useId()
-  const boxId = `${id.replace(/:/g, "")}-toolbox`
-  const stage = useRef<HTMLDivElement>(null)
-  const visible = useInView(stage, { margin: "80px" })
-  const [selected, setSelected] = useState(1)
-  const [preview, setPreview] = useState<number | null>(null)
-  const reduceMotion = Boolean(systemReducedMotion)
-
-  const shown = preview ?? selected
-  const group = skillGroups[shown]
-  const shipped = shippedIn(group)
-  const activeTool = tools.find(tool => tool.group === shown)
-  const accent = activeTool?.ink ?? "#c2473a"
-  const accentStyle = { "--tool-accent": accent } as CSSProperties
-
-  return (
-    <section id="skills" className="portfolio-section portfolio-toolkit" aria-labelledby="toolkit-heading">
-      <div className="section-inner">
-        <div className="section-label"><Wrench size={18} aria-hidden="true" /> MY EVERYDAY ESSENTIALS</div>
-        <h2 id="toolkit-heading" className="section-heading">A peek inside<br />my <span className="highlight">toolbox.</span></h2>
-        <p className="section-copy">Pick a tool. The box opens on that part of the stack, and shows where it shipped.</p>
-
-        <div ref={stage} className={`portfolio-toolkit-stage${visible ? " is-visible" : ""}`} style={accentStyle}>
-          <div className="portfolio-toolkit-orbit" role="group" aria-label="Explore the tools in my toolkit">
-            {tools.map(({ name, group: toolGroup, Icon, className, ink }, index) => (
-              <motion.button
-                key={name}
-                type="button"
-                className={`portfolio-tool-token portfolio-tool-${className}${selected === toolGroup ? " is-selected" : ""}${preview === toolGroup ? " is-previewed" : ""}${shown === toolGroup ? " is-lit" : " is-dimmed"}`}
-                onClick={() => { setSelected(toolGroup); setPreview(null) }}
-                onPointerEnter={event => { if (event.pointerType === "mouse") setPreview(toolGroup) }}
-                onPointerLeave={() => setPreview(null)}
-                onFocus={() => setPreview(toolGroup)}
-                onBlur={() => setPreview(null)}
-                aria-pressed={selected === toolGroup}
-                aria-controls={`${id}-spotlight`}
-                aria-label={`${name}: show ${skillGroups[toolGroup].title}`}
-                style={{ "--tool-ink": ink } as CSSProperties}
-                initial={false}
-                whileInView={reduceMotion ? {} : { opacity: [0, 1], scale: [0.85, 1], y: [12, 0] }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.035 }}
-                whileHover={reduceMotion ? {} : { y: -6, rotate: index % 2 ? 4 : -4, scale: 1.05 }}
-                whileTap={reduceMotion ? {} : { scale: 0.95 }}
-              >
-                {Icon ? <Icon aria-hidden="true" size={32} strokeWidth={1.8} /> : <b aria-hidden="true">C++</b>}
-                <span>{name}</span>
-              </motion.button>
-            ))}
-          </div>
-
-          <div className="portfolio-toolbox" aria-hidden="true">
-            <span className="portfolio-toolbox-glow" />
-            <svg viewBox="0 0 400 320" fill="none" focusable="false">
-              <defs>
-                <linearGradient id={`${boxId}-front`} x1="94" y1="145" x2="241" y2="270" gradientUnits="userSpaceOnUse"><stop stopColor="#DBB185" /><stop offset="1" stopColor="#C7996B" /></linearGradient>
-                <linearGradient id={`${boxId}-side`} x1="259" y1="132" x2="311" y2="268" gradientUnits="userSpaceOnUse"><stop stopColor="#B98450" /><stop offset="1" stopColor="#A56F41" /></linearGradient>
-                <linearGradient id={`${boxId}-flap`} x1="157" y1="37" x2="267" y2="192" gradientUnits="userSpaceOnUse"><stop stopColor="#E6C49E" /><stop offset="1" stopColor="#CCA174" /></linearGradient>
-                <clipPath id={`${boxId}-opening`}><path d="M92 130 160 78 310 111 242 163Z" /></clipPath>
-              </defs>
-              <ellipse cx="207" cy="293" rx="113" ry="14" fill="#51351C" opacity=".09" />
-              {/* Every flap shares its hinge with the same four opening corners. */}
-              <path d="M160 78 310 111 327 57 177 24Z" fill={`url(#${boxId}-flap)`} stroke="#BD936A" strokeWidth="1.2" strokeLinejoin="round" />
-              <path d="M92 130 160 78 117 31 49 83Z" fill="#D5AF85" stroke="#BD936A" strokeWidth="1.2" strokeLinejoin="round" />
-              <path d="M92 130 242 163 242 283 92 250Z" fill={`url(#${boxId}-front)`} stroke="#B58658" strokeWidth="1.2" strokeLinejoin="round" />
-              <path d="M242 163 310 111 310 231 242 283Z" fill={`url(#${boxId}-side)`} stroke="#9D6D41" strokeWidth="1.2" strokeLinejoin="round" />
-              <path d="M92 130 160 78 310 111 242 163Z" fill="#705035" stroke="#9D734D" strokeWidth="1.2" strokeLinejoin="round" />
-              <g clipPath={`url(#${boxId}-opening)`}>
-                <path d="M92 130 160 78 160 109 110 151Z" fill="#9C744E" />
-                <path d="M160 78 310 111 291 138 160 109Z" fill="#A27A52" />
-                <path d="M160 109 291 138 220 174 110 151Z" fill="#805B3B" />
-              </g>
-              <path d="M92 130 242 163 224 184 74 151Z" fill={`url(#${boxId}-flap)`} stroke="#B58B60" strokeWidth="1.2" strokeLinejoin="round" />
-              <path d="M242 163 310 111 363 132 295 184Z" fill="#DDB88E" stroke="#BD936A" strokeWidth="1.2" strokeLinejoin="round" />
-              <path d="M160 78 310 111M93 130 242 163" stroke="#ECD0AC" strokeWidth="2" />
-              <path d="M219 158 233 161 233 281 219 278Z" fill="#EDD1A7" opacity=".35" />
-              <g transform="matrix(1 .22 0 1 92 130)" fill="#4D3827" fontFamily="ui-monospace, monospace">
-                <text x="17" y="61" fontSize="10" letterSpacing=".6">HANDLE WITH</text>
-                <text x="16" y="80" fontSize="15" fontWeight="700" letterSpacing="-.4">CURIOSITY.</text>
-                <text x="17" y="108" fontSize="7" opacity=".72">GOOD IDEAS INSIDE ↑</text>
-                <g transform="translate(112 84) rotate(10)">
-                  <circle r="22" fill="#F6E496" stroke="#D7BE69" strokeWidth="1" />
-                  <text x="0" y="-2" textAnchor="middle" fontSize="8" fontWeight="800" fill="#263549">JAVA</text>
-                  <text x="0" y="8" textAnchor="middle" fontSize="7" fontWeight="800" fill="#263549">INSIDE</text>
-                </g>
-              </g>
-            </svg>
-          </div>
-
-          {/* The answer appears under the box, where the eye already is. */}
-          <div id={`${id}-spotlight`} className="portfolio-toolkit-spotlight" aria-live="polite" aria-atomic="true">
-            <div className="portfolio-toolkit-spotlight-head">
-              <span className="portfolio-toolkit-spotlight-dot" aria-hidden="true" />
-              <span className="portfolio-toolkit-spotlight-label">{group.status} / {group.title}</span>
-              <span className="portfolio-toolkit-spotlight-count">{group.skills.length} skills</span>
-            </div>
-            <ul className="portfolio-toolkit-spotlight-chips">
-              {group.skills.slice(0, 8).map(skill => <li key={skill}>{skill}</li>)}
-              {group.skills.length > 8 && <li className="is-more">+{group.skills.length - 8}</li>}
-            </ul>
-            <div className="portfolio-toolkit-spotlight-evidence">
-              {shipped.length ? <>
-                <span className="portfolio-toolkit-spotlight-caption">Shipped in</span>
-                {shipped.map(({ project, hits }) => (
-                  <span key={project.title} className="portfolio-toolkit-evidence-pill">
-                    <strong>{project.title.startsWith("MODEYA") ? "MODEYA" : project.title.startsWith("Gestion") ? "E-service" : project.title}</strong>
-                    <em>{hits.slice(0, 2).join(" · ")}</em>
-                  </span>
-                ))}
-              </> : <span className="portfolio-toolkit-spotlight-caption">The groundwork behind every project on this page.</span>}
-            </div>
-          </div>
-        </div>
-
-        <div className="portfolio-toolkit-tabs" role="tablist" aria-label="Skill categories">
-          {skillGroups.map((item, index) => (
-            <button
-              key={item.title}
-              type="button"
-              role="tab"
-              id={`${id}-tab-${index}`}
-              aria-selected={selected === index}
-              aria-controls={`${id}-spotlight`}
-              className={selected === index ? "is-selected" : ""}
-              onClick={() => setSelected(index)}
-              onKeyDown={event => {
+  const { paused } = useMotionPreferences()
+  const [open, setOpen] = useState(false)
+  const [group, setGroup] = useState(0)
+  const [selected, setSelected] = useState<string | null>(null)
+  const [stored, setStored] = useState<string[]>([])
+  const [dropOver, setDropOver] = useState(false)
+  const [announcement, setAnnouncement] = useState("")
+  const stage = useRef<HTMLDivElement>(null), drop = useRef<HTMLDivElement>(null), toggle = useRef<HTMLButtonElement>(null)
+  const evidence = selected ? skillEvidence(selected, group) : null
+  const skills = skillGroups[group].skills.filter(skill => !stored.includes(skill))
+  function store(name: string) {
+    toggle.current?.focus({ preventScroll: true })
+    setStored(current => current.includes(name) ? current : [...current, name])
+    if (selected === name) setSelected(null)
+    setAnnouncement(`${name} is inside the box. Use Retrieve to bring it back.`)
+  }
+  function close() { setOpen(false); setGroup(0); setSelected(null); setDropOver(false); setStored([]); setAnnouncement("Toolkit closed and reset."); toggle.current?.focus({ preventScroll: true }) }
+  return <section id="skills" className="portfolio-section portfolio-toolkit" aria-labelledby="toolkit-heading">
+    <div className="section-inner">
+      <p className="section-label"><Wrench size={18} aria-hidden="true" /> MY EVERYDAY ESSENTIALS</p>
+      <h2 id="toolkit-heading" className="section-heading">Good tools.<br /><span className="highlight">Better questions.</span></h2>
+      <p className="section-copy">A small collection of the languages, systems, and ideas I build with.</p>
+      <noscript>{skillGroups.map(item => <section key={item.title}><h3>{item.title}</h3><p>{item.skills.join(" · ")}</p></section>)}</noscript>
+      <div className={`tool-workbench${open ? " is-open" : ""}${dropOver ? " is-drop-target" : ""}`} ref={stage} data-state={open ? "open" : "closed"}>
+        <AnimatePresence>{open && <motion.div key="inventory" className="tool-inventory" id={`${id}-inventory`} initial={paused ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: paused ? 0 : .25 }}>
+          <div role="tablist" aria-label="Skill categories" className="tool-category-tabs">
+            {skillGroups.map((item, index) => <button key={item.title} role="tab" type="button" id={`${id}-tab-${index}`} aria-controls={`${id}-tools`} aria-selected={group === index} tabIndex={group === index ? 0 : -1}
+              onClick={() => { setGroup(index); setSelected(null) }} onKeyDown={event => {
                 if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return
                 event.preventDefault()
                 const next = event.key === "Home" ? 0 : event.key === "End" ? skillGroups.length - 1 : (index + (event.key === "ArrowRight" ? 1 : -1) + skillGroups.length) % skillGroups.length
-                setSelected(next)
-                document.getElementById(`${id}-tab-${next}`)?.focus()
-              }}
-              tabIndex={selected === index ? 0 : -1}
-            >{domainLabels[index] ?? item.title}</button>
-          ))}
+                setGroup(next); setSelected(null); document.getElementById(`${id}-tab-${next}`)?.focus()
+              }}>{labels[index]}<small>{item.skills.length}</small></button>)}
+          </div>
+          <p id="tool-drag-help" className="tool-help">Pick a tool to explore it. Drag it into the box, or use its Store button.</p>
+          <div role="tabpanel" id={`${id}-tools`} aria-labelledby={`${id}-tab-${group}`} className="tool-grid">
+            <AnimatePresence mode="popLayout">{skills.map((name, index) => <SkillToken key={`${group}-${name}`} name={name} index={index} focused={selected === name} stage={stage} drop={drop} select={() => setSelected(name)} store={() => store(name)} over={setDropOver} />)}</AnimatePresence>
+            {!skills.length && <p className="tool-empty">These tools are packed. Retrieve one below to keep exploring.</p>}
+          </div>
+        </motion.div>}</AnimatePresence>
+        <div ref={drop} className="tool-drop-zone" aria-label={open ? "Drop skills here to store them" : "Closed skills box"}>
+          <div className="tool-physical-box" aria-hidden="true"><span className="tool-box-inside" />
+            <motion.span className="tool-box-flap tool-box-flap-back" initial={false} animate={{ rotateX: open ? -120 : 0 }} transition={{ duration: paused ? 0 : .6, delay: open ? 0 : .2 }} />
+            <motion.span className="tool-box-flap tool-box-flap-front" initial={false} animate={{ rotateX: open ? 120 : 0 }} transition={{ duration: paused ? 0 : .6, delay: open ? .08 : .3 }} />
+            <span className="tool-box-face"><small>HANDLE WITH</small><strong>CURIOSITY.</strong><i>H / E</i></span><span className="tool-box-side" />
+          </div>
+          <button ref={toggle} type="button" className="tool-box-toggle" aria-expanded={open} aria-controls={`${id}-inventory`} onClick={() => { if (open) close(); else { setOpen(true); setAnnouncement("Toolkit opened. Choose a category or a skill.") } }}><Box size={17} /> {open ? "Close & reset toolkit" : "Click to explore my toolkit"}</button>
+          {open && <p className="tool-drop-hint">{dropOver ? "Release to put it inside" : `${stored.length} ${stored.length === 1 ? "tool" : "tools"} inside · drop here`}</p>}
         </div>
-
-        <p className="portfolio-toolkit-footnote">
-          Always building on the fundamentals. Always making room to learn.
-          {" "}<a href="#selected-work" className="text-link">See the work <ArrowUpRight size={13} aria-hidden="true" /></a>
-        </p>
+        {open && stored.length > 0 && <div className="tool-retrieval" aria-label="Tools inside the box"><span>INSIDE THE BOX</span><div>{stored.map(name => <button type="button" key={name} onClick={() => { setStored(current => current.filter(item => item !== name)); setAnnouncement(`${name} retrieved.`) }} aria-label={`Retrieve ${name}`}>{name} <RotateCcw size={13} /></button>)}</div><button type="button" className="text-link" onClick={() => { setStored([]); setAnnouncement("All tools retrieved.") }}>Retrieve all</button></div>}
       </div>
-    </section>
-  )
+      <AnimatePresence mode="wait">{open && selected && evidence && <motion.aside key={selected} className="tool-information" initial={paused ? false : { opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: paused ? 0 : .25 }} aria-label={`${selected} details`}>
+        <div><p>{skillGroups[group].title}</p><h3>{selected}</h3><button type="button" className="text-link" onClick={() => store(selected)}>Put back in the box <ArrowDown size={14} /></button></div>
+        <div><p>{evidence.description}</p><p className="tool-related-label">RELATED CONCEPTS</p><ul className="tool-concepts">{evidence.concepts.map(concept => <li key={concept}>{concept}</li>)}</ul>
+          {evidence.related.length > 0 ? <><p className="tool-related-label">DOCUMENTED IN</p><ul className="tool-project-links">{evidence.related.map(project => <li key={project.href}><Link href={project.href}>{project.title}<ArrowUpRight size={15} /></Link></li>)}</ul></> : <Link href="#certifications" className="text-link">Explore my learning & credentials <ArrowUpRight size={14} /></Link>}
+        </div>
+      </motion.aside>}</AnimatePresence>
+      <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
+    </div>
+  </section>
 }

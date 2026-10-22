@@ -63,7 +63,7 @@ export function AmbientPlayer() {
   }, [stopAudio])
 
   /** Draw the live spectrum, or one still frame when motion is paused. */
-  const paint = useCallback((still = false) => {
+  const paint = useCallback(function paintFrame(still = false) {
     const node = analyser.current
     const element = canvas.current
     if (!node || !element) return
@@ -98,7 +98,7 @@ export function AmbientPlayer() {
       context.fill()
     }
     context.globalAlpha = 1
-    if (!still) frame.current = requestAnimationFrame(() => paint(false))
+    if (!still) frame.current = requestAnimationFrame(() => paintFrame(false))
   }, [])
 
   useEffect(() => {

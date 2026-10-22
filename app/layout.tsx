@@ -5,6 +5,7 @@ import { MotionPreferencesProvider } from '@/components/portfolio/motion-prefere
 import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from 'sonner'
 import './globals.css'
+import '@/components/portfolio/night-materials.css'
 
 const bricolage = Bricolage_Grotesque({
   subsets: ['latin'],
@@ -103,16 +104,15 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased">
         <a
-          href="#about"
+          href="#main-content"
           className="skip-content"
         >
           Skip to content
         </a>
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
-          enableSystem={false}
-          disableTransitionOnChange
+          defaultTheme="system"
+          enableSystem
         >
           <MotionPreferencesProvider>
             {children}

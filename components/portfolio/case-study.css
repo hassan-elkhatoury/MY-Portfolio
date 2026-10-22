@@ -1,6 +1,6 @@
-.case-page { min-height: 100vh; background: var(--page); color: var(--ink); padding: 0 32px 30px; }
+.case-page { min-height: 100dvh; background: var(--page); color: var(--ink); padding: 0 var(--page-gutter) 30px; }
 .case-page:focus { outline: none; }
-.case-page-inner { width: min(1120px, 100%); margin-inline: auto; }
+.case-page-inner { width: min(var(--content-width), 100%); margin-inline: auto; }
 .case-topbar { min-height: 102px; display: flex; justify-content: space-between; align-items: center; gap: 20px; border-bottom: 1px solid var(--line); }
 .case-back, .case-cv { display: inline-flex; gap: 12px; align-items: center; text-decoration: none; font-size: 12px; font-weight: 550; }
 .case-cv { padding: 10px 15px; border: 1px solid var(--line); border-radius: 5px; }
@@ -112,7 +112,6 @@
   .case-visual-node:not(:last-child)::after { left: calc(100% + 2px); font-size: 14px; }
 }
 @media (max-width: 650px) {
-  .case-page { padding-inline: 22px; }
   .case-topbar { min-height: 84px; gap: 12px; }
   .case-back { font-size: 10px; gap: 7px; }
   .case-cv { font-size: 10px; gap: 6px; padding: 9px 10px; }

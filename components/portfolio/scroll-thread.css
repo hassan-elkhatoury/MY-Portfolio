@@ -13,4 +13,11 @@
 .scroll-thread a.is-active .scroll-thread-label { opacity: 1; transform: none; }
 .scroll-thread a.is-active .scroll-thread-label { color: var(--ink); }
 .scroll-thread a:focus-visible { outline: 2px solid var(--coral); outline-offset: 5px; border-radius: 12px; }
+.scroll-thread { left: 8px; }
+.scroll-thread[data-section="home"] { visibility: hidden; }
+.scroll-thread-rail { left: 21px; }
+.scroll-thread ol { gap: 0; }
+.scroll-thread a { min-height: 44px; min-width: 44px; padding-left: 16px; }
+.scroll-thread-label { position: absolute; left: 40px; padding: 7px 10px; font-size: 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--page); color: var(--ink); }
+@media(max-width: 1599px) { .scroll-thread a.is-active:not(:hover):not(:focus-visible) .scroll-thread-label { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .scroll-thread-dot, .scroll-thread-label { transition: none; } }

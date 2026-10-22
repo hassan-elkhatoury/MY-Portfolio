@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import { motion, useMotionValue, useSpring, useScroll, useTransform } from "framer-motion"
+import { motion, useInView, useMotionValue, useSpring, useScroll, useTransform } from "framer-motion"
 import { ArrowDown, ArrowUpRight } from "lucide-react"
 import { SceneDepth } from "./scene-depth"
 import { useMotionPreferences } from "./motion-preferences"
@@ -23,7 +23,11 @@ const layers = [
 
 function Place({ href, className, icon, name, year, journeyStop }: { href: string; className: string; icon?: string; name: string; year: string; journeyStop?: string }) {
   return <a href={href} className={`valley-place ${className}`} aria-label={`${name}, ${year}. Explore ${name}`}
-    onClick={journeyStop ? () => window.dispatchEvent(new CustomEvent("portfolio:journey-select", { detail: journeyStop })) : undefined}>
+    onClick={journeyStop ? event => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+      event.preventDefault()
+      window.dispatchEvent(new CustomEvent("portfolio:journey-select", { detail: journeyStop }))
+    } : undefined}>
     <span className="valley-place-chip">{icon ? <img src={icon} alt="" width="26" height="26" /> : <span className="valley-place-initials" aria-hidden="true">{name.slice(0, 3)}</span>}<strong>{name}</strong><small>{year}</small></span>
     <span className="valley-place-stem" aria-hidden="true" /><span className="valley-place-dot" aria-hidden="true" />
   </a>
@@ -31,7 +35,7 @@ function Place({ href, className, icon, name, year, journeyStop }: { href: strin
 
 export function HeroLandscape() {
   const root = useRef<HTMLElement>(null)
-  const action = useRef<HTMLAnchorElement>(null)
+  const visible = useInView(root)
   const { paused: reduceMotion } = useMotionPreferences()
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
@@ -52,18 +56,14 @@ export function HeroLandscape() {
   const glareSmoothX = useSpring(glareX, { stiffness: 90, damping: 24 })
   const glareSmoothY = useSpring(glareY, { stiffness: 90, damping: 24 })
   const glareBackground = useTransform([glareSmoothX, glareSmoothY], ([gx, gy]: number[]) => `radial-gradient(680px 420px at ${gx}% ${gy}%, rgba(255,239,190,.34), transparent 62%)`)
-  const actionX = useSpring(useMotionValue(0), { stiffness: 260, damping: 18, mass: .4 })
-  const actionY = useSpring(useMotionValue(0), { stiffness: 260, damping: 18, mass: .4 })
   useEffect(() => {
     if (!reduceMotion) return
     mouseX.set(0)
     mouseY.set(0)
     x.jump(0)
     y.jump(0)
-    actionX.jump(0)
-    actionY.jump(0)
-  }, [reduceMotion, mouseX, mouseY, x, y, actionX, actionY])
-  return <section ref={root} id="home" className="valley-hero" aria-label={`Welcome to ${profile.name.split(" ")[0]}'s world`}
+  }, [reduceMotion, mouseX, mouseY, x, y])
+  return <section ref={root} id="home" className="valley-hero" data-running={visible && !reduceMotion} aria-label={`Welcome to ${profile.name.split(" ")[0]}'s world`}
     onPointerMove={event => {
       if (reduceMotion || event.pointerType !== "mouse") return
       const bounds = event.currentTarget.getBoundingClientRect()
@@ -73,7 +73,7 @@ export function HeroLandscape() {
       mouseX.set(Math.max(-1, Math.min(1, 1 - (event.clientX - bounds.left) / bounds.width * 2)))
       mouseY.set(Math.max(-1, Math.min(1, 1 - (event.clientY - bounds.top) / bounds.height * 2)))
     }}
-    onPointerLeave={() => { if (!reduceMotion) { mouseX.set(0); mouseY.set(0); glareX.set(50); glareY.set(40); actionX.set(0); actionY.set(0) } }}>
+    onPointerLeave={() => { if (!reduceMotion) { mouseX.set(0); mouseY.set(0); glareX.set(50); glareY.set(40) } }}>
     <motion.div className="valley-camera" style={reduceMotion ? {} : { scale, rotateX, rotateY, filter: sceneFilter }}>
       <div className="valley-scene" aria-hidden="true">
         <SceneDepth {...depthProps} distance={4} name="clean-valley" className="valley-terrain"><img className="valley-base" src={`${scenery}landscape-clean.webp`} alt="" fetchPriority="high" /></SceneDepth>
@@ -83,11 +83,11 @@ export function HeroLandscape() {
         {layers.map(layer => <SceneDepth key={layer.file} {...depthProps} distance={layer.distance} name={layer.file.replace(".webp", "")} className="valley-terrain"><img src={`${scenery}${layer.file}`} alt="" style={{left: layer.left, top: layer.top, width: layer.width, height: layer.height}} /></SceneDepth>)}
       </div>
       <div className="valley-landmarks">
-        <SceneDepth {...depthProps} distance={26} name="college-label"><Place className="valley-college-pin" href="#journey" icon="/images/logos/ensah.png" name="ENSAH" year="2022" /></SceneDepth>
-        <SceneDepth {...depthProps} distance={30} name="bistro-label"><Place className="valley-work-pin" href="#journey-detail" journeyStop="MEF internship" name="MEF" year="2026" /></SceneDepth>
+        <SceneDepth {...depthProps} distance={26} name="college-label"><Place className="valley-college-pin" href="#journey" journeyStop="The beginning" icon="/images/logos/ensah.webp" name="ENSAH" year="2022" /></SceneDepth>
+        <SceneDepth {...depthProps} distance={30} name="bistro-label"><Place className="valley-work-pin" href="#journey" journeyStop="MEF internship" name="MEF" year="2026" /></SceneDepth>
         <SceneDepth {...depthProps} distance={24} name="tower-label"><Place className="valley-java-pin" href="#certifications" icon="/images/logos/oracle.png" name="Java OCP" year="2026" /></SceneDepth>
         <SceneDepth {...depthProps} distance={18} name="hotel-label"><Place className="valley-cloud-pin" href="#certifications" icon="/images/logos/oracle.png" name="Oracle Cloud" year="2025" /></SceneDepth>
-        <SceneDepth {...depthProps} distance={52} name="hasan"><a className="valley-person" href="#about" aria-label={`Meet ${profile.name}`}><span className="valley-person-label"><img src="/images/hassan-profile-photo.jpg" width="24" height="24" alt="" /> That&apos;s me <ArrowUpRight size={12} /></span><img className="valley-person-figure" src="/images/hasan-illustration.webp" alt={`Painted illustration of ${profile.name.split(" ")[0]} waving hello`} width="600" height="900" /></a></SceneDepth>
+        <SceneDepth {...depthProps} distance={52} name="hasan"><a className="valley-person" href="#about" aria-label={`Meet ${profile.name}`}><span className="valley-person-label"><img src="/images/hasan-portrait.webp" width="24" height="24" alt="" /> That&apos;s me <ArrowUpRight size={12} /></span><img className="valley-person-figure" src="/images/hasan-illustration.webp" alt={`Painted illustration of ${profile.name.split(" ")[0]} waving hello`} width="600" height="900" /></a></SceneDepth>
       </div>
     </motion.div>
     <motion.div className="valley-glare" aria-hidden="true" style={reduceMotion ? undefined : { background: glareBackground }} />
@@ -98,17 +98,8 @@ export function HeroLandscape() {
       <motion.p className="valley-description" initial={{ y: reduceMotion ? 0 : 20 }} animate={{ y: 0 }} transition={{ duration: .8, delay: .16 }}>Computer engineering student.<br className="valley-mobile-break" /> Java &amp; Spring Boot backends.</motion.p>
       <div className="valley-actions">
         <motion.a
-          ref={action}
           className="valley-primary-action"
           href="#selected-work"
-          style={reduceMotion ? undefined : { x: actionX, y: actionY }}
-          onPointerMove={event => {
-            if (reduceMotion || event.pointerType !== "mouse") return
-            const bounds = event.currentTarget.getBoundingClientRect()
-            actionX.set(((event.clientX - bounds.left) / bounds.width - .5) * 12)
-            actionY.set(((event.clientY - bounds.top) / bounds.height - .5) * 8)
-          }}
-          onPointerLeave={() => { actionX.set(0); actionY.set(0) }}
         >View my work <ArrowDown size={16} aria-hidden="true" /></motion.a>
         <span className="valley-availability" title={`${profile.availability} · ${profile.pfeTarget}`}><span aria-hidden="true" />Seeking PFE {profile.graduationYear}</span>
       </div>
@@ -121,7 +112,11 @@ export function HeroLandscape() {
       </div>
     </div>
     <div className="valley-click-note" aria-hidden="true">click a place <svg viewBox="0 0 70 35"><path d="M2 20C20-1 42 6 58 22m-12-1 13 3-1-13" /></svg></div>
-    <a className="valley-explore" href="#journey"><span className="valley-scroll-mouse" aria-hidden="true" /> scroll to explore <ArrowDown size={14} /></a>
+    <a className="valley-explore" href="#journey" onClick={event => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+      event.preventDefault()
+      window.dispatchEvent(new CustomEvent("portfolio:journey-select", { detail: "The beginning" }))
+    }}><span className="valley-scroll-mouse" aria-hidden="true" /> Explore my journey <ArrowDown size={14} /></a>
     <div className="valley-tear" aria-hidden="true" />
   </section>
 }

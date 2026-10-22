@@ -1,11 +1,13 @@
 "use client"
 
 import { useCallback, useEffect, useState, type FormEvent } from "react"
-import { motion, useReducedMotion } from "framer-motion"
+import { motion } from "framer-motion"
 import { ArrowDown, ArrowUp, ArrowUpRight, Check, Copy, Github, Linkedin, Mail, Send } from "lucide-react"
 import { profile } from "@/lib/portfolio-data"
 import { AmbientPlayer } from "./ambient-player"
 import "./contact-desk.css"
+import { ContactAtmosphere } from "./contact-atmosphere"
+import { useMotionPreferences } from "./motion-preferences"
 
 const contactKeys = [
   { key: "M", label: "Email", href: `mailto:${profile.email}`, Icon: Mail, color: "red", caption: "Roles, projects, or just hi.", position: "after" },
@@ -50,7 +52,7 @@ function DeskStatus() {
 
 
 export function ContactDesk() {
-  const reduceMotion = useReducedMotion()
+  const { paused: reduceMotion } = useMotionPreferences()
   const [copied, setCopied] = useState<"idle" | "copied" | "failed">("idle")
   const [formStatus, setFormStatus] = useState<"idle" | "submitting" | "success" | "error">("idle")
   const [error, setError] = useState("")
@@ -133,6 +135,7 @@ export function ContactDesk() {
 
   return (
     <div className="contact-sky">
+      <ContactAtmosphere />
       <section id="contact" className="portfolio-section contact-desk" aria-labelledby="contact-desk-heading">
         <div className="section-inner">
           <div className="section-label"><Mail size={18} aria-hidden="true" /> GREAT THINGS START WITH A HELLO</div>

@@ -52,7 +52,7 @@ export function PersonalStory() {
             {...(still ? {} : { drag: true })}
             dragConstraints={desk} dragElastic={0.12} dragMomentum={false} whileDrag={{ scale: 1.04, zIndex: 5 }} initial={false} whileHover={still ? {} : { rotate: 1 }}>
             <span className="personal-story-tape" aria-hidden="true" />
-            <img className="personal-story-portrait" src="/images/hassan-profile-photo.jpg" alt={profile.name} width={320} height={370} />
+            <img className="personal-story-portrait" src="/images/hasan-portrait.webp" alt={profile.name} width={320} height={370} />
             <figcaption>{profile.name.split(" ")[0]}, from Morocco <span aria-hidden="true">↗</span></figcaption>
           </motion.figure>
 

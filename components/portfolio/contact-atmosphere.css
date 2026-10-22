@@ -1,0 +1,50 @@
+.contact-sky { background: #a3c6d8; isolation: isolate; color: #fff; }
+.contact-sky::before { display: none; }
+.contact-atmosphere { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; background: linear-gradient(#3476a0, #99c0d5 70%, #a3c6d8); }
+.contact-sky-art { position: absolute; inset: 0 0 auto; height: min(100%, 1050px); max-width: 1672px; margin-inline: auto; display: block; opacity: 1; transition: opacity .8s ease; }
+.contact-sky-art img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: center top; animation: atmosphere-drift 75s ease-in-out infinite alternate; mask-image: linear-gradient(#000 68%, transparent); }
+.contact-sky-veil { position: absolute; inset: 0; background: linear-gradient(#173e6575, transparent 50%, #28465e4d); }
+.contact-sky-haze { position: absolute; inset: 22% -8% 0; background: radial-gradient(ellipse at 10% 40%, #ffffff24, transparent 40%), radial-gradient(ellipse at 90% 50%, #e1f3ff26, transparent 30%); animation: atmosphere-haze 48s ease-in-out infinite alternate; }
+.contact-sky-night { opacity: 0; }
+.dark .contact-sky-day { opacity: 0; }
+.dark .contact-sky-night { opacity: 1; }
+.dark .contact-atmosphere { background: linear-gradient(#0c1a2f, #203650 70%, #132b40); }
+.dark .contact-sky-veil { background: linear-gradient(#07132433, transparent 50%, #0a1c303b); }
+.dark .contact-sky-haze { opacity: .35; }
+.contact-night-stars { position: absolute; inset: 0; opacity: 0; transition: opacity .8s; }
+.dark .contact-night-stars { opacity: 1; }
+.contact-night-stars i { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #dceaff; box-shadow: 0 0 6px #c6e6ff66; animation: star-breathe 7s ease-in-out infinite alternate; }
+.contact-night-stars i:nth-child(1) { left: 12%; top: 12%; }.contact-night-stars i:nth-child(2) { left: 31%; top: 5%; animation-delay: -3s; }.contact-night-stars i:nth-child(3) { left: 71%; top: 23%; animation-delay: -5s; }.contact-night-stars i:nth-child(4) { left: 90%; top: 36%; animation-delay: -1s; }.contact-night-stars i:nth-child(5) { left: 8%; top: 32%; animation-delay: -4s; }
+@keyframes star-breathe { from { opacity: .25; } to { opacity: .85; } }
+.contact-atmosphere[data-running="false"] * { animation-play-state: paused !important; }
+@keyframes atmosphere-drift { from { transform: scale(1.025) translateX(-.7%); } to { transform: scale(1.04) translateX(.7%); } }
+@keyframes atmosphere-haze { from { transform: translateX(-2%); } to { transform: translateX(2%); } }
+.contact-desk .section-heading { text-shadow: 0 2px 20px #15344d20; }
+.contact-desk-panel { margin-top: 56px; padding: 32px 42px 30px; border-radius: 18px; background-image: none; border: 1px solid #ffffffa6; box-shadow: 0 28px 60px #1b38582b, inset 0 1px 0 #fff; }
+.contact-desk-keyboard-base { gap: 24px; }
+.contact-desk-key { border-radius: 20px; background: linear-gradient(145deg, #5d6570, #1c2937); box-shadow: 0 3px 0 #132235, 0 12px 16px #21323a26; }
+.contact-desk-key-top { border-radius: 14px; background: linear-gradient(145deg, color-mix(in srgb, var(--key-face), white 14%), var(--key-face)); }
+.contact-desk-key-red { --key-face: #c95c4b; --key-shade: #a84537; --key-edge: #78352d; }
+.contact-desk-key-purple { --key-face: #616c94; --key-shade: #4a557f; --key-edge: #344161; }
+.contact-desk-key-purple .contact-desk-key-top { background: linear-gradient(145deg, #7f89ae, #616c94); }
+.contact-desk-key-blue { --key-face: #3d6e8d; --key-shade: #305b78; --key-edge: #234258; }
+.contact-desk-key-coral { --key-face: #a25c54; --key-shade: #87473f; --key-edge: #663831; }
+.contact-desk-key-yellow { --key-face: #e7c777; --key-shade: #bda056; --key-edge: #8b763d; }
+.contact-desk-key-label { font-size: 10px; opacity: 1; }
+.contact-desk-key-letter { opacity: .9; }
+.contact-desk-key-caption { font-size: 14px; color: #536171; }
+.contact-desk-key-caption svg { opacity: .7; }
+.contact-desk-keyboard-hint small { font-size: 11px; }
+.contact-desk-status-item { background: #183a56b3; border-color: #ffffff3d; font-size: 12px; padding: 9px 14px; }
+.contact-desk-status-label { font-size: 10px; opacity: .9; }
+.contact-desk-status-live i { animation: none; }
+.contact-desk-email button, .contact-desk-back-top { min-width: 44px; min-height: 44px; }
+.contact-desk-form input, .contact-desk-form textarea { font-size: 16px; min-height: 48px; }
+.contact-desk-form label, .contact-desk-message summary { font-size: 14px; }
+.contact-desk-form-status { font-size: 14px; }
+.contact-desk-message { margin-top: 24px; }
+.contact-desk-footer { background: #304e6459; padding-top: 30px; margin-top: 12px; }
+.contact-desk-footer p, .contact-desk-footer-name span { font-size: 12px; }
+@media(max-width: 1000px) { .contact-desk-panel { padding-inline: 24px; }.contact-desk-keyboard-base { gap: 14px; } }
+@media(max-width: 700px) { .contact-desk-panel { padding: 22px 18px; margin-top: 36px; border-radius: 14px; }.contact-desk-key-top { border-radius: 11px; }.contact-desk-keyboard-hint { font-size: 12px; }.contact-desk-keyboard-hint kbd { display: none; }.contact-desk-keyboard-hint small { font-size: 10px; }.contact-desk-key-caption { font-size: 11px; }.contact-desk-key-label { font-size: 9px; }.contact-desk-email a { overflow-wrap: anywhere; }.contact-desk-message summary { flex-wrap: wrap; font-size: 13px; }.contact-desk-keyboard-base { gap: 10px; } }
+@media(prefers-reduced-motion: reduce) { .contact-atmosphere * { animation: none !important; transition: none !important; } }

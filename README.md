@@ -4,19 +4,21 @@ An interactive engineering portfolio inspired by [James Chugh's portfolio](https
 
 ## Experience
 
-- Layered painted landscape with pointer and scroll parallax, animated clouds, and a day/night switch.
-- Clickable ENSAH, MEF, Java, and Oracle Cloud landmarks.
+- Day/night developer workspace matched to the supplied references, with separately generated city, desk, and seated foreground layers, spring-driven hover depth, and scroll parallax.
+- The Java editor, InterviewAI, and MEF screen visuals are baked into the generated desk artwork, with transparent links over each screen leading to the project pages. Live city markers connect to the career journey, projects, and contact section; compact layouts have larger equivalent links.
 - Portrait illustration generated from the original portfolio photo.
 - Draggable personal notes and a portrait polaroid.
-- Career route with eight real milestones and keyboard accessible controls.
-- Seven projects presented in a physical card box, with accessible screenshot dialogs.
+- Illustrated career atlas with eight real milestones, a scroll-driven camera and route, a full-map view, and keyboard accessible controls. Explore starts the trip; milestone buttons and hero landmarks travel to the matching point in the same timeline.
+- Eight projects in a React Three Fiber archive matched to the supplied cream-box reference: modeled paper panels, a hinged lid, a woven gold tab, and independently clickable cards. GSAP opens the lid before lifting and fanning the cards, and reverses that sequence on closing. Project details retain browser-history support and eight shareable `/projects/[slug]` pages.
+- A consistent bottom navigation dock on Home and every subsequent section.
 - Three shareable case studies at `/work/mef-fleet-management`, `/work/interview-ai`, and `/work/modeya`, with documented scope, implementation decisions, and architecture diagrams.
-- Selected work immediately after the hero, including a genuine capture of MODEYA's public storefront.
+- Selected work after the journey, including a genuine capture of MODEYA's public storefront and interactive, labeled architecture diagrams.
 - PFE 2027 availability and a direct work link in the hero, plus a persisted pause/resume control that respects system reduced motion.
 - Twelve credentials with original verification links and PDFs.
-- Interactive engineering toolbox with seven skill groups.
+- A toolkit that starts closed, opens into seven skill groups, and supports real dragging, storing, retrieval, reset, and keyboard alternatives. Skill details link to documented project evidence.
 - Contact keyboard, email copying, resume, social links, and a Formspree message form.
 - Responsive layouts, visible keyboard focus, and reduced motion support.
+- Original day and night cloud artwork, responsive WebP assets, and a non-blocking theme crossfade. Saved preferences override the system default.
 
 ## Run locally
 
@@ -30,6 +32,7 @@ pnpm dev
 Open http://localhost:3000. Production checks:
 
 ```sh
+pnpm lint
 pnpm exec tsc --noEmit --incremental false
 pnpm build
 pnpm start
@@ -45,4 +48,7 @@ The contact form uses the existing Formspree form ID. Submission happens only wh
 
 Design and asset notes, including the illustration prompt, are in `DESIGN.md`. Public project images, credentials, and resume remain in `public/`.
 
+The latest implementation and verification report is `output/redesign-verification.md`. Prompts and asset provenance are recorded in `output/sky-artwork-provenance.md` and `output/workspace-artwork-provenance.md`. Run the production build with the development server stopped so generated Next.js types cannot change during validation.
+
 Designed and developed by [Hassan El Khatoury](https://github.com/hassan-elkhatoury).
+

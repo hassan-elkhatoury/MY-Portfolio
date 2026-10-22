@@ -1,0 +1,21 @@
+/* Every scene is fully readable without JavaScript. The map keeps its own native sticky timeline. */
+.portfolio-section, .journey-section { --scene-in: 1; }
+.journey-layout { transform: translateY(calc((1 - var(--scene-in)) * 38px)) scale(calc(.96 + var(--scene-in) * .04)); transform-origin: 50% 0; }
+.selected-work-header { translate: 0 calc((1 - var(--scene-in)) * 54px); }
+.selected-work-list { clip-path: inset(0 calc((1 - var(--scene-in)) * 7%) 0 0); }
+.work-intro { translate: 0 calc((1 - var(--scene-in)) * 36px); }
+.personal-story .section-inner { translate: 0 calc((1 - var(--scene-in)) * 48px); }
+.credential-header { translate: 0 calc((1 - var(--scene-in)) * 32px); }
+.portfolio-toolkit .section-heading { translate: 0 calc((1 - var(--scene-in)) * 34px); }
+.contact-desk { translate: 0 calc((1 - var(--scene-in)) * 40px); }
+.portfolio-section .section-label { opacity: calc(.65 + var(--scene-in) * .35); }
+@media (max-width: 700px) {
+  .journey-layout { transform: translateY(calc((1 - var(--scene-in)) * 18px)); }
+  .selected-work-list { clip-path: none; }
+  .selected-work-header, .work-intro, .personal-story .section-inner, .credential-header, .portfolio-toolkit .section-heading, .contact-desk { translate: 0 calc((1 - var(--scene-in)) * 20px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .journey-layout { transform: none; }
+  .selected-work-list { clip-path: none; }
+  .selected-work-header, .work-intro, .personal-story .section-inner, .credential-header, .portfolio-toolkit .section-heading, .contact-desk { translate: none; }
+}
