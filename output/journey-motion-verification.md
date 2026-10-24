@@ -31,3 +31,5 @@ The subsequent user screenshot exposed a canvas shrinking twice inside the CSS-t
 The journey Canvas now sets `resize={{ offsetSize: true, scroll: false }}`. Measurement uses the original 1800 × 900 layout, and the existing parent transform handles viewport zoom once. The 3D relief, boat, and route keep the same coordinate system.
 
 `output/journey-canvas-sizing-check.cjs` exercises the installed measurement library with controlled element dimensions, then verifies the orthographic projection for all eight stops, six scales, and nine tilt combinations (432 checks). It reproduces the old double-scale result and passes with the corrected options. This is a numerical regression check, not browser rendering verification.
+
+The sizing correction passed targeted ESLint and a complete production build (all 16 static pages). The local server was restarted with the finished build on port 3000, PID 19804. Browser rendering remains unverified.

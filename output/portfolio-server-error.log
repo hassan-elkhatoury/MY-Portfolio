@@ -1,8 +1,0 @@
-Error [InvariantError]: Invariant: The client reference manifest for route "/projects/[slug]" does not exist. This is a bug in Next.js.
-    at Object.get (C:\Users\Hassan\Downloads\MY Portfolio\.next\server\chunks\490.js:1:17943)
-⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/projects/[slug]" does not exist. This is a bug in Next.js.
-    at Object.get (C:\Users\Hassan\Downloads\MY Portfolio\.next\server\chunks\490.js:1:17943)
-⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/projects/[slug]" does not exist. This is a bug in Next.js.
-    at Object.get (C:\Users\Hassan\Downloads\MY Portfolio\.next\server\chunks\490.js:1:17943)
-⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open 'C:\Users\Hassan\Downloads\MY Portfolio\.next\server\pages\500.html'
-    at ignore-listed frames
