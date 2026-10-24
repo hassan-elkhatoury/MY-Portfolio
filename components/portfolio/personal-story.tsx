@@ -1,6 +1,7 @@
 "use client"
 
 import { useRef } from "react"
+import Image from "next/image"
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion"
 import { ArrowUpRight, Move, UserRound } from "lucide-react"
 import { education, experiences, certifications, profile } from "@/lib/portfolio-data"
@@ -52,7 +53,7 @@ export function PersonalStory() {
             {...(still ? {} : { drag: true })}
             dragConstraints={desk} dragElastic={0.12} dragMomentum={false} whileDrag={{ scale: 1.04, zIndex: 5 }} initial={false} whileHover={still ? {} : { rotate: 1 }}>
             <span className="personal-story-tape" aria-hidden="true" />
-            <img className="personal-story-portrait" src="/images/hasan-portrait.webp" alt={profile.name} width={320} height={370} />
+            <Image className="personal-story-portrait" src={profile.photo} alt={profile.name} width={320} height={320} sizes="(max-width: 700px) 260px, 320px" draggable={false} />
             <figcaption>{profile.name.split(" ")[0]}, from Morocco <span aria-hidden="true">↗</span></figcaption>
           </motion.figure>
 

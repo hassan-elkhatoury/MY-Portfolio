@@ -1,5 +1,7 @@
 "use client"
 
+import Image from "next/image"
+
 import { useEffect, useRef } from "react"
 import { motion, useInView, useMotionValue, useSpring, useScroll, useTransform } from "framer-motion"
 import { ArrowDown, ArrowUpRight } from "lucide-react"
@@ -87,7 +89,7 @@ export function HeroLandscape() {
         <SceneDepth {...depthProps} distance={30} name="bistro-label"><Place className="valley-work-pin" href="#journey" journeyStop="MEF internship" name="MEF" year="2026" /></SceneDepth>
         <SceneDepth {...depthProps} distance={24} name="tower-label"><Place className="valley-java-pin" href="#certifications" icon="/images/logos/oracle.png" name="Java OCP" year="2026" /></SceneDepth>
         <SceneDepth {...depthProps} distance={18} name="hotel-label"><Place className="valley-cloud-pin" href="#certifications" icon="/images/logos/oracle.png" name="Oracle Cloud" year="2025" /></SceneDepth>
-        <SceneDepth {...depthProps} distance={52} name="hasan"><a className="valley-person" href="#about" aria-label={`Meet ${profile.name}`}><span className="valley-person-label"><img src="/images/hasan-portrait.webp" width="24" height="24" alt="" /> That&apos;s me <ArrowUpRight size={12} /></span><img className="valley-person-figure" src="/images/hasan-illustration.webp" alt={`Painted illustration of ${profile.name.split(" ")[0]} waving hello`} width="600" height="900" /></a></SceneDepth>
+        <SceneDepth {...depthProps} distance={52} name="hasan"><a className="valley-person" href="#about" aria-label={`Meet ${profile.name}`}><span className="valley-person-label"><Image src={profile.photo} width={24} height={24} sizes="24px" alt="" /> That&apos;s me <ArrowUpRight size={12} /></span><img className="valley-person-figure" src="/images/hasan-illustration.webp" alt={`Painted illustration of ${profile.name.split(" ")[0]} waving hello`} width="600" height="900" /></a></SceneDepth>
       </div>
     </motion.div>
     <motion.div className="valley-glare" aria-hidden="true" style={reduceMotion ? undefined : { background: glareBackground }} />

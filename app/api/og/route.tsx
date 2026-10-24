@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og"
 import { CodeXml } from "lucide-react"
+import { profile } from "@/lib/portfolio-data"
 
 export const runtime = "edge"
 
@@ -21,7 +22,7 @@ export async function GET(request: Request) {
         <div style={{ fontSize: 15, color: "#637079", marginTop: 48 }}>Oracle Certified Professional · Java SE 11 &amp; 17</div>
       </div>
       <div style={{ width: 265, marginLeft: 40, padding: "14px 14px 25px", background: "#fff", display: "flex", flexDirection: "column", border: "1px solid #e4e0d4", transform: "rotate(4deg)", boxShadow: "0 8px 20px #14233715" }}>
-        <img src={origin + "/images/hasan-portrait.png"} alt="" width={235} height={280} style={{ objectFit: "cover" }} />
+        <img src={origin + profile.photo} alt="" width={235} height={280} style={{ objectFit: "cover" }} />
         <span style={{ fontSize: 16, textAlign: "center", marginTop: 15 }}>hey, I&apos;m Hassan</span>
       </div>
       <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 10, background: "#ffe18b" }} />

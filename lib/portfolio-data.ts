@@ -2,6 +2,7 @@
 
 export type Profile = {
   name: string
+  photo: string
   title: string
   location: string
   focus: string
@@ -24,6 +25,7 @@ export type Profile = {
 
 export const profile: Profile = {
   name: "Hassan El Khatoury",
+  photo: "/images/hassan-profile-photo.jpg",
   title: "Java Backend Engineer",
   location: "Marrakech, Morocco",
   focus: "Backend Engineering",
