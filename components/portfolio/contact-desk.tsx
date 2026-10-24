@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState, type FormEvent } from "react"
 import { motion } from "framer-motion"
 import { ArrowDown, ArrowUp, ArrowUpRight, Check, Copy, Github, Linkedin, Mail, Send } from "lucide-react"
 import { profile } from "@/lib/portfolio-data"
-import { AmbientPlayer } from "./ambient-player"
 import "./contact-desk.css"
 import { ContactAtmosphere } from "./contact-atmosphere"
 import { useMotionPreferences } from "./motion-preferences"
@@ -13,7 +12,7 @@ const contactKeys = [
   { key: "M", label: "Email", href: `mailto:${profile.email}`, Icon: Mail, color: "red", caption: "Roles, projects, or just hi.", position: "after" },
   { key: "G", label: "GitHub", href: profile.github, Icon: Github, color: "purple", caption: "Where I build in public.", position: "before" },
   { key: "L", label: "LinkedIn", href: profile.linkedin, Icon: Linkedin, color: "blue", caption: "The work, and what I learn doing it.", position: "after" },
-  { key: "S", label: "Message", href: "#contact-message-form", Icon: Send, color: "teal", caption: "Prefer a little note? Write right here.", position: "before" },
+  { key: "S", label: "Message", href: "#contact-message-form", Icon: Send, color: "coral", caption: "Prefer a little note? Write right here.", position: "before" },
   { key: "R", label: "Résumé", href: profile.resume, Icon: ArrowDown, color: "yellow", caption: "My résumé, one click away.", position: "after" },
 ]
 
@@ -145,7 +144,6 @@ export function ContactDesk() {
           <DeskStatus />
 
           <div className="contact-desk-panel">
-          <AmbientPlayer />
           <div className="contact-desk-keyboard" data-contact-keyboard tabIndex={0} role="region" aria-label="Contact keyboard. Press M for email, G for GitHub, L for LinkedIn, S to write a message, or R for résumé." aria-describedby="contact-keyboard-hint">
             <p id="contact-keyboard-hint" className="contact-desk-keyboard-hint">psst, these work on your keyboard too: {contactKeys.map(({ key }) => <kbd key={key}>{key}</kbd>)}<small>Click a key, or focus this panel and press its letter.</small></p>
             <div className="contact-desk-keyboard-base">

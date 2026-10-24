@@ -4,7 +4,7 @@ import { Component, useEffect, useLayoutEffect, useMemo, useRef, useState, type 
 import { Canvas, useThree, type ThreeEvent } from "@react-three/fiber"
 import { ContactShadows } from "@react-three/drei/core/ContactShadows"
 import { gsap } from "gsap"
-import { Color, Group, MathUtils, OrthographicCamera, VSMShadowMap, Vector3 } from "three"
+import { Box3, Color, Group, MathUtils, OrthographicCamera, Raycaster, Vector2, VSMShadowMap, Vector3 } from "three"
 import { archiveFace, archivePanel } from "@/lib/project-archive-geometry"
 import { archivePalette, makeArchiveCard, makeArchiveGrain, makeArchiveLabel, makeArchivePaper } from "@/lib/project-archive-textures"
 
@@ -218,6 +218,68 @@ function ProjectCard({ index, open, active, selected, paused, visible, lifted, l
   </group>
 }
 
+function ClosedBoxHover({ open, paused, visible, children }: Pick<ArchiveSceneProps, "open" | "paused" | "visible"> & { children: ReactNode }) {
+  const pivot = useRef<Group>(null)
+  const { camera, gl, invalidate } = useThree()
+  const hitTest = useMemo(() => ({
+    // A stationary hit region keeps hover stable while the rendered box tilts.
+    bounds: new Box3(new Vector3(-6.15, 0, -2.1), new Vector3(6.15, 1.95, 2.1)),
+    ray: new Raycaster(), pointer: new Vector2(), point: new Vector3(),
+  }), [])
+
+  useLayoutEffect(() => {
+    const object = pivot.current
+    if (!object) return
+    const canvas = gl.domElement
+    let enabled = false
+    let hovering = false
+    const duration = paused || !visible ? 0 : .65
+    const moveTo = (x: number, y: number, z: number, lift: number) => {
+      gsap.to(object.rotation, { x, y, z, duration, ease: "power3.out", overwrite: true, onUpdate: invalidate })
+      gsap.to(object.position, { y: .85 + lift, duration, ease: "power3.out", overwrite: true, onUpdate: invalidate })
+    }
+    const reset = () => { hovering = false; moveTo(0, 0, 0, 0) }
+    reset()
+    // Finish stowing the cards and closing the lid before moving the whole box.
+    const ready = gsap.delayedCall(1.75, () => { enabled = !open && !paused && visible })
+    const move = (event: PointerEvent) => {
+      if (!enabled || event.pointerType === "touch" || document.hidden) return
+      const rect = canvas.getBoundingClientRect()
+      if (!rect.width || !rect.height) return
+      hitTest.pointer.set((event.clientX - rect.left) / rect.width * 2 - 1, 1 - (event.clientY - rect.top) / rect.height * 2)
+      hitTest.ray.setFromCamera(hitTest.pointer, camera)
+      if (!hitTest.ray.ray.intersectBox(hitTest.bounds, hitTest.point)) {
+        if (hovering) reset()
+        return
+      }
+      hovering = true
+      const across = MathUtils.clamp(hitTest.point.x / 6.15, -1, 1)
+      const depth = MathUtils.clamp(hitTest.point.z / 2.1, -1, 1)
+      moveTo(depth * .045, across * .12, -across * .018, .32)
+    }
+    const visibility = () => { if (document.hidden) reset() }
+    if (!open && !paused && visible) {
+      canvas.addEventListener("pointermove", move, { passive: true })
+      canvas.addEventListener("pointerleave", reset)
+      canvas.addEventListener("pointercancel", reset)
+      window.addEventListener("blur", reset)
+      document.addEventListener("visibilitychange", visibility)
+    }
+    return () => {
+      ready.kill()
+      canvas.removeEventListener("pointermove", move)
+      canvas.removeEventListener("pointerleave", reset)
+      canvas.removeEventListener("pointercancel", reset)
+      window.removeEventListener("blur", reset)
+      document.removeEventListener("visibilitychange", visibility)
+      gsap.killTweensOf(object.rotation)
+      gsap.killTweensOf(object.position)
+    }
+  }, [open, paused, visible, camera, gl, invalidate, hitTest])
+
+  return <group ref={pivot} position={[0, .85, 0]}><group position={[0, -.85, 0]}>{children}</group></group>
+}
+
 function ArchiveWorld(props: ArchiveSceneProps) {
   const [lifted, setLifted] = useState<number | null>(null)
   const interactive = useRef(false)
@@ -241,8 +303,10 @@ function ArchiveWorld(props: ArchiveSceneProps) {
     <directionalLight position={[-5, 10, 8]} intensity={1.9} color="#fff0d6" castShadow shadow-mapSize={[1024, 1024]} shadow-camera-left={-9} shadow-camera-right={9} shadow-camera-top={9} shadow-camera-bottom={-9} shadow-camera-near={.1} shadow-camera-far={35} shadow-bias={-.0003} shadow-normalBias={.035} shadow-radius={5} shadow-blurSamples={10} />
     <directionalLight position={[7, 5, -1]} intensity={.45} color="#fff5d8" />
     <directionalLight position={[-1, 3, 10]} intensity={.2} color="#ffffff" />
-    <PresentationBox open={props.open} paused={props.paused} visible={props.visible} />
-    {CARD_POSITIONS.map((_, index) => <ProjectCard key={index} {...props} index={index} lifted={lifted} lift={setLifted} interactive={interactive} />)}
+    <ClosedBoxHover open={props.open} paused={props.paused} visible={props.visible}>
+      <PresentationBox open={props.open} paused={props.paused} visible={props.visible} />
+      {CARD_POSITIONS.map((_, index) => <ProjectCard key={index} {...props} index={index} lifted={lifted} lift={setLifted} interactive={interactive} />)}
+    </ClosedBoxHover>
     <ContactShadows position={[0, .025, 0]} opacity={props.dark ? .55 : .45} scale={23} blur={2.8} far={8} resolution={256} color="#4d3a26" frames={Infinity} />
   </>
 }

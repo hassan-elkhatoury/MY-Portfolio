@@ -1,62 +1,25 @@
-"use client"
-
 import Link from "next/link"
-import { ArrowLeft, Home } from "lucide-react"
+import { ArrowRight, Compass, FileText } from "lucide-react"
+import { profile } from "@/lib/portfolio-data"
+import "./not-found.css"
 
 export default function NotFound() {
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-6 text-center">
-      {/* Subtle background glow */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.04] blur-[120px]" />
+  return <main id="main-content" className="lost-page">
+    <header className="lost-header"><Link href="/" className="lost-brand"><Compass size={25} /><span>Hassan El Khatoury<small>A developer’s field notes</small></span></Link><span className="lost-coordinate">PORTFOLIO / OFF THE MAP</span></header>
+    <section className="lost-layout" aria-labelledby="lost-heading">
+      <div className="lost-copy">
+        <p className="lost-eyebrow">ERROR 404 · UNCHARTED TERRITORY</p>
+        <h1 id="lost-heading">A little off<br />the <em>beaten path.</em></h1>
+        <p className="lost-description">This page isn’t on the map. There’s still plenty to explore—let’s find your way back.</p>
+        <Link href="/" className="lost-home">Back to home <ArrowRight size={20} /></Link>
+        <nav className="lost-shortcuts" aria-label="Other places to explore"><Link href="/#projects">Explore my work <ArrowRight size={16} /></Link><a href={profile.resume}><FileText size={16} /> View my résumé</a></nav>
       </div>
-
-      {/* Dot grid */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `radial-gradient(circle, currentColor 0.5px, transparent 0.5px)`,
-          backgroundSize: "32px 32px",
-        }}
-      />
-
-      <div className="relative z-10 flex flex-col items-center">
-        {/* Big 404 */}
-        <h1 className="font-serif text-[8rem] font-bold leading-none tracking-tighter text-foreground/10 sm:text-[12rem]">
-          404
-        </h1>
-
-        {/* Message */}
-        <div className="-mt-6 sm:-mt-10">
-          <h2 className="mb-3 font-serif text-2xl font-bold text-foreground sm:text-3xl">
-            Page not found
-          </h2>
-          <p className="mb-8 max-w-md text-sm leading-relaxed text-muted-foreground">
-            The page you&apos;re looking for doesn&apos;t exist or has been moved.
-            Let&apos;s get you back on track.
-          </p>
-        </div>
-
-        {/* Actions */}
-        <div className="flex items-center gap-3">
-          <Link
-            href="/"
-            className="inline-flex h-10 items-center gap-2 rounded-lg bg-primary px-5 text-sm font-medium text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:shadow-md"
-          >
-            <Home className="h-4 w-4" />
-            Back Home
-          </Link>
-          <button
-            onClick={() => {
-              if (typeof window !== "undefined") window.history.back()
-            }}
-            className="inline-flex h-10 items-center gap-2 rounded-lg border border-border/60 bg-card/80 px-5 text-sm font-medium text-foreground transition-all hover:border-primary/40 hover:bg-card"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Go Back
-          </button>
-        </div>
+      <div className="lost-map" aria-hidden="true">
+        <div className="lost-map-landscape" /><span className="lost-map-label">THE CURIOSITY ATLAS</span><Compass className="lost-compass" size={52} strokeWidth={1} /><span className="lost-number">404</span>
+        <svg className="lost-route" viewBox="0 0 600 540" fill="none"><path className="lost-route-base" d="M-20 466C98 462 91 344 191 354S261 463 350 365 401 239 456 218" /><path className="lost-route-thread" d="M-20 466C98 462 91 344 191 354S261 463 350 365 401 239 456 218" /><circle cx="456" cy="218" r="17" fill="#fff8e9" /><circle cx="456" cy="218" r="8" fill="#e47c5d" /></svg>
+        <span className="lost-map-note">You are somewhere<br /><em>interesting.</em></span><span className="lost-map-caption">A detour, not a dead end.</span>
       </div>
-    </div>
-  )
+    </section>
+    <footer className="lost-footer"><span>Built with curiosity. Even the detours.</span><Link href="/#contact">Need a hand? Say hello <ArrowRight size={15} /></Link></footer>
+  </main>
 }

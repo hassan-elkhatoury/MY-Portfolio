@@ -6,16 +6,7 @@
 .contact-desk .highlight::before { background: #ffe18b; }
 .contact-desk .section-copy { margin-inline: auto; max-width: 650px; color: #fff; text-shadow: 0 1px 10px #294b6326; }
 .contact-desk-panel { --ink: #172a40; --muted-ink: #596d7f; --page: #fff9ed; --paper: #fffdf8; --line: #d7ddd9; position: relative; margin: 42px auto 0; padding: 25px 36px 23px; color: #172a40; border-radius: 34px; background-color: #fff9ed; background-image: linear-gradient(#a5b4b92b 1px, transparent 1px), linear-gradient(90deg, #a5b4b92b 1px, transparent 1px); background-size: 31px 31px; box-shadow: 0 16px 55px #23496916; }
-/* The record player sits on the desk's top-right corner, like a real object would. */
-.contact-desk-panel > .ambient-player { position: absolute; right: 30px; top: -74px; z-index: 6; width: auto; }
-.contact-desk-panel > .ambient-player .ambient-player-object { width: 96px; height: 88px; }
-.contact-desk-panel > .ambient-player .ambient-player-wood { width: 95px; height: 76px; }
-.contact-desk-panel > .ambient-player .ambient-player-record { width: 55px; height: 55px; }
-.contact-desk-panel > .ambient-player .ambient-player-record span { width: 19px; height: 19px; top: calc(50% - 9.5px); left: calc(50% - 9.5px); border-width: 5px; }
-.contact-desk-panel > .ambient-player .ambient-player-record span::after { top: 3px; left: 3px; }
-.contact-desk-panel > .ambient-player .ambient-player-arm { width: 38px; top: 14px; right: 10px; }
-.contact-desk-panel > .ambient-player .ambient-player-chip { margin-top: 6px; }
-.contact-desk-panel > .ambient-player .ambient-player-status { width: 150px; margin-left: -27px; font-size: 9px; }
+
 
 /* Live desk readout above the keyboard. */
 .contact-desk-status { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; margin: 26px auto 0; }
@@ -32,16 +23,16 @@
 .contact-desk-keyboard-hint small { display: block; font-size: 9px; font-weight: 400; opacity: .8; margin-top: 4px; }
 .contact-desk-keyboard-base { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 22px; padding-top: 16px; }
 .contact-desk-key-item { position: relative; display: flex; justify-content: center; height: 296px; padding-top: 87px; }
-.contact-desk-key { --key-face: #b64137; --key-shade: #92382f; --key-edge: #6e2d27; position: relative; display: block; flex: 0 0 124px; width: 124px; height: 124px; padding: 5px 10px 23px; border-radius: 27px; background: linear-gradient(145deg, #54524e, #292b2c 75%); box-shadow: 0 3px 0 #202324, 0 13px 20px #493b2926; cursor: pointer; color: #fff; text-decoration: none; }
+.contact-desk-key { --key-face: #f34e40; --key-shade: #d8352b; --key-edge: #ad2722; position: relative; display: block; flex: 0 0 124px; width: 124px; height: 124px; padding: 5px 10px 23px; border-radius: 27px; background: linear-gradient(145deg, #3b3e3d, #191e1f 75%); box-shadow: 0 3px 0 #202324, 0 13px 20px #493b2926; cursor: pointer; color: #fff; text-decoration: none; }
 .contact-desk-key-top { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; border-radius: 20px; background: linear-gradient(155deg, color-mix(in srgb, var(--key-face), white 7%), var(--key-face) 58%, color-mix(in srgb, var(--key-face), black 5%)); border: 1px solid #ffffff55; box-shadow: 0 9px 0 var(--key-shade), 0 18px 0 var(--key-edge), inset 0 2px 1px #ffffff45; transition: transform .16s, box-shadow .16s; }
 .contact-desk-key-letter { position: absolute; top: 7px; left: 10px; font-size: 11px; line-height: 1; font-weight: 650; opacity: .7; }
 .contact-desk-key-top > svg { width: 43px; height: 43px; margin-top: 8px; }
 .contact-desk-key-label { position: absolute; bottom: 8px; font-size: 8px; font-weight: 600; letter-spacing: .02em; opacity: 1; }
 /* Coordinated enamel colors, with shaded edges from the same hue. */
-.contact-desk-key-purple { --key-face: #704e91; --key-shade: #573b73; --key-edge: #402c56; }
-.contact-desk-key-blue { --key-face: #16629b; --key-shade: #184d78; --key-edge: #163a58; }
-.contact-desk-key-teal { --key-face: #206d61; --key-shade: #1c554c; --key-edge: #193f39; }
-.contact-desk-key-yellow { --key-face: #edc66b; --key-shade: #c49a44; --key-edge: #967331; color: #30291c; }
+.contact-desk-key-purple { --key-face: #b34cb1; --key-shade: #a42c85; --key-edge: #791452; }
+.contact-desk-key-blue { --key-face: #1275c3; --key-shade: #105b9b; --key-edge: #0b426e; }
+.contact-desk-key-coral { --key-face: #f34e40; --key-shade: #d8352b; --key-edge: #ad2722; }
+.contact-desk-key-yellow { --key-face: #ffe34b; --key-shade: #d9bd19; --key-edge: #a58e09; color: #172a40; }
 .contact-desk-key:focus-visible { outline: 3px solid #e76750; outline-offset: 7px; }
 .contact-desk-key.is-pressed .contact-desk-key-top, .contact-desk-key:active .contact-desk-key-top { transform: translateY(6px); box-shadow: 0 5px 0 var(--key-shade), 0 12px 0 var(--key-edge), inset 0 2px 1px #ffffff45; }
 .contact-desk-key-caption { position: absolute; left: 0; right: 0; display: flex; align-items: center; flex-direction: column; color: #172a40; font-size: 15px; line-height: 1.3; letter-spacing: -.02em; }
@@ -84,7 +75,6 @@
 .contact-desk-back-top:hover { background: #fff9ed; color: #172a40; }
 @media (max-width: 1000px) {
   .contact-desk-panel { padding: 24px 22px 22px; }
-  .contact-desk-panel > .ambient-player { right: 16px; top: -70px; transform: scale(.9); transform-origin: top right; }
   .contact-desk-keyboard-base { gap: 12px; }
   .contact-desk-key { flex-basis: 102px; width: 102px; height: 105px; padding: 5px 8px 22px; border-radius: 24px; }
   .contact-desk-key-top { border-radius: 17px; }
@@ -94,10 +84,6 @@
 }
 @media (max-width: 700px) {
   .contact-desk { padding-bottom: 28px; }
-  .contact-desk-panel > .ambient-player { position: relative; right: auto; top: auto; transform: none; display: flex; align-items: center; justify-content: center; gap: 9px; margin: 0 0 14px; }
-  .contact-desk-panel > .ambient-player .ambient-player-object { display: none; }
-  .contact-desk-panel > .ambient-player .ambient-player-chip { left: auto; transform: none; margin-top: 0; min-height: 36px; font-size: 10px; }
-  .contact-desk-panel > .ambient-player .ambient-player-status { width: auto; margin: 0; text-align: left; }
   .contact-desk-status { margin-top: 20px; gap: 7px; }
   .contact-desk-status-item { padding: 7px 10px; font-size: 10px; }
   .contact-desk-status-label { font-size: 7px; }

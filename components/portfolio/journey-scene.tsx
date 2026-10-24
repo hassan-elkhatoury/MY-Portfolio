@@ -111,8 +111,8 @@ function Sailboat({ elapsed }: { elapsed: RefObject<number> }) {
     sailingRoute.getPointAt((t / 100 + .08) % 1, assets.point)
     sailingRoute.getTangentAt((t / 100 + .08) % 1, assets.tangent)
     position.current.position.copy(assets.point)
-    position.current.rotation.z = Math.atan2(assets.tangent.y, assets.tangent.x)
-    // Show the cloth's face from the atlas camera, rather than an edge-on mast.
+    boat.current.rotation.y = -Math.atan2(assets.tangent.y, assets.tangent.x)
+    // Turn around the mast axis so heading changes never flip the sails below the hull.
     boat.current.rotation.x = .74 + Math.sin(t * 1.5) * .045
     boat.current.rotation.z = Math.sin(t * 1.1) * .025
     boat.current.position.z = 7 + Math.sin(t * 1.7) * 1.3

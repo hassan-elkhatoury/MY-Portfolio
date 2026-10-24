@@ -64,7 +64,7 @@ export function ProjectCrate({ active, selected, onActive, onSelect }: Props) {
       </SceneBoundary>}
     </div>
     <div className="archive-controls">
-      <p id="archive-instructions">{open ? "Hover to lift. Click to explore." : "Every idea starts somewhere."}<span>Or choose a project below.</span></p>
+      <p id="archive-instructions">{open ? "Hover to lift. Click to explore." : "Hover to turn the box. Open to explore."}<span>Or choose a project below.</span></p>
       {!failed && <button ref={control} type="button" className="project-crate-control" onClick={() => setOverride(!open)} aria-expanded={open}>
         {open ? <RotateCcw size={15} /> : <PackageOpen size={15} />}{open ? "Close the archive" : "Open the archive"}
       </button>}
