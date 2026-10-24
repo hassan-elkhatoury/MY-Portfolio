@@ -4,7 +4,7 @@ The latest request explicitly authorizes a 3D map, sailing boat, and moving wate
 
 ## Implementation
 
-- React Three Fiber renders the atlas on a 16,471-vertex relief mesh. Mountain and hillside elevations give the painted landscape depth.
+- React Three Fiber renders the atlas on a relief mesh. Mountain and hillside elevations give the painted landscape depth; the latest edge extension uses 23,575 vertices.
 - The pointer drives a damped 3D tilt. The same motion values rotate the HTML/SVG route, keeping milestone hit targets aligned with the map plane.
 - A shader distorts and highlights turquoise water while preserving the land and architecture. Small vertex ripples add surface movement.
 - The sailboat has an extruded hull, deck, cabin, mast, curved cloth sails, and pennant. It follows a continuous 100-second loop through the river mouth and bay, with buoyancy, rocking, sail movement, and two curved wake ribbons.
@@ -33,3 +33,11 @@ The journey Canvas now sets `resize={{ offsetSize: true, scroll: false }}`. Meas
 `output/journey-canvas-sizing-check.cjs` exercises the installed measurement library with controlled element dimensions, then verifies the orthographic projection for all eight stops, six scales, and nine tilt combinations (432 checks). It reproduces the old double-scale result and passes with the corrected options. This is a numerical regression check, not browser rendering verification.
 
 The sizing correction passed targeted ESLint and a complete production build (all 16 static pages). The local server was restarted with the finished build on port 3000, PID 19804. Browser rendering remains unverified.
+
+## Edge-to-edge framing and boat refinement
+
+The next supplied screenshot confirmed the canvas-size correction but showed an inset landscape surrounded by flat margins. The overview now maps the original 1800 × 900 coordinates to the entire panel, with independent horizontal and vertical scales. Marker inverse scales keep their text and circular controls readable. Route-following retains its closer camera and spring transition.
+
+The terrain mesh extends 120 units beyond each side, with UVs preserving the artwork's original coordinates and clamped texture edges filling the overflow. This prevents pointer tilt from exposing the panel underneath. The loading/fallback state also fills the frame. Night labels now use warm ivory with dark shadows. The boat is viewed obliquely so the sails face the camera rather than appearing edge-on.
+
+`output/journey-edge-framing-check.cjs` passed 928 framing checks over eight panel sizes and nine tilt combinations: every panel corner is covered and every marker remains visible. It also checks terrain UV alignment and the sails' projected extent throughout 100 positions on the sailing loop. These remain numerical checks; browser/GPU visual verification is unavailable.

@@ -34,7 +34,7 @@
 .journey-guidance p { margin: 0; color: var(--muted-ink); font-size: 12px; line-height: 1.8; }
 .journey-guidance p span { display: flex; align-items: center; gap: 7px; color: var(--atlas-coral); }
 .journey-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 28.5%); gap: 18px; min-height: 0; }
-.journey-map { position: relative; min-width: 0; min-height: 0; overflow: hidden; border-radius: 20px; background: #e6e4ce; isolation: isolate; box-shadow: 0 14px 26px #57523c0b; container-type: inline-size; }
+.journey-map { position: relative; min-width: 0; min-height: 0; overflow: hidden; border-radius: 20px; background: #e6e4ce url('/images/journey/curiosity-atlas-terrain.webp') center / 100% 100%; isolation: isolate; box-shadow: 0 14px 26px #57523c0b; container-type: inline-size; }
 .journey-map::after { content: ""; position: absolute; inset: 0; z-index: 2; border: 1px solid #e6dfc24d; border-radius: inherit; pointer-events: none; box-shadow: inset 0 0 35px #eee9cd30; }
 .journey-world { position: absolute; top: 0; left: 0; width: 1800px; height: 900px; transform-origin: 0 0; will-change: transform; }
 .journey-terrain, .journey-route, .journey-terrain-objects { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
@@ -42,6 +42,7 @@
 .journey-terrain { pointer-events: none; }
 .journey-terrain-fallback, .journey-terrain-canvas, .journey-world-overlays { position: absolute; inset: 0; width: 100%; height: 100%; }
 .journey-terrain-fallback { transition: opacity .7s; }
+.journey-terrain-fallback::before { content: ""; position: absolute; z-index: -1; inset: -120px; background: url('/images/journey/curiosity-atlas-terrain.webp') center / 100% 100%; }
 .journey-terrain-canvas { opacity: 0; transition: opacity .7s; }
 .journey-terrain.is-rendered .journey-terrain-canvas { opacity: 1; }
 .journey-terrain.is-rendered .journey-terrain-fallback { opacity: 0; }
@@ -134,8 +135,10 @@
 .journey-skip:hover { color: var(--ink); }
 .journey-section button:focus-visible, .journey-section summary:focus-visible, .journey-section a:focus-visible { outline: 2px solid var(--atlas-coral); outline-offset: 4px; }
 .dark .journey-section { --atlas-paper: #24312e; --atlas-ink: #f1eee2; --atlas-muted: #b4bdb4; --atlas-line: #3f4b41; --atlas-coral: #efa183; --atlas-green: #cbdac4; }
-.dark .journey-map { background: #798878; }
+.dark .journey-map { background-color: #283d3d; background-image: linear-gradient(#142e3752, #142e3752), url('/images/journey/curiosity-atlas-terrain.webp'); }
 .dark .journey-terrain { filter: brightness(.71) saturate(.72); }
+.dark .journey-map-stop:not(.is-active) .journey-pin-label { color: #fff8df; text-shadow: 0 1px 3px #0b202b, 0 0 9px #0b202b, 0 0 18px #0b202b; }
+.dark .journey-map-stop:not(.is-active) .journey-pin-label small { color: #f0eedb; }
 .dark .journey-map-heading, .dark .journey-compass, .dark .journey-map-altitude { color: #e4e8cf; text-shadow: 0 2px 6px #142e37; }
 .dark .journey-map-key { color: #f4eedc; text-shadow: 0 1px 8px #142e37; }
 .dark .journey-category { background: #384d3c; color: #d5e2c9; }

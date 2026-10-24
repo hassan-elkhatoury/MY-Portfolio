@@ -2,6 +2,7 @@ import { BufferGeometry, CatmullRomCurve3, Float32BufferAttribute, PlaneGeometry
 
 export const ATLAS_WIDTH = 1800
 export const ATLAS_HEIGHT = 900
+export const ATLAS_BLEED = 120
 
 // Screen coordinates, following the open water below the bridge and around the bay.
 // A closed curve gives the boat a continuous heading, without a teleport at the end.
@@ -39,17 +40,21 @@ export function makeAtlasRelief(image: CanvasImageSource) {
   const context = canvas.getContext("2d", { willReadFrequently: true })!
   context.drawImage(image, 0, 0, canvas.width, canvas.height)
   const { data } = context.getImageData(0, 0, canvas.width, canvas.height)
-  const geometry = new PlaneGeometry(ATLAS_WIDTH, ATLAS_HEIGHT, 180, 90)
+  // Continue the texture's edge pixels beyond the panel. The original art and
+  // route coordinates remain unchanged while the tilt can no longer reveal gaps.
+  const geometry = new PlaneGeometry(ATLAS_WIDTH + ATLAS_BLEED * 2, ATLAS_HEIGHT + ATLAS_BLEED * 2, 204, 114)
   const positions = geometry.getAttribute("position")
+  const uv = geometry.getAttribute("uv")
   const water = new Float32Array(positions.count)
   for (let i = 0; i < positions.count; i++) {
     const x = positions.getX(i) + ATLAS_WIDTH / 2
     const y = ATLAS_HEIGHT / 2 - positions.getY(i)
-    const px = Math.min(canvas.width - 1, Math.round(x / ATLAS_WIDTH * (canvas.width - 1)))
-    const py = Math.min(canvas.height - 1, Math.round(y / ATLAS_HEIGHT * (canvas.height - 1)))
+    const px = Math.max(0, Math.min(canvas.width - 1, Math.round(x / ATLAS_WIDTH * (canvas.width - 1))))
+    const py = Math.max(0, Math.min(canvas.height - 1, Math.round(y / ATLAS_HEIGHT * (canvas.height - 1))))
     const pixel = (py * canvas.width + px) * 4
     water[i] = waterCoverage(data[pixel], data[pixel + 1], data[pixel + 2])
     positions.setZ(i, atlasHeight(x, y, water[i]))
+    uv.setXY(i, x / ATLAS_WIDTH, 1 - y / ATLAS_HEIGHT)
   }
   geometry.setAttribute("aWater", new Float32BufferAttribute(water, 1))
   geometry.computeVertexNormals()

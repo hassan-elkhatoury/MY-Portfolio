@@ -5,6 +5,7 @@ import { ArrowDown, ArrowLeft, ArrowRight, Building2, MapPin, Compass, Maximize2
 import Image from "next/image"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { certifications, education, experiences } from "@/lib/portfolio-data"
+import { journeyFrame } from "@/lib/journey-framing"
 import { useMotionPreferences } from "./motion-preferences"
 import { JourneyTerrain } from "./journey-terrain"
 import "./journey.css"
@@ -105,17 +106,21 @@ function RouteMap({ active, onSelect, progress, paused }: {
   paused: boolean
 }) {
   const viewport = useRef<HTMLDivElement>(null)
+  const framed = useRef(false)
   const [overview, setOverview] = useState(true)
   const cameraX = useMotionValue(0)
   const cameraY = useMotionValue(0)
-  const cameraScale = useMotionValue(.65)
+  const cameraScaleX = useMotionValue(.65)
+  const cameraScaleY = useMotionValue(.65)
   const x = useSpring(cameraX, { stiffness: 120, damping: 30 })
   const y = useSpring(cameraY, { stiffness: 120, damping: 30 })
-  const scale = useSpring(cameraScale, { stiffness: 120, damping: 30 })
+  const scaleX = useSpring(cameraScaleX, { stiffness: 120, damping: 30 })
+  const scaleY = useSpring(cameraScaleY, { stiffness: 120, damping: 30 })
   const travelerX = useMotionValue(stops[0].x)
   const travelerY = useMotionValue(stops[0].y)
   const distance = useMotionValue(0)
-  const inverseScale = useTransform(paused ? cameraScale : scale, value => 1 / Math.max(value, .1))
+  const inverseScaleX = useTransform(paused ? cameraScaleX : scaleX, value => 1 / Math.max(value, .1))
+  const inverseScaleY = useTransform(paused ? cameraScaleY : scaleY, value => 1 / Math.max(value, .1))
   const tiltX = useSpring(16, { stiffness: 65, damping: 22 })
   const tiltY = useSpring(-2, { stiffness: 65, damping: 22 })
 
@@ -136,7 +141,7 @@ function RouteMap({ active, onSelect, progress, paused }: {
     const totalLength = curves.reduce((sum, curve) => sum + curve.length, 0)
     let width = element.clientWidth
     let height = element.clientHeight
-    const update = (value: number) => {
+    const update = (value: number, resized = false) => {
       const position = journeyProgress(value) * (stops.length - 1)
       const index = Math.min(Math.floor(position), curves.length - 1)
       const curve = curves[index]
@@ -146,29 +151,30 @@ function RouteMap({ active, onSelect, progress, paused }: {
       travelerY.set(point.y)
       distance.set((curves.slice(0, index).reduce((sum, item) => sum + item.length, 0) + localDistance) / totalLength)
 
-      const showAll = overview || paused
-      const zoom = showAll
-        ? Math.min(width / 1840, height / 940)
-        : Math.max(width / (width < 600 ? 1000 : 1620), height / 900)
-      cameraScale.set(zoom)
-      cameraX.set(showAll ? (width - 1800 * zoom) / 2 : clamp(width * .55 - point.x * zoom, Math.min(0, width - 1800 * zoom), 0))
-      cameraY.set(showAll ? (height - 900 * zoom) / 2 : clamp(height * .56 - point.y * zoom, Math.min(0, height - 900 * zoom), 0))
-      if (paused) {
+      const frame = journeyFrame(width, height, overview || paused, point)
+      cameraScaleX.set(frame.scaleX)
+      cameraScaleY.set(frame.scaleY)
+      cameraX.set(frame.x)
+      cameraY.set(frame.y)
+      if (paused || resized || !framed.current) {
         x.jump(cameraX.get())
         y.jump(cameraY.get())
-        scale.jump(zoom)
+        scaleX.jump(frame.scaleX)
+        scaleY.jump(frame.scaleY)
+        framed.current = true
       }
     }
     const observer = new ResizeObserver(([entry]) => {
+      const resized = width !== entry.contentRect.width || height !== entry.contentRect.height
       width = entry.contentRect.width
       height = entry.contentRect.height
-      update(progress.get())
+      update(progress.get(), resized)
     })
     observer.observe(element)
     update(progress.get())
     const unsubscribe = progress.on("change", update)
     return () => { observer.disconnect(); unsubscribe() }
-  }, [progress, overview, paused, cameraX, cameraY, cameraScale, travelerX, travelerY, distance, x, y, scale])
+  }, [progress, overview, paused, cameraX, cameraY, cameraScaleX, cameraScaleY, travelerX, travelerY, distance, x, y, scaleX, scaleY])
 
   return (
     <div ref={viewport} className={`journey-map${overview || paused ? " is-overview" : ""}`} role="group" aria-label="Interactive 3D career map with a sailing boat and flowing water"
@@ -179,7 +185,7 @@ function RouteMap({ active, onSelect, progress, paused }: {
         tiltY.set(-2 + ((event.clientX - bounds.left) / bounds.width - .5) * 9)
       }}
       onPointerLeave={() => { if (!paused) { tiltX.set(16); tiltY.set(-2) } }}>
-      <motion.div className="journey-world" style={{ x: paused ? cameraX : x, y: paused ? cameraY : y, scale: paused ? cameraScale : scale }}>
+      <motion.div className="journey-world" style={{ x: paused ? cameraX : x, y: paused ? cameraY : y, scaleX: paused ? cameraScaleX : scaleX, scaleY: paused ? cameraScaleY : scaleY }}>
         <JourneyTerrain paused={paused} tiltX={tiltX} tiltY={tiltY} />
         <motion.div className="journey-world-overlays" style={{ rotateX: tiltX, rotateY: tiltY }}>
         <svg className="journey-route" viewBox="0 0 1800 900" aria-hidden="true">
@@ -190,7 +196,7 @@ function RouteMap({ active, onSelect, progress, paused }: {
         </svg>
         {stops.map((stop, index) => (
           <div className="journey-stop-position" key={stop.label} data-edge={index >= 5 ? "right" : index === 0 ? "left" : undefined} style={{ left: stop.x, top: stop.y }}>
-            <motion.div style={{ scale: inverseScale }}>
+            <motion.div style={{ scaleX: inverseScaleX, scaleY: inverseScaleY }}>
               <button
                 type="button"
                 className={`journey-map-stop${active === index ? " is-active" : ""}${index < active ? " is-visited" : ""}${index === stops.length - 1 ? " is-future" : ""}`}
@@ -207,7 +213,7 @@ function RouteMap({ active, onSelect, progress, paused }: {
           </div>
         ))}
         <motion.div className="journey-traveler-position" style={{ x: travelerX, y: travelerY }} aria-hidden="true">
-          <motion.span className="journey-traveler" style={{ scale: inverseScale }} />
+          <motion.span className="journey-traveler" style={{ scaleX: inverseScaleX, scaleY: inverseScaleY }} />
         </motion.div>
         </motion.div>
       </motion.div>

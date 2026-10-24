@@ -112,16 +112,17 @@ function Sailboat({ elapsed }: { elapsed: RefObject<number> }) {
     sailingRoute.getTangentAt((t / 100 + .08) % 1, assets.tangent)
     position.current.position.copy(assets.point)
     position.current.rotation.z = Math.atan2(assets.tangent.y, assets.tangent.x)
-    boat.current.rotation.x = Math.PI / 2 + Math.sin(t * 1.5) * .045
+    // Show the cloth's face from the atlas camera, rather than an edge-on mast.
+    boat.current.rotation.x = .74 + Math.sin(t * 1.5) * .045
     boat.current.rotation.z = Math.sin(t * 1.1) * .025
-    boat.current.position.z = 4 + Math.sin(t * 1.7) * 1.3
+    boat.current.position.z = 7 + Math.sin(t * 1.7) * 1.3
     if (sail.current) sail.current.rotation.y = Math.sin(t * 1.3) * .045
   })
   return <group ref={position} scale={1.35}>
     <mesh position={[0, -5, .4]} scale={[34, 13, 1]}>
       <circleGeometry args={[1, 40]} /><meshBasicMaterial color="#163e43" transparent opacity={.18} depthWrite={false} />
     </mesh>
-    <group ref={boat} rotation={[Math.PI / 2, 0, 0]}>
+    <group ref={boat} rotation={[.74, 0, 0]}>
       <mesh rotation={[Math.PI / 2, 0, 0]}>
         <extrudeGeometry args={[assets.hull, { depth: 7, bevelEnabled: true, bevelSize: 2.8, bevelThickness: 2, bevelSegments: 3, steps: 1 }]} />
         <meshStandardMaterial color="#654534" roughness={.75} />
