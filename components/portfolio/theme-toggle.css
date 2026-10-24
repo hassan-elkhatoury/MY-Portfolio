@@ -1,0 +1,39 @@
+@property --theme-reveal-radius {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+/* Capture each theme at its final colors, including skies and workspace images. */
+html[data-theme-reveal="true"] *,
+html[data-theme-reveal="true"] *::before,
+html[data-theme-reveal="true"] *::after { transition: none !important; }
+
+html[data-theme-reveal="true"]::view-transition { pointer-events: none; }
+html[data-theme-reveal="true"]::view-transition-group(root) { animation: none; }
+html[data-theme-reveal="true"]::view-transition-image-pair(root) { isolation: isolate; }
+html[data-theme-reveal="true"]::view-transition-old(root),
+html[data-theme-reveal="true"]::view-transition-new(root) {
+  mix-blend-mode: normal;
+  opacity: 1;
+  animation: none;
+}
+html[data-theme-reveal="true"]::view-transition-old(root) { z-index: 1; }
+html[data-theme-reveal="true"]::view-transition-new(root) {
+  z-index: 2;
+  /* This masks the real incoming page: the wide translucent edge blends the themes. */
+  mask-image: radial-gradient(circle at var(--theme-origin-x) var(--theme-origin-y),
+    #000 max(0px, calc(var(--theme-reveal-radius) - var(--theme-feather))),
+    transparent var(--theme-reveal-radius));
+  mask-repeat: no-repeat;
+  animation: theme-soft-reveal 1.65s cubic-bezier(.4, 0, .2, 1) both;
+}
+@keyframes theme-soft-reveal {
+  from { --theme-reveal-radius: 0px; filter: blur(2px); }
+  75% { filter: blur(0); }
+  to { --theme-reveal-radius: var(--theme-reveal-end); filter: blur(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme-reveal="true"]::view-transition-new(root) { animation-duration: .01ms; }
+}
+.portfolio-theme[aria-busy="true"] { cursor: progress; }

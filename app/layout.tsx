@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Bricolage_Grotesque, Caveat } from 'next/font/google'
 import { ThemeProvider } from '@/components/theme-provider'
 import { MotionPreferencesProvider } from '@/components/portfolio/motion-preferences'
+import { PointerGlow } from '@/components/portfolio/pointer-glow'
 import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from 'sonner'
 import './globals.css'
@@ -116,6 +117,7 @@ export default function RootLayout({
         >
           <MotionPreferencesProvider>
             {children}
+            <PointerGlow />
             <Toaster theme="dark" position="bottom-right" />
           </MotionPreferencesProvider>
         </ThemeProvider>

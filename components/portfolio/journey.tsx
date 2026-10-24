@@ -1,7 +1,7 @@
 "use client"
 
 import { motion, useMotionValue, useScroll, useSpring, useTransform, type MotionValue } from "framer-motion"
-import { ArrowDown, ArrowLeft, ArrowRight, Building2, MapPin, Compass, Maximize2, LocateFixed } from "lucide-react"
+import { ArrowDown, ArrowLeft, ArrowRight, Building2, MapPin, Compass, Maximize2, LocateFixed, FileText, Cloud, Mountain, Navigation } from "lucide-react"
 import Image from "next/image"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { certifications, education, experiences } from "@/lib/portfolio-data"
@@ -19,52 +19,60 @@ const stops = [
     organization: education[1].institution, location: education[1].location,
     description: education[1].degree,
     details: ["ENSAH — " + education[0].details![1], "Started the Engineering Degree in Computer Science at ENSAH."],
-    logo: undefined, x: 230, y: 610,
+    category: "Education", summary: "The beginning of my engineering path, from mathematical sciences to computer science at ENSAH.",
+    logo: undefined, x: 150, y: 600,
   },
   {
     year: "2024", period: "2024 – 2027", label: "Engineering cycle", title: "Going deeper into systems.",
     organization: education[0].institution, location: education[0].location,
     description: education[0].details![0], details: education[0].focus!,
-    logo: education[0].logo, x: 400, y: 400,
+    category: "Education", summary: "Computer science engineering at ENSAH, with a specialization in software engineering.",
+    logo: education[0].logo, x: 375, y: 450,
   },
   {
     year: "2025", period: codsoft?.period ?? "Feb 2025 – Mar 2025", label: "First internship", title: "Building with a real team.",
     organization: codsoft?.company ?? "CodSoft", location: codsoft?.location ?? "Remote",
     description: codsoft?.title ?? "Web Development Intern", details: codsoft?.responsibilities ?? [],
-    logo: codsoft?.logo, x: 650, y: 320,
+    category: "Internship", summary: codsoft?.responsibilities[0],
+    logo: codsoft?.logo, x: 640, y: 350,
   },
   {
     year: "2025", period: certifications[2].issued!, label: "Into the cloud", title: "A new view from the cloud.",
     organization: certifications[2].issuer, location: "Oracle Cloud Infrastructure",
     description: certifications[2].title,
     details: ["Credential ID: " + certifications[2].credentialId, "Expires " + certifications[2].expires],
-    logo: certifications[2].logo, x: 900, y: 430,
+    category: "Certification", summary: "Certified in OCI foundations. Credential valid through December 2027.",
+    logo: certifications[2].logo, x: 1015, y: 475,
   },
   {
     year: "2026", period: certifications[0].issued!, label: "Java certified", title: "Making Java my specialty.",
     organization: "Oracle", location: "Java SE 11 & Java SE 17",
     description: "Oracle Certified Professional",
     details: [certifications[0].title, certifications[1].title],
-    logo: certifications[0].logo, x: 1100, y: 270,
+    category: "Certification", summary: "Two Oracle Certified Professional credentials: Java SE 11 and Java SE 17.",
+    logo: certifications[0].logo, x: 1250, y: 300,
   },
   {
     year: "2026", mapLabel: "Mar 2026", period: modeya?.period ?? "Mar 2026 – Jun 2026", label: "MODEYA freelance", title: "Building a storefront end to end.",
     organization: modeya?.company ?? "MODEYA", location: modeya?.location ?? "",
     description: modeya?.title ?? "Freelance Full-Stack Developer", details: modeya?.responsibilities ?? [],
-    logo: modeya?.logo, x: 1320, y: 430,
+    category: "Freelance", summary: modeya?.responsibilities[0],
+    logo: modeya?.logo, x: 1500, y: 430,
   },
   {
     year: "2026", mapLabel: "Jul 2026", period: mef?.period ?? "Jul 2026 – Sep 2026", label: "MEF internship", title: "Engineering with purpose.",
     organization: mef?.company ?? "MEF", location: mef?.location ?? "",
     description: mef?.title ?? "Internship", details: mef?.responsibilities ?? [],
-    logo: mef?.logo, x: 1430, y: 650,
+    category: "Internship", summary: mef?.responsibilities[0],
+    logo: mef?.logo, x: 1510, y: 600,
   },
   {
     year: "2027", period: "2027 (Expected)", label: "The next chapter", title: "Still plenty of road ahead.",
     organization: education[0].institution, location: education[0].location,
     description: education[0].degree,
     details: ["Expected graduation: 2027", "Engineering Cycle: 2024 – 2027", "Seeking a 2027 PFE internship in Java backend engineering."],
-    logo: education[0].logo, x: 1670, y: 520,
+    category: "Looking ahead", summary: "Seeking a PFE internship in Java backend development or software engineering for 2027.",
+    logo: education[0].logo, x: 1730, y: 520,
   },
 ]
 
@@ -76,13 +84,13 @@ function OrganizationLogo({ src }: { src?: string }) {
 }
 
 const routeSegments = [
-  "M230 610C155 505 290 510 400 400",
-  "M400 400C490 310 525 250 650 320",
-  "M650 320C755 385 765 500 900 430",
-  "M900 430C1010 365 950 215 1100 270",
-  "M1100 270C1240 310 1180 430 1320 430",
-  "M1320 430C1480 425 1290 620 1430 650",
-  "M1430 650C1560 690 1545 505 1670 520",
+  "M150 600C230 555 290 525 375 450",
+  "M375 450C470 355 520 285 640 350",
+  "M640 350C770 420 835 530 1015 475",
+  "M1015 475C1120 445 1120 270 1250 300",
+  "M1250 300C1380 315 1370 410 1500 430",
+  "M1500 430C1620 455 1380 560 1510 600",
+  "M1510 600C1600 645 1625 530 1730 520",
 ]
 const route = routeSegments.map((segment, index) => index ? segment.replace(/^M[\d ]+C/, "C") : segment).join(" ")
 const clamp = (value: number, min = 0, max = 1) => Math.max(min, Math.min(max, value))
@@ -97,7 +105,7 @@ function RouteMap({ active, onSelect, progress, paused }: {
   paused: boolean
 }) {
   const viewport = useRef<HTMLDivElement>(null)
-  const [overview, setOverview] = useState(false)
+  const [overview, setOverview] = useState(true)
   const cameraX = useMotionValue(0)
   const cameraY = useMotionValue(0)
   const cameraScale = useMotionValue(.65)
@@ -108,6 +116,13 @@ function RouteMap({ active, onSelect, progress, paused }: {
   const travelerY = useMotionValue(stops[0].y)
   const distance = useMotionValue(0)
   const inverseScale = useTransform(paused ? cameraScale : scale, value => 1 / Math.max(value, .1))
+  const tiltX = useSpring(16, { stiffness: 65, damping: 22 })
+  const tiltY = useSpring(-2, { stiffness: 65, damping: 22 })
+
+  useEffect(() => {
+    if (paused) { tiltX.jump(16); tiltY.jump(-2) }
+    else { tiltX.set(16); tiltY.set(-2) }
+  }, [paused, tiltX, tiltY])
 
   useEffect(() => {
     const element = viewport.current
@@ -134,9 +149,9 @@ function RouteMap({ active, onSelect, progress, paused }: {
       const showAll = overview || paused
       const zoom = showAll
         ? Math.min(width / 1840, height / 940)
-        : Math.max(width / (width < 600 ? 850 : 1120), height / 820)
+        : Math.max(width / (width < 600 ? 1000 : 1620), height / 900)
       cameraScale.set(zoom)
-      cameraX.set(showAll ? (width - 1800 * zoom) / 2 : clamp(width * .48 - point.x * zoom, Math.min(0, width - 1800 * zoom), 0))
+      cameraX.set(showAll ? (width - 1800 * zoom) / 2 : clamp(width * .55 - point.x * zoom, Math.min(0, width - 1800 * zoom), 0))
       cameraY.set(showAll ? (height - 900 * zoom) / 2 : clamp(height * .56 - point.y * zoom, Math.min(0, height - 900 * zoom), 0))
       if (paused) {
         x.jump(cameraX.get())
@@ -156,9 +171,17 @@ function RouteMap({ active, onSelect, progress, paused }: {
   }, [progress, overview, paused, cameraX, cameraY, cameraScale, travelerX, travelerY, distance, x, y, scale])
 
   return (
-    <div ref={viewport} className={`journey-map${overview || paused ? " is-overview" : ""}`} role="group" aria-label="Interactive illustrated career map">
+    <div ref={viewport} className={`journey-map${overview || paused ? " is-overview" : ""}`} role="group" aria-label="Interactive 3D career map with a sailing boat and flowing water"
+      onPointerMove={event => {
+        if (paused || event.pointerType === "touch") return
+        const bounds = event.currentTarget.getBoundingClientRect()
+        tiltX.set(16 + ((event.clientY - bounds.top) / bounds.height - .5) * -8)
+        tiltY.set(-2 + ((event.clientX - bounds.left) / bounds.width - .5) * 9)
+      }}
+      onPointerLeave={() => { if (!paused) { tiltX.set(16); tiltY.set(-2) } }}>
       <motion.div className="journey-world" style={{ x: paused ? cameraX : x, y: paused ? cameraY : y, scale: paused ? cameraScale : scale }}>
-        <JourneyTerrain />
+        <JourneyTerrain paused={paused} tiltX={tiltX} tiltY={tiltY} />
+        <motion.div className="journey-world-overlays" style={{ rotateX: tiltX, rotateY: tiltY }}>
         <svg className="journey-route" viewBox="0 0 1800 900" aria-hidden="true">
           <path className="journey-road-shadow" d={route} />
           <path className="journey-road-edge" d={route} />
@@ -166,7 +189,7 @@ function RouteMap({ active, onSelect, progress, paused }: {
           <motion.path className="journey-road-traveled" style={{ pathLength: distance }} d={route} />
         </svg>
         {stops.map((stop, index) => (
-          <div className="journey-stop-position" key={stop.label} style={{ left: stop.x, top: stop.y }}>
+          <div className="journey-stop-position" key={stop.label} data-edge={index >= 5 ? "right" : index === 0 ? "left" : undefined} style={{ left: stop.x, top: stop.y }}>
             <motion.div style={{ scale: inverseScale }}>
               <button
                 type="button"
@@ -178,7 +201,7 @@ function RouteMap({ active, onSelect, progress, paused }: {
                 tabIndex={overview || paused || Math.abs(index - active) <= 1 ? 0 : -1}
               >
                 <span className="journey-pin">{String(index + 1).padStart(2, "0")}</span>
-                <span className="journey-pin-label"><strong>{stop.mapLabel ?? stop.year}</strong><small>{stop.label}</small></span>
+                <span className="journey-pin-label"><strong>{stop.mapLabel ?? stop.year}</strong><small>{index === 3 && <Cloud size={13} aria-hidden="true" />}{stop.label}</small></span>
               </button>
             </motion.div>
           </div>
@@ -186,14 +209,16 @@ function RouteMap({ active, onSelect, progress, paused }: {
         <motion.div className="journey-traveler-position" style={{ x: travelerX, y: travelerY }} aria-hidden="true">
           <motion.span className="journey-traveler" style={{ scale: inverseScale }} />
         </motion.div>
+        </motion.div>
       </motion.div>
-      <div className="journey-map-heading" aria-hidden="true"><span>THE CURIOSITY ATLAS</span><small>A personal map, still unfolding.</small></div>
-      <div className="journey-compass" aria-hidden="true"><span>N</span><Compass size={34} strokeWidth={1} /></div>
+      <div className="journey-map-heading" aria-hidden="true"><span>Ideas<br />into impact</span><i /></div>
+      <div className="journey-map-altitude" aria-hidden="true"><Mountain size={19} strokeWidth={1.3} /><span>Higher<br />ground</span></div>
+      <div className="journey-compass" aria-hidden="true"><span>N</span><div><span>W</span><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="30" /><path d="M40 2 47 33 78 40 47 47 40 78 33 47 2 40 33 33Z" /><path className="journey-compass-fill" d="M40 2 40 40 33 33ZM78 40 40 40 47 33ZM40 78 40 40 47 47ZM2 40 40 40 33 47Z" /><path d="m15 15 25 18 25-18-18 25 18 25-25-18-25 18 18-25Z" /></svg><span>E</span></div><span>S</span></div>
       <button type="button" className="journey-map-view" onClick={() => setOverview(value => !value)} aria-pressed={overview || paused} disabled={paused}>
         {overview || paused ? <LocateFixed size={15} /> : <Maximize2 size={15} />}
         {paused ? "Full route" : overview ? "Follow the route" : "View full map"}
       </button>
-      <div className="journey-map-key" aria-hidden="true"><span /> {active === stops.length - 1 ? "The road ahead" : "Follow the coral thread"}</div>
+      <div className="journey-map-key" aria-hidden="true"><span><i />Follow the coral thread</span><em>{active === stops.length - 1 ? "More to discover" : "Into the real world"}</em></div>
     </div>
   )
 }
@@ -247,10 +272,11 @@ export function Journey() {
       <div ref={stage} className="journey-stage" tabIndex={-1}>
         <header className="journey-header">
           <div>
-            <span className="journey-eyebrow"><Compass size={15} aria-hidden="true" /> A LITTLE CURIOSITY. A LONG WAY.</span>
+            <span className="journey-eyebrow"><Compass size={20} aria-hidden="true" /> THE CURIOSITY ATLAS</span>
             <h2 id="journey-heading">Every turn, <span>a new chapter.</span></h2>
+            <p className="journey-subtitle">A personal map, still unfolding.</p>
           </div>
-          <p>From the first line of code to what comes next.<br /><span><ArrowDown size={13} aria-hidden="true" /> Scroll to travel. Pick a stop to linger.</span></p>
+          <div className="journey-guidance"><Navigation size={20} aria-hidden="true" /><p>From the first line of code to what comes next.<span><ArrowDown size={16} aria-hidden="true" /> Scroll to travel. Pick a stop to linger.</span></p></div>
         </header>
         <div className="journey-layout">
           <RouteMap active={active} onSelect={selectStop} progress={progress} paused={paused} />
@@ -262,20 +288,19 @@ export function Journey() {
                 <h3>{stop.title}</h3>
                 <div className="journey-organization">
                   <OrganizationLogo src={stop.logo} />
-                  <div><strong>{stop.organization}</strong>{stop.location && <span><MapPin size={12} aria-hidden="true" />{stop.location}</span>}</div>
+                  <div className="journey-organization-copy"><div><strong>{stop.organization}</strong><small className="journey-category">{stop.category}</small></div>{stop.location && <span><MapPin size={13} aria-hidden="true" />{stop.location}</span>}</div>
                 </div>
                 <p className="journey-story-description">{stop.description}</p>
-                <ul className="journey-story-details journey-desktop-notes">{stop.details.map(detail => <li key={detail}>{detail}</li>)}</ul>
-                <details className="journey-field-notes" key={active}>
-                  <summary>The details <span>+</span></summary>
-                  <ul className="journey-story-details">{stop.details.map(detail => <li key={detail}>{detail}</li>)}</ul>
-                </details>
+                {stop.summary && <p className="journey-story-summary">{stop.summary}</p>}
               </motion.div>
             </div>
+            <details className="journey-field-notes" key={active}>
+              <summary><FileText size={19} aria-hidden="true" />The details <span>+</span></summary>
+              <ul className="journey-story-details">{stop.details.map(detail => <li key={detail}>{detail}</li>)}</ul>
+            </details>
             <div className="journey-story-navigation">
-              <button type="button" onClick={() => selectStop(active - 1)} disabled={active === 0} aria-label="Previous milestone"><ArrowLeft size={18} /></button>
-              <span>{stop.label}</span>
-              <button type="button" onClick={() => selectStop(active + 1)} disabled={active === stops.length - 1} aria-label="Next milestone"><ArrowRight size={18} /></button>
+              <button type="button" onClick={() => selectStop(active - 1)} disabled={active === 0} aria-label="Previous milestone"><span className="journey-nav-arrow"><ArrowLeft size={20} /></span><span>Previous<small>{stops[active - 1]?.label ?? "The beginning"}</small></span></button>
+              <button type="button" onClick={() => selectStop(active + 1)} disabled={active === stops.length - 1} aria-label="Next milestone"><span>Next<small>{stops[active + 1]?.label ?? "More to come"}</small></span><span className="journey-nav-arrow"><ArrowRight size={20} /></span></button>
             </div>
           </article>
         </div>

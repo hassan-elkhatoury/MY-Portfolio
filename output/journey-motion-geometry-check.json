@@ -1,0 +1,9 @@
+{
+  "samples": 1000,
+  "minimumWaterCoverage": 0.6950124970027918,
+  "hullSamplesOnWater": 988,
+  "routeLength": 1423.9025104337975,
+  "terrainVertices": 16471,
+  "seamTangentDot": 0.9994043838320995,
+  "low": []
+}

@@ -3,8 +3,9 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react"
 import Link from "next/link"
 import * as Dialog from "@radix-ui/react-dialog"
+import * as ScrollArea from "@radix-ui/react-scroll-area"
 import { AnimatePresence, motion } from "framer-motion"
-import { ArrowUpRight, X, PackageOpen } from "lucide-react"
+import { ArrowUpRight, Github, X, PackageOpen } from "lucide-react"
 import { projects, type Project } from "@/lib/portfolio-data"
 import { getProject, projectSlug } from "@/lib/project-presentation"
 import { ProjectCrate, type ProjectCardBounds } from "./project-crate"
@@ -57,6 +58,8 @@ export function ProjectBox() {
     else window.history.replaceState(window.history.state, "", "#projects")
   }
 
+  const selectedIndex = selected ? projects.indexOf(selected) : -1
+
   return <section id="projects" className="portfolio-section work-section" aria-labelledby="work-heading" data-project-state={phase}>
     <div className="section-inner">
       <div className="work-intro">
@@ -87,17 +90,42 @@ export function ProjectBox() {
           <div className="project-detail-position">
             <Dialog.Content forceMount asChild onCloseAutoFocus={event => event.preventDefault()}>
               <motion.article className="project-detail-sheet"
+                style={{ "--project-accent": covers[selectedIndex]?.color ?? "var(--coral)" } as CSSProperties}
                 initial={paused ? false : { ...origin, rotateX: 8, borderRadius: 8 }}
-                animate={{ x: 0, y: 0, scaleX: 1, scaleY: 1, rotateX: 0, borderRadius: 12 }}
+                animate={{ x: 0, y: 0, scaleX: 1, scaleY: 1, rotateX: 0, borderRadius: 24 }}
                 exit={paused ? { opacity: 0 } : { ...origin, rotateX: 8, opacity: 0, borderRadius: 8 }}
                 transition={paused ? { duration: 0 } : { type: "spring", stiffness: 165, damping: 28, mass: .85 }}
                 onAnimationComplete={() => { if (open) setPhase("detail") }}>
-                <div className="work-dialog-head"><span className="work-dialog-label">PROJECT ARCHIVE / {selected.category}</span><Dialog.Close className="work-dialog-close" aria-label="Close project"><X size={21} /></Dialog.Close></div>
-                <Dialog.Title className="work-dialog-title">{selected.title}</Dialog.Title>
-                <Dialog.Description className="work-dialog-description">{selected.description}</Dialog.Description>
-                <motion.div initial={paused ? false : { opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: paused ? 0 : .35, delay: paused ? 0 : .18 }}>
-                  <ProjectPresentation project={selected} />
-                </motion.div>
+                <header className="work-dialog-head">
+                  <div className="project-detail-identity">
+                    <span className="project-detail-number" aria-hidden="true">{String(selectedIndex + 1).padStart(2, "0")}</span>
+                    <div><span className="work-dialog-label">THE PROJECT ARCHIVE</span><span className="project-detail-category">{selected.category}</span></div>
+                  </div>
+                  <Dialog.Close className="work-dialog-close" aria-label="Close project"><X size={20} aria-hidden="true" /></Dialog.Close>
+                </header>
+                <ScrollArea.Root className="project-detail-scroll" type="auto">
+                  <ScrollArea.Viewport className="project-detail-viewport" tabIndex={0} role="region" aria-label={`${selected.title} project details`}>
+                    <div className="project-detail-body">
+                      <div className="project-detail-intro">
+                        <Dialog.Title className="work-dialog-title">{selected.title}</Dialog.Title>
+                        <Dialog.Description className="work-dialog-description">{selected.description}</Dialog.Description>
+                      </div>
+                      <motion.div initial={paused ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: paused ? 0 : .35, delay: paused ? 0 : .18 }}>
+                        <ProjectPresentation project={selected} />
+                      </motion.div>
+                    </div>
+                  </ScrollArea.Viewport>
+                  <ScrollArea.Scrollbar orientation="vertical" className="project-detail-scrollbar">
+                    <ScrollArea.Thumb className="project-detail-thumb" />
+                  </ScrollArea.Scrollbar>
+                </ScrollArea.Root>
+                <footer className="project-detail-footer">
+                  <span className="project-detail-file">PROJECT {String(selectedIndex + 1).padStart(2, "0")} <span>/ {String(projects.length).padStart(2, "0")}</span></span>
+                  <div className="project-detail-actions">
+                    {selected.githubUrl && <a className="project-detail-source" href={selected.githubUrl} target="_blank" rel="noopener noreferrer"><Github size={16} aria-hidden="true" /><span>Source code</span><ArrowUpRight size={14} aria-hidden="true" /></a>}
+                    <Link className="project-detail-primary" href={`/projects/${projectSlug(selected.title)}`}>View full project <ArrowUpRight size={17} aria-hidden="true" /></Link>
+                  </div>
+                </footer>
               </motion.article>
             </Dialog.Content>
           </div>

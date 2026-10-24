@@ -1,0 +1,32 @@
+.portfolio-pointer-glow {
+  position: fixed;
+  top: -120px;
+  left: -120px;
+  width: 240px;
+  height: 240px;
+  z-index: 30;
+  border-radius: 50%;
+  pointer-events: none;
+  user-select: none;
+  background: radial-gradient(ellipse at center,
+    rgb(255 218 110 / .26) 0%,
+    rgb(255 222 133 / .17) 24%,
+    rgb(255 229 160 / .07) 47%,
+    rgb(255 234 181 / 0) 72%);
+  filter: blur(22px);
+  will-change: transform, opacity;
+}
+
+.dark .portfolio-pointer-glow {
+  background: radial-gradient(ellipse at center,
+    rgb(255 218 119 / .15) 0%,
+    rgb(255 222 140 / .09) 24%,
+    rgb(255 231 167 / .035) 47%,
+    rgb(255 234 181 / 0) 72%);
+}
+
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .portfolio-pointer-glow { display: none; }
+}
+
+html[data-motion-paused="true"] .portfolio-pointer-glow { display: none; }

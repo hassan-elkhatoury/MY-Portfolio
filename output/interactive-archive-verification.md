@@ -26,7 +26,7 @@ The supplied image guides a modeled scene. Its illustrative project names do not
 - Desktop 1366 × 900: Home navigation remains fixed 22 pixels above the viewport bottom.
 - Targeted ESLint: passed with no errors or warnings in the archive scene, wrapper, modal integration, and new geometry/texture modules.
 
-Production build verification is recorded below once complete.
+Production build completed successfully before the Journey rebuild: compilation, TypeScript, all 16 static pages, and final build traces passed. The new Journey build is recorded separately in `journey-phase-a-verification.md`.
 
 ## Practical limits
 

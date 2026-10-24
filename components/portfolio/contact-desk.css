@@ -32,16 +32,16 @@
 .contact-desk-keyboard-hint small { display: block; font-size: 9px; font-weight: 400; opacity: .8; margin-top: 4px; }
 .contact-desk-keyboard-base { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 22px; padding-top: 16px; }
 .contact-desk-key-item { position: relative; display: flex; justify-content: center; height: 296px; padding-top: 87px; }
-.contact-desk-key { --key-face: #ef4e40; --key-shade: #d5372b; --key-edge: #a52923; position: relative; display: block; flex: 0 0 124px; width: 124px; height: 124px; padding: 5px 10px 23px; border-radius: 27px; background: linear-gradient(145deg, #3e4041, #121516 75%); box-shadow: 0 3px 0 #0b1115, 0 13px 17px #21323a2f; cursor: pointer; color: #fff; text-decoration: none; }
-.contact-desk-key-top { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; border-radius: 20px; background: linear-gradient(180deg, color-mix(in srgb, var(--key-face), white 17%), var(--key-face) 40%); border: 1px solid #ffffff66; box-shadow: 0 9px 0 var(--key-shade), 0 18px 0 var(--key-edge), inset 0 2px 1px #ffffff45; transition: transform .16s, box-shadow .16s; }
+.contact-desk-key { --key-face: #b64137; --key-shade: #92382f; --key-edge: #6e2d27; position: relative; display: block; flex: 0 0 124px; width: 124px; height: 124px; padding: 5px 10px 23px; border-radius: 27px; background: linear-gradient(145deg, #54524e, #292b2c 75%); box-shadow: 0 3px 0 #202324, 0 13px 20px #493b2926; cursor: pointer; color: #fff; text-decoration: none; }
+.contact-desk-key-top { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; border-radius: 20px; background: linear-gradient(155deg, color-mix(in srgb, var(--key-face), white 7%), var(--key-face) 58%, color-mix(in srgb, var(--key-face), black 5%)); border: 1px solid #ffffff55; box-shadow: 0 9px 0 var(--key-shade), 0 18px 0 var(--key-edge), inset 0 2px 1px #ffffff45; transition: transform .16s, box-shadow .16s; }
 .contact-desk-key-letter { position: absolute; top: 7px; left: 10px; font-size: 11px; line-height: 1; font-weight: 650; opacity: .7; }
 .contact-desk-key-top > svg { width: 43px; height: 43px; margin-top: 8px; }
-.contact-desk-key-label { position: absolute; bottom: 8px; font-size: 8px; font-weight: 600; letter-spacing: .02em; opacity: .85; }
-.contact-desk-key-purple { --key-face: #d93588; --key-shade: #ba276e; --key-edge: #89204f; }
-.contact-desk-key-purple .contact-desk-key-top { background: linear-gradient(135deg, #eb5497, #8c65c0 70%, #c33181); }
-.contact-desk-key-blue { --key-face: #0e6dbb; --key-shade: #0b5596; --key-edge: #093d70; }
-.contact-desk-key-coral { --key-face: #ee5643; --key-shade: #d83c2d; --key-edge: #a92a20; }
-.contact-desk-key-yellow { --key-face: #ffdc4a; --key-shade: #e4bd23; --key-edge: #b69712; color: #172a40; }
+.contact-desk-key-label { position: absolute; bottom: 8px; font-size: 8px; font-weight: 600; letter-spacing: .02em; opacity: 1; }
+/* Coordinated enamel colors, with shaded edges from the same hue. */
+.contact-desk-key-purple { --key-face: #704e91; --key-shade: #573b73; --key-edge: #402c56; }
+.contact-desk-key-blue { --key-face: #16629b; --key-shade: #184d78; --key-edge: #163a58; }
+.contact-desk-key-teal { --key-face: #206d61; --key-shade: #1c554c; --key-edge: #193f39; }
+.contact-desk-key-yellow { --key-face: #edc66b; --key-shade: #c49a44; --key-edge: #967331; color: #30291c; }
 .contact-desk-key:focus-visible { outline: 3px solid #e76750; outline-offset: 7px; }
 .contact-desk-key.is-pressed .contact-desk-key-top, .contact-desk-key:active .contact-desk-key-top { transform: translateY(6px); box-shadow: 0 5px 0 var(--key-shade), 0 12px 0 var(--key-edge), inset 0 2px 1px #ffffff45; }
 .contact-desk-key-caption { position: absolute; left: 0; right: 0; display: flex; align-items: center; flex-direction: column; color: #172a40; font-size: 15px; line-height: 1.3; letter-spacing: -.02em; }

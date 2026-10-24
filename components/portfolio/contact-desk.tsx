@@ -13,7 +13,7 @@ const contactKeys = [
   { key: "M", label: "Email", href: `mailto:${profile.email}`, Icon: Mail, color: "red", caption: "Roles, projects, or just hi.", position: "after" },
   { key: "G", label: "GitHub", href: profile.github, Icon: Github, color: "purple", caption: "Where I build in public.", position: "before" },
   { key: "L", label: "LinkedIn", href: profile.linkedin, Icon: Linkedin, color: "blue", caption: "The work, and what I learn doing it.", position: "after" },
-  { key: "S", label: "Message", href: "#contact-message-form", Icon: Send, color: "coral", caption: "Prefer a little note? Write right here.", position: "before" },
+  { key: "S", label: "Message", href: "#contact-message-form", Icon: Send, color: "teal", caption: "Prefer a little note? Write right here.", position: "before" },
   { key: "R", label: "Résumé", href: profile.resume, Icon: ArrowDown, color: "yellow", caption: "My résumé, one click away.", position: "after" },
 ]
 
